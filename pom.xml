@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.xsocket</groupId>
+  <artifactId>geak</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>geak</name>
+  <description>极客密室ERP系统</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.7</java.version>
+
+    <!-- logging -->
+    <slf4j.version>1.7.7</slf4j.version>
+    <logback.version>1.1.3</logback.version>
+    
+    <!-- commons -->
+    <commons.logging.version>1.1.1</commons.logging.version>
+    <commons.beanutils.version>1.9.2</commons.beanutils.version>
+    <commons.codec.version>1.10</commons.codec.version>
+    <commons.collections.version>3.2.1</commons.collections.version>
+    <commons.configuration.version>1.10</commons.configuration.version>
+    <commons.fileupload.version>1.3.1</commons.fileupload.version>
+    <commons.io.version>2.4</commons.io.version>
+    <commons.lang.version>2.6</commons.lang.version>
+    <commons.lang3.version>3.4</commons.lang3.version>
+    <commons.httpclient.version>4.4</commons.httpclient.version>  
+    
+    <!-- framework -->
+    <guava.version>18.0</guava.version>
+    <spring.version>3.2.14.RELEASE</spring.version>
+    <freemarker.version>2.3.20</freemarker.version>
+    <shiro.version>1.2.4</shiro.version>
+    <quartz.version>2.2.1</quartz.version>
+    <mybatis.version>3.3.0</mybatis.version>
+    <mybatis.spring.version>1.2.3</mybatis.spring.version>
+    <jetty.version>8.1.16.v20140903</jetty.version>
+    <!-- <jetty.version>9.3.4.v20151007</jetty.version> -->
+    
+    <!-- xml&json&serialization -->
+    <xstream.version>1.4.8</xstream.version>
+    <gson.version>2.4</gson.version>
+
+    <!-- jdbc -->
+    <h2.version>1.4.189</h2.version>
+    <mysql.version>5.1.36</mysql.version> 
+    <tomcat.version>8.0.28</tomcat.version>
+    
+  </properties>
+
+  <dependencies>
+    <!-- logging -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- logging -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+
+      <!-- commons -->
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <!-- 去除 commons-logging 的依赖，详见 SLF4J FAQ 第14条。 -->
+        <version>${commons.logging.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons.beanutils.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>${commons.collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>${commons.codec.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-configuration</groupId>
+        <artifactId>commons-configuration</artifactId>
+        <version>${commons.configuration.version}</version>
+        <!-- 去除 commons-logging 的依赖，详见 SLF4J FAQ 第14条。 -->
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>${commons.fileupload.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${commons.lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons.lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${commons.httpclient.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>fluent-hc</artifactId>
+        <version>${commons.httpclient.version}</version>
+      </dependency>
+
+      <!-- guava -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      
+      <!-- spring -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+        <!-- 去除 commons-logging 的依赖，详见 SLF4J FAQ 第14条。 -->
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jdbc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <!-- freemarker -->
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${freemarker.version}</version>
+      </dependency>
+      
+      <!-- shiro -->
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-core</artifactId>
+        <version>${shiro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-web</artifactId>
+        <version>${shiro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.shiro</groupId>
+        <artifactId>shiro-spring</artifactId>
+        <version>${shiro.version}</version>
+      </dependency>
+      
+      <!-- quarts -->
+      <dependency>
+        <groupId>org.quartz-scheduler</groupId>
+        <artifactId>quartz</artifactId>
+        <version>${quartz.version}</version>
+      </dependency>
+
+      <!-- mybatis -->
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis</artifactId>
+        <version>${mybatis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mybatis</groupId>
+        <artifactId>mybatis-spring</artifactId>
+        <version>${mybatis.spring.version}</version>
+      </dependency>
+      
+      <!-- xml&json -->
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${xstream.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${gson.version}</version>
+      </dependency>
+
+      <!-- jdbc & pool -->
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${h2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jdbc</artifactId>
+        <version>${tomcat.version}</version>
+      </dependency>
+
+      <!-- specs -->
+      <dependency>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>javax.ws.rs-api</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_3.0_spec</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_2.5_spec</artifactId>
+        <version>1.2</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-jsp_2.1_spec</artifactId>
+        <version>1.0.1</version>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+  <build>
+    <plugins>
+      <!-- 编译插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>${java.version}</source> 
+          <target>${java.version}</target> 
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- 资源插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <outputDirectory/>
+        </configuration>
+      </plugin>
+
+      <!-- 打包插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+
+      <!-- 源代码打包插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <attach>true</attach>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- 单元测试相关插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <!-- 解决测试输出乱码的问 -->
+          <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>  
+          <!-- <skipTests>true</skipTests> -->
+        </configuration>
+      </plugin>
+      
+      <!-- sonar -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+
+      <!-- jetty -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <!-- <groupId>org.eclipse.jetty</groupId> -->
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${jetty.version}</version>
+        <configuration>
+          <webApp>
+            <!-- 修改useFileMappedBuffer参数，解决锁定静态资源的问题 -->
+            <defaultsDescriptor>${project.basedir}/../webdefault.xml</defaultsDescriptor>
+            <contextPath>/</contextPath>
+          </webApp>
+          <classesDirectory>${basedir}/target/classes</classesDirectory>
+          <webAppSourceDirectory>${basedir}/../geak-webapp/src/main/webapp</webAppSourceDirectory>
+          
+          <requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
+            <filename>target/access-yyyy_mm_dd.log</filename>
+            <filenameDateFormat>yyyy_MM_dd</filenameDateFormat>
+            <logDateFormat>yyyy-MM-dd HH:mm:ss</logDateFormat>
+            <logTimeZone>GMT+8:00</logTimeZone>
+            <append>true</append>
+            <logServer>true</logServer>
+            <retainDays>120</retainDays>
+            <logCookies>true</logCookies>
+          </requestLog>
+          
+          <stopKey>shutdown</stopKey>
+          <stopPort>9072</stopPort>
+          <dumpOnStart>false</dumpOnStart>
+        </configuration>
+        <!-- 调试阶段开启相关依赖 -->
+        <dependencies>
+          <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <modules>
+    <module>geak-core</module>
+    <module>geak-webapp</module>
+  </modules>
+</project>
