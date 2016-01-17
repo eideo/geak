@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.AppointmentDao">
+
+  <cache />
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.Appointment">
+    <!-- 基本预约数据 -->
+    <id     property="id"            column="id"               javaType="Integer" jdbcType="INTEGER" />
+    <result property="datetime"      column="appointment_date" javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="customerCount" column="customer_count"   javaType="Integer" jdbcType="INTEGER" />
+    <result property="state"         column="state"            javaType="String"  jdbcType="VARCHAR" />
+    <!-- 关联客户数据 -->
+    <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
+      <id     property="id"        column="customer_id"   javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"      column="customer_name" javaType="String"  jdbcType="VARCHAR" />
+      <result property="sex"       column="customer_sex"  javaType="String"  jdbcType="CHAR" />
+      <result property="telephone" column="telephone"     javaType="String"  jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.AppointmentDao.result" 
+    flushCache="false" useCache="true">
+    SELECT 
+      a.id, a.appointment_date, a.customer_count, a.state,
+        c.id as customer_id, c.name as customer_name, c.sex as customer_sex, c.telephone
+    FROM geak_appointment a
+      JOIN geak_customer c ON a.customer_id = c.id
+    WHERE 
+      a.id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO geak_appointment 
+      (appointment_date, customer_count, customer_id, state) 
+    VALUES 
+      (#{datetime,jdbcType=TIMESTAMP}, #{customerCount,jdbcType=INTEGER}, 
+        #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" flushCache="true">
+    UPDATE geak_appointment 
+    <set>
+      <if test="customer != null and customer.id != null">customer_id = #{customer.id,jdbcType=Integer,jdbcType=INTEGER},</if>
+      <if test="datetime != null">appointment_date = #{datetime,jdbcType=TIMESTAMP},</if>
+      <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+    </set>
+    WHERE 
+      id = #{id,jdbcType=Integer,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="delete" flushCache="true">
+    DELETE FROM geak_appointment
+    WHERE 
+      id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

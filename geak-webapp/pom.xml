@@ -17,14 +17,32 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    
+    <xsocket.version>1.0.0-SNAPSHOT</xsocket.version>
   </properties>
   
   <dependencies>
-    <!-- geak -->
+    <!-- xsocket -->
     <dependency>
       <groupId>com.github.xsocket</groupId>
-      <artifactId>geak-core</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <artifactId>xsocket-core</artifactId>
+      <version>${xsocket.version}</version>
+    </dependency>
+    
+    <!-- json -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+    </dependency>
+    
+    <!-- jdbc -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
     </dependency>
 
     <!-- spec -->
