@@ -1,18 +1,20 @@
 package com.github.xsocket.geak.controller;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.xsocket.geak.entity.Appointment;
+import com.github.xsocket.geak.service.AppointmentService;
 
 /**
  * 预约相关业务的控制器。
@@ -21,6 +23,9 @@ import com.github.xsocket.geak.entity.Appointment;
  */
 @Controller
 public class AppointmentController {
+  
+  @Autowired
+  protected AppointmentService service;
 
   /**
    * 根据相应的参数过滤预约数据
@@ -39,8 +44,15 @@ public class AppointmentController {
       @RequestParam(value="business", required=false) Integer[] business,
       @RequestParam(value="page", required=false) Integer page) {
     
-    //System.out.println("");
+    return service.query(companyId, datetime, null, business, page);
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/appointments", method = RequestMethod.POST, produces="application/json")
+  public Appointment save(@RequestBody Appointment appointment) {
     
-    return Collections.emptyList();
+    service.save(appointment);
+    
+    return appointment;
   }
 }

@@ -1,13 +1,23 @@
 package com.github.xsocket.geak.dao;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.xsocket.geak.entity.Appointment;
+import com.github.xsocket.geak.entity.Business;
+import com.github.xsocket.geak.entity.Company;
 import com.github.xsocket.geak.entity.Customer;
+import com.github.xsocket.util.DefaultPair;
+import com.github.xsocket.util.Pair;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class AppointmentDaoTestCase extends AbstractTestCase {
   
@@ -17,22 +27,52 @@ public class AppointmentDaoTestCase extends AbstractTestCase {
   @Autowired
   protected CustomerDao customerDao;
   
-  @Test
-  public void testBasicDao() {
-    Customer customer = new Customer();
+  @Autowired
+  protected BusinessDao businessDao;
+  
+  private Customer customer;
+  
+  private Company company;
+  
+  @Before
+  public void before() {
+    customer = new Customer();
     customer.setTelephone("13812345678");
     customer.setName("name");
     customer.setSex("M");
     Assert.assertEquals(1, customerDao.insert(customer));
+    
+    company = new Company();
+    company.setId(1);
+    company.setName("测试公司");
+  }
+  
+  @After
+  public void after() {
+    customerDao.delete(customer);
+  }
+  
+  @Test
+  public void testBasicDao() {
+    
+    List<Business> businesses = businessDao.selectByCompany(company);
     
     Appointment appointment = new Appointment();
     appointment.setCustomer(customer);
     appointment.setCustomerCount(3);
     appointment.setDatetime(new Date());
     appointment.setState("state");
+    appointment.setCompany(company);
+    appointment.setBusinesses(businesses);
     
     // 测试插入
     Assert.assertEquals(1, dao.insert(appointment));
+    Set<Pair<Appointment, Business>> sets = Sets.newHashSet();
+    for(Business b : appointment.getBusinesses()) {
+      sets.add(DefaultPair.newPair(appointment, b));
+    }
+    // 插入关联主题
+    Assert.assertEquals(businesses.size(), dao.insertRelation(sets));
     Appointment temp = dao.selectById(appointment.getId());
     assertEquals(appointment, temp);
     
@@ -45,12 +85,19 @@ public class AppointmentDaoTestCase extends AbstractTestCase {
     appointment.setCustomer(customer);
     assertEquals(appointment, temp);
     
+    // 测试搜索
+    Assert.assertEquals(1, dao.selectByCompany(company.getId(), null, null, null).size());
+    List<Integer> ids = Lists.newArrayList();
+    for(Business b : businesses) {
+      ids.add(b.getId());
+    }
+    Assert.assertEquals(1, dao.selectByBusiness(company.getId(), null, null, ids.toArray(new Integer[]{}), null).size());
+    
     // 测试删除
     dao.delete(appointment);
     temp = dao.selectById(appointment.getId());
     Assert.assertNull(temp);
     
-    customerDao.delete(customer);
   }
 
   protected void assertEquals(Appointment a1, Appointment a2) {

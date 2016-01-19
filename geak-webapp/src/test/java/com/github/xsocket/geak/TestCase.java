@@ -1,5 +1,7 @@
 package com.github.xsocket.geak;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,6 +14,6 @@ public class TestCase {
 
   @Test
   public void test() {
-    System.err.println("OK");
+    System.err.println(String.format("前边的 %d 后边的", new BigDecimal(12345.1231).intValue()));
   }
 }

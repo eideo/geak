@@ -19,25 +19,82 @@
       <result property="sex"       column="customer_sex"  javaType="String"  jdbcType="CHAR" />
       <result property="telephone" column="telephone"     javaType="String"  jdbcType="VARCHAR" />
     </association>
+    <!-- 关联公司(门店) -->
+    <association property="company" javaType="com.github.xsocket.geak.entity.Company">
+      <id     property="id"      column="company_id"      javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"    column="company_name"    javaType="String"  jdbcType="VARCHAR" />
+      <result property="alias"   column="company_alias"   javaType="String"  jdbcType="VARCHAR" />
+      <result property="address" column="company_address" javaType="String"  jdbcType="VARCHAR" />
+    </association>
   </resultMap>
+  
+  <!-- 查询某个公司(门店)下的预约 -->
+  <select id="selectByCompany" resultMap="com.github.xsocket.geak.dao.AppointmentDao.result" 
+    flushCache="false" useCache="true">
+    SELECT <include refid="_select_appointment" />
+    <where>
+      <if test="companyId != null">
+        a.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="start != null">
+          AND a.appointment_date >= #{start,jdbcType=TIMESTAMP}
+      </if>
+      <if test="end != null">
+          AND a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  
+  <!-- 查询某些主题的预约 -->
+  <select id="selectByBusiness" resultMap="com.github.xsocket.geak.dao.AppointmentDao.result" 
+    flushCache="false" useCache="true">
+    SELECT  <include refid="_select_appointment" />
+      JOIN geak_appointment_business ab ON a.id = ab.appointment_id
+      JOIN geak_business b ON b.id = ab.business_id
+    <where>
+      <if test="companyId != null">
+        a.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="start != null">
+        AND a.appointment_date >= #{start,jdbcType=TIMESTAMP}
+      </if>
+      <if test="end != null">
+        AND a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
+      </if>
+      <if test="business != null">
+        AND ab.business_id IN
+          <foreach item="businessId" collection="business" open="(" separator="," close=")">
+              #{businessId,javaType=Integer,jdbcType=INTEGER}
+          </foreach> 
+      </if>
+    </where>
+  </select>
+  
+  <sql id="_select_appointment">
+      a.id, a.appointment_date, a.customer_count, a.state,
+        customer.id as customer_id, customer.name as customer_name, customer.sex as customer_sex, customer.telephone,
+        c.id AS company_id, c.name AS company_name, c.alias AS company_alias, c.address AS company_address
+    FROM geak_appointment a
+      JOIN geak_customer customer ON a.customer_id = customer.id
+      JOIN geak_company c ON a.company_id = c.id
+  </sql>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.AppointmentDao.result" 
     flushCache="false" useCache="true">
-    SELECT 
-      a.id, a.appointment_date, a.customer_count, a.state,
-        c.id as customer_id, c.name as customer_name, c.sex as customer_sex, c.telephone
-    FROM geak_appointment a
-      JOIN geak_customer c ON a.customer_id = c.id
+    SELECT <include refid="_select_appointment" />
     WHERE 
       a.id = #{id,javaType=Integer,jdbcType=INTEGER}
   </select>
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_appointment 
-      (appointment_date, customer_count, customer_id, state) 
+      (appointment_date, customer_count, customer_id, company_id, state) 
     VALUES 
-      (#{datetime,jdbcType=TIMESTAMP}, #{customerCount,jdbcType=INTEGER}, 
-        #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR})
+      ( #{datetime,jdbcType=TIMESTAMP}, 
+        #{customerCount,jdbcType=INTEGER}, 
+        #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
+        #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
+        #{state,jdbcType=VARCHAR} )
   </insert>
   
   <update id="update" flushCache="true">
@@ -56,6 +113,34 @@
     DELETE FROM geak_appointment
     WHERE 
       id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 插入预约的主题 -->
+  <insert id="insertRelation" parameterType="java.util.Set">
+    INSERT INTO geak_appointment_business
+      (appointment_id, business_id) 
+    VALUES 
+      <foreach collection="pairs" item="pair" separator="," >  
+        (#{pair.left.id,jdbcType=Integer,jdbcType=INTEGER}, #{pair.right.id,jdbcType=Integer,jdbcType=INTEGER})
+      </foreach> 
+  </insert>
+
+  <!-- 移除预约的主题 -->
+  <delete id="deleteRelation">
+    DELETE FROM geak_appointment_business
+    <where> 
+      <if test="left != null and right != null">
+        appointment_id = #{left.id,jdbcType=Integer,jdbcType=INTEGER}
+        AND
+        business_id = #{right.id,jdbcType=Integer,jdbcType=INTEGER}
+      </if> 
+      <if test="left != null and right == null">
+        appointment_id = #{left.id,jdbcType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="left == null and right != null">
+        business_id = #{right.id,jdbcType=Integer,jdbcType=INTEGER}
+      </if>
+    </where>
   </delete>
 
 </mapper>

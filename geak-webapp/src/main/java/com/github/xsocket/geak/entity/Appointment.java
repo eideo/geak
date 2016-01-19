@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Appointment extends AbstractEntity {
 
-  private static final long serialVersionUID = -8382013133937974108L;
+  private static final long serialVersionUID = -851975256777848604L;
   
   /** 预约时间 */
   protected Date datetime;
@@ -20,6 +20,8 @@ public class Appointment extends AbstractEntity {
   protected int customerCount;
   /** 预约状态 */
   protected String state;
+  /** 预约所属公司(门店) */
+  protected Company company;
   /** 预约的业务列表 */
   protected List<Business> businesses;
 
@@ -53,6 +55,14 @@ public class Appointment extends AbstractEntity {
 
   public void setState(String state) {
     this.state = state;
+  }
+
+  public Company getCompany() {
+    return company;
+  }
+
+  public void setCompany(Company company) {
+    this.company = company;
   }
 
   public List<Business> getBusinesses() {

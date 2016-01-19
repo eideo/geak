@@ -28,6 +28,8 @@ public class Order extends AbstractEntity {
   protected String state;
   /** 订单业务 */
   protected Business business;
+  /** 订单所属公司(门店) */
+  protected Company company;
   /** 该订单参与的活动 */
   protected List<OrderPromotion> promotions;
   /** 该订单的支付记录 */
@@ -95,6 +97,14 @@ public class Order extends AbstractEntity {
 
   public void setBusiness(Business business) {
     this.business = business;
+  }
+
+  public Company getCompany() {
+    return company;
+  }
+
+  public void setCompany(Company company) {
+    this.company = company;
   }
 
   public List<OrderPromotion> getPromotions() {

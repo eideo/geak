@@ -3,6 +3,8 @@ package com.github.xsocket.geak.service;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.xsocket.geak.entity.Appointment;
 
 /**
@@ -12,6 +14,15 @@ import com.github.xsocket.geak.entity.Appointment;
  */
 public interface AppointmentService {
 
+  /**
+   * 根据条件查询预约信息。
+   * @param companyId 预约所属公司(门店)的标识
+   * @param start 
+   * @param end
+   * @param business 预约的业务(主题)
+   * @param page 页码
+   * @return
+   */
   List<Appointment> query(Integer companyId, Date start, Date end, Integer[] business, Integer page);
   
   /**
@@ -22,5 +33,6 @@ public interface AppointmentService {
    * @param appointment 预约数据
    * @return 新建/更新预约的数量
    */
+  @Transactional
   int save(Appointment appointment);
 }

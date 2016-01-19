@@ -40,7 +40,7 @@
     UPDATE geak_customer 
     <set>
       <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
-      <if test="sex != null">sex = #{sex,jdbcType=VARCHAR},</if>
+      <if test="sex != null">sex = #{sex,jdbcType=CHAR},</if>
       <if test="telephone != null">telephone = #{telephone,jdbcType=VARCHAR},</if>
     </set>
     WHERE 
