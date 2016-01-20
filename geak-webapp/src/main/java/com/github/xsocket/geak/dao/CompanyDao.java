@@ -1,7 +1,5 @@
 package com.github.xsocket.geak.dao;
 
-import java.io.Serializable;
-
 import org.springframework.stereotype.Repository;
 
 import com.github.xsocket.dao.BasicDao;
@@ -13,6 +11,6 @@ import com.github.xsocket.geak.entity.Company;
  * @author MWQ
  */
 @Repository
-public interface CompanyDao extends BasicDao<Company, Serializable> {
+public interface CompanyDao extends BasicDao<Company, Integer> {
   
 }

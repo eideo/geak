@@ -1,6 +1,5 @@
 package com.github.xsocket.geak.dao;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -16,7 +15,7 @@ import com.github.xsocket.geak.entity.Company;
  * @author MWQ
  */
 @Repository
-public interface BusinessDao extends BasicDao<Business, Serializable> {
+public interface BusinessDao extends BasicDao<Business, Integer> {
 
   /**
    * 根据公司(门店)标识查询其下所含的业务。
