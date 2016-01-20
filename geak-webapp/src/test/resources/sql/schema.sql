@@ -98,7 +98,11 @@ CREATE TABLE geak_order (
   customer_id    int         NOT NULL                COMMENT '订单客户标识',
   business_id    int         NOT NULL                COMMENT '订单对应的业务标识',
   company_id     int         NOT NULL                COMMENT '订单所属公司(门店)标识',
-  PRIMARY KEY (id)
+  appointment_id int             NULL                COMMENT '订单对应预约的标识,为空表示没有对应订单',
+  PRIMARY KEY (id),
+  CONSTRAINT fk_order_company  FOREIGN KEY (company_id)  REFERENCES geak_company  (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_order_customer FOREIGN KEY (customer_id) REFERENCES geak_customer (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_order_business FOREIGN KEY (business_id) REFERENCES geak_business (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- ----------------------------

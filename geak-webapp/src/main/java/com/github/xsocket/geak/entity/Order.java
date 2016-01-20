@@ -13,17 +13,17 @@ public class Order extends AbstractEntity {
   private static final long serialVersionUID = -2524184861533136798L;
   
   /** 关联的预约信息 */
-  protected Appointment appointment;
+  protected Appointment appointment = new Appointment();
   /** 进场时间 */
   protected Date entranceDatetime;
   /** 退场时间 */
-  protected Date existDatetime;
+  protected Date exitDatetime;
   /** 订单客户 */
   protected Customer customer;
   /** 订单客户类型，青年、少年、老年... */
   protected String customerType;
   /** 订单客户总人数 */
-  protected int customerCount;
+  protected Integer customerCount;
   /** 订单状态 */
   protected String state;
   /** 订单业务 */
@@ -51,12 +51,12 @@ public class Order extends AbstractEntity {
     this.entranceDatetime = entranceDatetime;
   }
 
-  public Date getExistDatetime() {
-    return existDatetime;
+  public Date getExitDatetime() {
+    return exitDatetime;
   }
 
-  public void setExistDatetime(Date existDatetime) {
-    this.existDatetime = existDatetime;
+  public void setExitDatetime(Date existDatetime) {
+    this.exitDatetime = existDatetime;
   }
 
   public Customer getCustomer() {
@@ -75,11 +75,11 @@ public class Order extends AbstractEntity {
     this.customerType = customerType;
   }
 
-  public int getCustomerCount() {
+  public Integer getCustomerCount() {
     return customerCount;
   }
 
-  public void setCustomerCount(int customerCount) {
+  public void setCustomerCount(Integer customerCount) {
     this.customerCount = customerCount;
   }
 

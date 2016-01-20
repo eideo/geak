@@ -10,15 +10,24 @@ public class OrderPromotion extends AbstractEntity {
   private static final long serialVersionUID = 7572331794400778620L;
   
   /** 促销数量 */
-  protected int count;
+  protected Integer count;
   /** 促销计划 */
   protected PromotionPlan plan;
+  
+  public OrderPromotion() {
+    plan = new PromotionPlan();
+  }
+  
+  public OrderPromotion(PromotionPlan plan, Integer count) {
+    this.plan = plan;
+    this.count = count;
+  }
 
-  public int getCount() {
+  public Integer getCount() {
     return count;
   }
 
-  public void setCount(int count) {
+  public void setCount(Integer count) {
     this.count = count;
   }
 

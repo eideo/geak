@@ -1,4 +1,11 @@
 -- ----------------------------
+--  Records of `geak_customer` !!用于测试!!
+-- ----------------------------
+BEGIN;
+INSERT INTO `geak_customer` VALUES ('1', '麻文强', '15001276389', 'F');
+COMMIT;
+
+-- ----------------------------
 --  Records of `geak_company`
 -- ----------------------------
 BEGIN;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.OrderPaymentDao">
+
+  <cache />
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.OrderPayment">
+    <result property="amount"    column="amount"       javaType="Integer" jdbcType="INTEGER" />
+    <result property="mode.id"   column="payment_id"   javaType="Integer" jdbcType="INTEGER" />
+    <result property="mode.name" column="payment_name" javaType="String"  jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- 查询订单关联支付信息 -->
+  <select id="selectOrderPayments" resultMap="com.github.xsocket.geak.dao.OrderPaymentDao.result">
+    SELECT op.amount, op.payment_id, pm.name as payment_name
+    FROM geak_order_payment op
+    JOIN geak_payment_mode pm ON op.payment_id = pm.id
+    WHERE op.order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+</mapper>

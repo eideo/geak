@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.OrderDao">
+
+  <cache />
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.Order">
+    <!-- 基本预约数据 -->
+    <id     property="id"               column="id"             javaType="Integer" jdbcType="INTEGER" />
+    <result property="entranceDatetime" column="entrance_date"  javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="exitDatetime"     column="exit_date"      javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="customerCount"    column="customer_count" javaType="Integer" jdbcType="INTEGER" />
+    <result property="customerType"     column="customer_type"  javaType="String"  jdbcType="VARCHAR" />
+    <result property="state"            column="state"          javaType="String"  jdbcType="VARCHAR" />
+    <!-- 关联客户数据 -->
+    <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
+      <id     property="id"        column="customer_id"   javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"      column="customer_name" javaType="String"  jdbcType="VARCHAR" />
+      <result property="sex"       column="customer_sex"  javaType="String"  jdbcType="CHAR" />
+      <result property="telephone" column="telephone"     javaType="String"  jdbcType="VARCHAR" />
+    </association>
+    <!-- 关联业务(主题) -->
+    <association property="business" javaType="com.github.xsocket.geak.entity.Business">
+      <id     property="id"    column="business_id"    javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"  column="business_name"  javaType="String"  jdbcType="VARCHAR" />
+      <result property="alias" column="business_alias" javaType="String"  jdbcType="VARCHAR" />
+    </association>
+    <!-- 关联公司(门店) -->
+    <association property="company" javaType="com.github.xsocket.geak.entity.Company">
+      <id     property="id"    column="company_id"    javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"  column="company_name"  javaType="String"  jdbcType="VARCHAR" />
+      <result property="alias" column="company_alias" javaType="String"  jdbcType="VARCHAR" />
+    </association>
+    <!-- 关联预约,可能为空 -->
+    <association property="appointment" javaType="com.github.xsocket.geak.entity.Appointment">
+      <id     property="id"       column="appointment_id"   javaType="Integer" jdbcType="INTEGER" />
+      <result property="datetime" column="appointment_date" javaType="Date"    jdbcType="TIMESTAMP" />
+    </association>
+  </resultMap>
+  <resultMap id="resultAll" type="com.github.xsocket.geak.entity.Order" 
+    extends="com.github.xsocket.geak.dao.OrderDao.result">
+    <collection property="payments" column="id" ofType="com.github.xsocket.geak.entity.OrderPayment" 
+        select="com.github.xsocket.geak.dao.OrderPaymentDao.selectOrderPayments" />
+    <collection property="promotions" column="id" ofType="com.github.xsocket.geak.entity.OrderPromotion" 
+        select="com.github.xsocket.geak.dao.OrderPromotionDao.selectOrderPromotions" />
+  </resultMap>
+  
+  <sql id="_select_order">
+      o.id, o.entrance_date, o.exit_date, o.customer_type, o.customer_count, o.state,
+        t.id as customer_id, t.name as customer_name, t.sex as customer_sex, t.telephone,
+        c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias,
+        b.id AS business_id, b.name AS business_name, b.alias AS business_alias,
+        a.id AS appointment_id, a.appointment_date
+    FROM geak_order o
+          JOIN geak_customer    t ON o.customer_id    = t.id
+          JOIN geak_company     c ON o.company_id     = c.id
+          JOIN geak_business    b ON o.business_id    = b.id
+     LEFT JOIN geak_appointment a ON o.appointment_id = a.id  
+  </sql>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.OrderDao.resultAll" 
+    flushCache="false" useCache="true">
+    SELECT <include refid="_select_order" />
+    WHERE 
+      o.id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO geak_order 
+      (entrance_date, exit_date, customer_count, customer_type, state, 
+       customer_id, company_id, business_id, appointment_id) 
+    VALUES 
+      ( #{entranceDatetime,jdbcType=TIMESTAMP}, 
+        #{exitDatetime,jdbcType=TIMESTAMP}, 
+        #{customerCount,jdbcType=INTEGER}, 
+        #{customerType,jdbcType=VARCHAR}, 
+        #{state,jdbcType=VARCHAR},
+        #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
+        #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
+        #{business.id,jdbcType=Integer,jdbcType=INTEGER},
+        #{appointment.id,jdbcType=Integer,jdbcType=INTEGER} )
+  </insert>
+  
+  <update id="update" flushCache="true">
+    UPDATE geak_order 
+    <set>
+      <if test="entranceDatetime != null">entrance_date = #{entranceDatetime,jdbcType=TIMESTAMP},</if>
+      <if test="exitDatetime != null">exit_date = #{exitDatetime,jdbcType=TIMESTAMP},</if>
+      <if test="customerType != null">customer_type = #{customerType,jdbcType=INTEGER},</if>
+      <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="customer != null and customer.id != null">customer_id = #{customer.id,jdbcType=Integer,jdbcType=INTEGER},</if>
+      <if test="business != null and business.id != null">business_id = #{business.id,jdbcType=Integer,jdbcType=INTEGER},</if>
+    </set>
+    WHERE 
+      id = #{id,jdbcType=Integer,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="delete" flushCache="true">
+    DELETE FROM geak_order
+    WHERE 
+      id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 插入订单的支付信息 -->
+  <insert id="insertPayments">
+    INSERT INTO geak_order_payment
+      (order_id, payment_id, amount) 
+    VALUES 
+      <foreach collection="payments" item="para" separator="," >  
+        ( #{order.id,     jdbcType=Integer, jdbcType=INTEGER}, 
+          #{para.mode.id, jdbcType=Integer, jdbcType=INTEGER}, 
+          #{para.amount,  jdbcType=Integer, jdbcType=INTEGER} )
+      </foreach> 
+  </insert>
+  
+  <!-- 插入订单的促销信息 -->
+  <insert id="insertPromotions">
+    INSERT INTO geak_order_promotion
+      (order_id, promotion_id, count) 
+    VALUES 
+      <foreach collection="promotions" item="para" separator="," >  
+        ( #{order.id,     jdbcType=Integer, jdbcType=INTEGER}, 
+          #{para.plan.id, jdbcType=Integer, jdbcType=INTEGER}, 
+          #{para.count,   jdbcType=Integer, jdbcType=INTEGER} )
+      </foreach> 
+  </insert>
+
+  <!-- 清空订单的支付信息 -->
+  <delete id="deletePayments">
+    DELETE FROM geak_order_payment
+    WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 清空订单的促销信息 -->
+  <delete id="deletePromotions">
+    DELETE FROM geak_order_promotion
+    WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+
+</mapper>
