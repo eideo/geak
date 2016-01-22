@@ -66,6 +66,22 @@
     WHERE 
       o.id = #{id,javaType=Integer,jdbcType=INTEGER}
   </select>
+  
+  <select id="selectByCompany" resultMap="com.github.xsocket.geak.dao.OrderDao.result" 
+    flushCache="false" useCache="true">
+    SELECT <include refid="_select_order" />
+    <where>
+      <if test="companyId != null">
+        o.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="start != null">
+          AND ( o.entrance_date >= #{start,jdbcType=TIMESTAMP} OR a.appointment_date >= #{start,jdbcType=TIMESTAMP} )
+      </if>
+      <if test="end != null">
+          AND ( o.entrance_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP} OR a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP} )
+      </if>
+    </where>
+  </select>
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_order 

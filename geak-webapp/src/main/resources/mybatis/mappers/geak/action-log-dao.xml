@@ -4,11 +4,14 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.xsocket.geak.dao.ActionLogDao">
 
-  <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert">
     INSERT INTO geak_action_log
-      (user_id, action, content, created_date) 
+      (user_id, action, name, content, created_date) 
     VALUES 
-      (#{user.id,javaType=String,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP})
+      ( #{user.id,javaType=String,jdbcType=VARCHAR}, 
+        #{action,jdbcType=VARCHAR}, 
+        #{name,jdbcType=VARCHAR}, 
+        #{content,jdbcType=VARCHAR}, 
+        #{createdDate,jdbcType=TIMESTAMP} )
   </insert>
 </mapper>

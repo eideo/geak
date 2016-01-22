@@ -2,7 +2,6 @@ package com.github.xsocket.geak.service.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,29 +10,25 @@ import org.springframework.stereotype.Service;
 
 import com.github.xsocket.dao.Pagination;
 import com.github.xsocket.geak.dao.ActionLogDao;
-import com.github.xsocket.geak.dao.AppointmentDao;
 import com.github.xsocket.geak.dao.CustomerDao;
+import com.github.xsocket.geak.dao.OrderDao;
 import com.github.xsocket.geak.entity.ActionLog;
-import com.github.xsocket.geak.entity.Appointment;
-import com.github.xsocket.geak.entity.Business;
 import com.github.xsocket.geak.entity.Customer;
-import com.github.xsocket.geak.service.AppointmentService;
-import com.github.xsocket.util.DefaultPair;
-import com.github.xsocket.util.Pair;
-import com.google.common.collect.Sets;
+import com.github.xsocket.geak.entity.Order;
+import com.github.xsocket.geak.service.OrderService;
 
 /**
- * 默认预约服务实现类。
+ * 默认订单服务实现类。
  * 
  * @author MWQ
  */
 @Service
-public class DefaultAppointmentService implements AppointmentService {
+public class DefaultOrderService implements OrderService {
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAppointmentService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultOrderService.class);
   
   @Autowired
-  protected AppointmentDao appointmentDao;
+  protected OrderDao orderDao;
   
   @Autowired
   protected CustomerDao customerDao;
@@ -42,7 +37,7 @@ public class DefaultAppointmentService implements AppointmentService {
   protected ActionLogDao logDao;
 
   @Override
-  public List<Appointment> query(Integer companyId, Date start, Date end, Integer[] business, Integer page) {
+  public List<Order> query(Integer companyId, Date start, Date end, Integer page) {
     // TODO 查询逻辑有问题
     Date begin = start == null ? new Date() : start;
     Date over = null;
@@ -62,44 +57,39 @@ public class DefaultAppointmentService implements AppointmentService {
     }
     
     // 返回查询数据
-    if(business == null || business.length == 0) {
-      return appointmentDao.selectByCompany(companyId, begin, over, pagination);
-    } else {
-      return appointmentDao.selectByBusiness(companyId, begin, over, business, pagination);
-    }
+    return orderDao.selectByCompany(companyId, begin, over, pagination);
   }
 
   @Override
-  public int save(Appointment appointment) {
-    validate(appointment);
+  public int save(Order order) {
+    validate(order);
     LOGGER.debug("开始保存预约信息");
     
     // 首先登记客户信息
-    Customer customer = registerAppointmentCustomer(appointment);
-    appointment.setCustomer(customer);
+    Customer customer = registerOrderCustomer(order);
+    order.setCustomer(customer);
     
     // 保存预约主体信息
     int updated = 0;
-    Integer id = appointment.getId();
+    Integer id = order.getId();
     if(id != null && id.intValue() > 0) {
-      updated = appointmentDao.update(appointment);
+      updated = orderDao.update(order);
       if(updated == 1) {
-        logDao.insert(new ActionLog(ActionLog.ACTION_UPDATE, appointment));
+        logDao.insert(new ActionLog(ActionLog.ACTION_UPDATE, order));
       }
     } else {
-      updated = appointmentDao.insert(appointment);
+      updated = orderDao.insert(order);
       if(updated == 1) {
-        logDao.insert(new ActionLog(ActionLog.ACTION_INSERT, appointment));
+        logDao.insert(new ActionLog(ActionLog.ACTION_INSERT, order));
       }
     }
     
-    // 重新记录预约的业务(主题)信息
-    appointmentDao.deleteRelation(appointment, null);
-    Set<Pair<Appointment, Business>> sets = Sets.newHashSet();
-    for(Business b : appointment.getBusinesses()) {
-      sets.add(DefaultPair.newPair(appointment, b));
-    }
-    appointmentDao.insertRelation(sets);
+    // 重新记录预约的支付和促销信息
+    orderDao.deletePayments(order);
+    orderDao.insertPayments(order, order.getPayments());
+    
+    orderDao.deletePromotions(order);
+    orderDao.insertPromotions(order, order.getPromotions());
     
     LOGGER.debug("成功保存预约信息");
     return updated;
@@ -107,12 +97,12 @@ public class DefaultAppointmentService implements AppointmentService {
   
   /**
    * 登记预约中的客户信息。
-   * @param appointment 预约
+   * @param order 预约
    * @return 客户信息
    */
-  protected Customer registerAppointmentCustomer(Appointment appointment) {
+  protected Customer registerOrderCustomer(Order order) {
     //查看客户信息是否已经存在
-    Customer customer = appointment.getCustomer();
+    Customer customer = order.getCustomer();
     List<Customer> customers = customerDao.selectByTelephone(customer.getTelephone());
     if(customers != null && !customers.isEmpty()) {
       for(Customer temp : customers) {
@@ -128,7 +118,7 @@ public class DefaultAppointmentService implements AppointmentService {
     return customer;
   }
   
-  protected void validate(Appointment appointment) {
+  protected void validate(Order appointment) {
     // TODO 验证参数
   }
 

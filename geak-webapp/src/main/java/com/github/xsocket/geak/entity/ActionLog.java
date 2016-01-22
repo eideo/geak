@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
 import com.github.xsocket.aa.entity.User;
+import com.github.xsocket.geak.util.GeakUtils;
 
 /**
  * 操作日志。
@@ -20,12 +21,25 @@ public class ActionLog extends AbstractEntity {
 
   public static final String ACTION_DELETE = "DELETE";
 
+  /** 操作 */
+  protected String action;
   /** 操作对象的内容 */
   protected String content;
   /** 操作时间 */
   protected Date createdDate = new Date();
   /** 操作人 */
   protected User user;
+  
+  public ActionLog() {
+    this.createdDate = new Date();
+    this.user = GeakUtils.getCurrentUser();
+  }
+  
+  public ActionLog(String action, Object content) {
+    this();
+    this.setAction(action);
+    this.setContent(content);
+  }
 
   public String getContent() {
     return content;
@@ -37,14 +51,17 @@ public class ActionLog extends AbstractEntity {
   
   public void setContent(Object content) {
     this.content = JSON.toJSONString(content);
+    if(this.name == null) {
+      this.name = content.getClass().getName();
+    }
   }
 
   public String getAction() {
-    return name;
+    return action;
   }
 
   public void setAction(String action) {
-    this.name = action;
+    this.action = action;
   }
 
   public Date getCreatedDate() {

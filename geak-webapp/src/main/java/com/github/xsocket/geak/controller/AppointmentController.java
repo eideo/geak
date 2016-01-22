@@ -44,7 +44,9 @@ public class AppointmentController {
       @RequestParam(value="business", required=false) Integer[] business,
       @RequestParam(value="page", required=false) Integer page) {
     
-    return service.query(companyId, datetime, null, business, page);
+    Date pivot = datetime == null ? new Date() : datetime;
+    Integer pageNo = (page == null || page == 0) ? 1 : page;
+    return service.query(companyId, pivot, null, business, pageNo);
   }
   
   @ResponseBody

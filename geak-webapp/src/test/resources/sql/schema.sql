@@ -136,10 +136,11 @@ CREATE TABLE geak_order_promotion (
 -- ----------------------------
 DROP TABLE IF EXISTS geak_action_log;
 CREATE TABLE geak_action_log (
-  id           int         NOT NULL AUTO_INCREMENT COMMENT '操作标识(自增)',
-  user_id      varchar(36) NOT NULL COMMENT '操作人标识',
-  action       varchar(32) NOT NULL COMMENT '操作名称',
-  content      text        NOT NULL COMMENT '操作内容',
-  created_date datetime    NOT NULL COMMENT '操作时间',
+  id           int          NOT NULL AUTO_INCREMENT COMMENT '操作标识(自增)',
+  user_id      varchar(36)  NOT NULL COMMENT '操作人标识',
+  action       varchar(32)  NOT NULL COMMENT '操作名称',
+  name         varchar(255) NOT NULL COMMENT '操作对象',
+  content      text         NOT NULL COMMENT '操作内容',
+  created_date datetime     NOT NULL COMMENT '操作时间',
   PRIMARY KEY (id)
 );

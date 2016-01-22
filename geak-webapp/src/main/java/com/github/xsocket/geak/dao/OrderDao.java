@@ -1,11 +1,13 @@
 package com.github.xsocket.geak.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.github.xsocket.dao.BasicDao;
+import com.github.xsocket.dao.Pagination;
 import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.entity.OrderPayment;
 import com.github.xsocket.geak.entity.OrderPromotion;
@@ -17,6 +19,12 @@ import com.github.xsocket.geak.entity.OrderPromotion;
  */
 @Repository
 public interface OrderDao extends BasicDao<Order, Integer> {
+  
+  List<Order> selectByCompany(
+      @Param("companyId") Integer companyId, 
+      @Param("start") Date start,
+      @Param("end") Date end, 
+      Pagination page);
   
   /**
    * 插入订单相关的支付内容
