@@ -5,13 +5,17 @@
 <mapper namespace="com.github.xsocket.geak.dao.BusinessDao">
 
   <cache />
-
-  <resultMap id="result" type="com.github.xsocket.geak.entity.Business">
+  
+  <resultMap id="resultBasic" type="com.github.xsocket.geak.entity.Business">
     <!-- 基本业务信息 -->
     <id     property="id"    column="id"    javaType="Integer" jdbcType="INTEGER" />
     <result property="name"  column="name"  javaType="String"  jdbcType="VARCHAR" />
     <result property="alias" column="alias" javaType="String"  jdbcType="VARCHAR" />
     <result property="note"  column="note"  javaType="String"  jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.Business" 
+    extends="com.github.xsocket.geak.dao.BusinessDao.resultBasic">
     <!-- 关联公司 -->
     <association property="company" javaType="com.github.xsocket.geak.entity.Company">
       <id     property="id"      column="company_id"      javaType="Integer" jdbcType="INTEGER" />
@@ -41,6 +45,15 @@
       JOIN geak_company c ON b.company_id = c.id
     WHERE 
       b.company_id = #{company.id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByAppointment" resultMap="com.github.xsocket.geak.dao.BusinessDao.resultBasic" 
+    flushCache="false" useCache="true">
+    SELECT b.id, b.name, b.alias, b.note
+    FROM geak_business b
+      JOIN geak_appointment_business a ON b.id = a.business_id
+    WHERE 
+      a.appointment_id = #{id,javaType=Integer,jdbcType=INTEGER}
   </select>
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">

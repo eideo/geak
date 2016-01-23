@@ -13,7 +13,7 @@ public class Order extends AbstractEntity {
   private static final long serialVersionUID = -2524184861533136798L;
   
   /** 关联的预约信息 */
-  protected Appointment appointment = new Appointment();
+  protected Appointment appointment = new Appointment();;
   /** 进场时间 */
   protected Date entranceDatetime;
   /** 退场时间 */

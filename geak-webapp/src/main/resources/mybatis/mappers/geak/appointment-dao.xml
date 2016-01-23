@@ -8,10 +8,12 @@
 
   <resultMap id="result" type="com.github.xsocket.geak.entity.Appointment">
     <!-- 基本预约数据 -->
-    <id     property="id"            column="id"               javaType="Integer" jdbcType="INTEGER" />
-    <result property="datetime"      column="appointment_date" javaType="Date"    jdbcType="TIMESTAMP" />
-    <result property="customerCount" column="customer_count"   javaType="Integer" jdbcType="INTEGER" />
-    <result property="state"         column="state"            javaType="String"  jdbcType="VARCHAR" />
+    <id     property="id"                column="id"               javaType="Integer" jdbcType="INTEGER" />
+    <result property="datetime"          column="appointment_date" javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="confirmedDatetime" column="confirmed_date"   javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="cancelledDatetime" column="cancelled_date"   javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="customerCount"     column="customer_count"   javaType="Integer" jdbcType="INTEGER" />
+    <result property="state"             column="state"            javaType="String"  jdbcType="VARCHAR" />
     <!-- 关联客户数据 -->
     <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
       <id     property="id"        column="customer_id"   javaType="Integer" jdbcType="INTEGER" />
@@ -26,6 +28,9 @@
       <result property="alias"   column="company_alias"   javaType="String"  jdbcType="VARCHAR" />
       <result property="address" column="company_address" javaType="String"  jdbcType="VARCHAR" />
     </association>
+    <!-- 关联业务(主题) -->
+    <collection property="businesses" column="id" ofType="com.github.xsocket.geak.entity.Business" 
+        select="com.github.xsocket.geak.dao.BusinessDao.selectByAppointment" />
   </resultMap>
   
   <!-- 查询某个公司(门店)下的预约 -->
@@ -71,7 +76,7 @@
   </select>
   
   <sql id="_select_appointment">
-      a.id, a.appointment_date, a.customer_count, a.state,
+      a.id, a.appointment_date, a.confirmed_date, a.cancelled_date, a.customer_count, a.state,
         customer.id as customer_id, customer.name as customer_name, customer.sex as customer_sex, customer.telephone,
         c.id AS company_id, c.name AS company_name, c.alias AS company_alias, c.address AS company_address
     FROM geak_appointment a
@@ -88,9 +93,11 @@
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_appointment 
-      (appointment_date, customer_count, customer_id, company_id, state) 
+      (appointment_date, confirmed_date, cancelled_date, customer_count, customer_id, company_id, state) 
     VALUES 
       ( #{datetime,jdbcType=TIMESTAMP}, 
+        #{confirmedDatetime,jdbcType=TIMESTAMP}, 
+        #{cancelledDatetime,jdbcType=TIMESTAMP}, 
         #{customerCount,jdbcType=INTEGER}, 
         #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
@@ -102,6 +109,8 @@
     <set>
       <if test="customer != null and customer.id != null">customer_id = #{customer.id,jdbcType=Integer,jdbcType=INTEGER},</if>
       <if test="datetime != null">appointment_date = #{datetime,jdbcType=TIMESTAMP},</if>
+      <if test="confirmedDatetime != null">confirmed_date = #{confirmedDatetime,jdbcType=TIMESTAMP},</if>
+      <if test="cancelledDatetime != null">cancelled_date = #{cancelledDatetime,jdbcType=TIMESTAMP},</if>
       <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
     </set>

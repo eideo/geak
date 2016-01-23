@@ -13,13 +13,16 @@ import com.github.xsocket.dao.Pagination;
 import com.github.xsocket.geak.dao.ActionLogDao;
 import com.github.xsocket.geak.dao.AppointmentDao;
 import com.github.xsocket.geak.dao.CustomerDao;
+import com.github.xsocket.geak.dao.OrderDao;
 import com.github.xsocket.geak.entity.ActionLog;
 import com.github.xsocket.geak.entity.Appointment;
 import com.github.xsocket.geak.entity.Business;
 import com.github.xsocket.geak.entity.Customer;
+import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.service.AppointmentService;
 import com.github.xsocket.util.DefaultPair;
 import com.github.xsocket.util.Pair;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -32,8 +35,15 @@ public class DefaultAppointmentService implements AppointmentService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultAppointmentService.class);
   
+  private static final String STATE_NEW = "NEW";
+  private static final String STATE_CONFIRMED = "CONFIRMED";
+  private static final String STATE_CANCELLED = "CANCELLED";
+  
   @Autowired
   protected AppointmentDao appointmentDao;
+  
+  @Autowired
+  protected OrderDao orderDao;
   
   @Autowired
   protected CustomerDao customerDao;
@@ -68,9 +78,71 @@ public class DefaultAppointmentService implements AppointmentService {
       return appointmentDao.selectByBusiness(companyId, begin, over, business, pagination);
     }
   }
+  
+  @Override
+  public List<Order> confirm(Integer id, Date date) {
+    Appointment appointment = appointmentDao.selectById(id);
+    if(appointment == null) {
+      LOGGER.warn("标识为 {} 的预约不存在，无法确认到场！", id);
+    }
+    if(!STATE_NEW.equals(appointment.getState())) {
+      LOGGER.warn("预约\"{}\"的当前状态为\"{}\"，无法确认到场！", id, appointment.getState());
+      //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+    }
+    
+    appointment.setConfirmedDatetime(date);
+    appointment.setState(STATE_CONFIRMED);
+    int updated = appointmentDao.update(appointment);
+    if(updated == 1) {
+      // TODO 处理 updated 为其他值的情况
+      logDao.insert(new ActionLog("CONFIRM", appointment));
+    }
+    
+    // 为确认到场的预约，自动生成对应的接待
+    List<Order> orders = Lists.newArrayList();
+    for(Business b : appointment.getBusinesses()) {
+      Order order = new Order();
+      order.setAppointment(appointment);
+      order.setBusiness(b);
+      order.setCustomer(appointment.getCustomer());
+      order.setCustomerCount(appointment.getCustomerCount());
+      order.setCompany(appointment.getCompany());
+      order.setState(STATE_NEW);
+      updated = orderDao.insert(order);
+      if(updated == 1) {
+        orders.add(order);
+        // TODO 处理 updated 为其他值的情况
+        logDao.insert(new ActionLog("AUTO_INSERT", order));
+      }
+    }
+    
+    return orders;
+  }
+  
+  @Override
+  public Appointment cancel(Integer id) {
+    Appointment appointment = appointmentDao.selectById(id);
+    if(appointment == null) {
+      LOGGER.warn("标识为 {} 的预约不存在，无法取消预约！", id);
+    }
+    if(!STATE_NEW.equals(appointment.getState())) {
+      LOGGER.warn("预约\"{}\"的当前状态为\"{}\"，无法取消预约！", id, appointment.getState());
+      //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+    }
+    
+    appointment.setCancelledDatetime(new Date());
+    appointment.setState(STATE_CANCELLED);
+    int updated = appointmentDao.update(appointment);
+    if(updated == 1) {
+      // TODO 处理 updated 为其他值的情况
+      logDao.insert(new ActionLog("CANCEL", appointment));
+    } 
+    
+    return appointment;
+  }
 
   @Override
-  public int save(Appointment appointment) {
+  public Appointment save(Appointment appointment) {
     validate(appointment);
     LOGGER.debug("开始保存预约信息");
     
@@ -87,6 +159,8 @@ public class DefaultAppointmentService implements AppointmentService {
         logDao.insert(new ActionLog(ActionLog.ACTION_UPDATE, appointment));
       }
     } else {
+      // 新预约
+      appointment.setState(STATE_NEW);
       updated = appointmentDao.insert(appointment);
       if(updated == 1) {
         logDao.insert(new ActionLog(ActionLog.ACTION_INSERT, appointment));
@@ -102,7 +176,7 @@ public class DefaultAppointmentService implements AppointmentService {
     appointmentDao.insertRelation(sets);
     
     LOGGER.debug("成功保存预约信息");
-    return updated;
+    return appointment;
   }
   
   /**

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.xsocket.geak.entity.Appointment;
+import com.github.xsocket.geak.entity.Order;
 
 /**
  * 预约相关的业务服务。
@@ -34,5 +35,11 @@ public interface AppointmentService {
    * @return 新建/更新预约的数量
    */
   @Transactional
-  int save(Appointment appointment);
+  Appointment save(Appointment appointment);
+  
+  @Transactional
+  List<Order> confirm(Integer id, Date date);
+  
+  @Transactional
+  Appointment cancel(Integer id);
 }

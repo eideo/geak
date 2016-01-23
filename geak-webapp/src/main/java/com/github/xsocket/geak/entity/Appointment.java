@@ -14,6 +14,10 @@ public class Appointment extends AbstractEntity {
   
   /** 预约时间 */
   protected Date datetime;
+  /** 确认时间 */
+  protected Date confirmedDatetime;
+  /** 取消时间 */
+  protected Date cancelledDatetime;
   /** 预约客户 */
   protected Customer customer;
   /** 预约客户总人数 */
@@ -31,6 +35,22 @@ public class Appointment extends AbstractEntity {
 
   public void setDatetime(Date datetime) {
     this.datetime = datetime;
+  }
+  
+  public Date getConfirmedDatetime() {
+    return confirmedDatetime;
+  }
+
+  public void setConfirmedDatetime(Date datetime) {
+    this.confirmedDatetime = datetime;
+  }
+  
+  public Date getCancelledDatetime() {
+    return cancelledDatetime;
+  }
+
+  public void setCancelledDatetime(Date datetime) {
+    this.cancelledDatetime = datetime;
   }
 
   public Customer getCustomer() {

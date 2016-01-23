@@ -1,0 +1,358 @@
+@-webkit-keyframes title {
+  0% {
+    opacity: 0;
+    right: 130px;
+  }
+
+  48% {
+    opacity: 0;
+    right: 130px;
+  }
+
+  52% {
+    opacity: 1;
+    right: 30px;
+  }
+
+  70% {
+    opacity: 1;
+    right: 30px;
+  }
+
+  100% {
+    opacity: 0;
+    right: 30px;
+  }
+}
+@-moz-keyframes title {
+  0% {
+    opacity: 0;
+    right: 130px;
+  }
+
+  48% {
+    opacity: 0;
+    right: 130px;
+  }
+
+  52% {
+    opacity: 1;
+    right: 30px;
+  }
+
+  70% {
+    opacity: 1;
+    right: 30px;
+  }
+
+  100% {
+    opacity: 0;
+    right: 30px;
+  }
+}
+@-webkit-keyframes fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+@-moz-keyframes fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes bg {
+  0% {
+    background-color: #306f99;
+  }
+
+  50% {
+    background-color: #19470f;
+  }
+
+  90% {
+    background-color: #734a10;
+  }
+}
+@-moz-keyframes bg {
+  0% {
+    background-color: #306f99;
+  }
+
+  50% {
+    background-color: #19470f;
+  }
+
+  90% {
+    background-color: #734a10;
+  }
+}
+@-webkit-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  10% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  40% {
+    opacity: 0;
+    right: -21px;
+  }
+
+  45% {
+    opacity: 1;
+    right: 80px;
+  }
+
+  50% {
+    opacity: 0;
+    right: -21px;
+  }
+
+  51% {
+    right: -21px;
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  60% {
+    opacity: 0;
+  }
+
+  65% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 0;
+    right: -21px;
+  }
+
+  95% {
+    opacity: 1;
+    right: 80px;
+  }
+
+  96% {
+    right: -21px;
+  }
+
+  100% {
+    opacity: 0;
+    right: -21px;
+  }
+}
+@-moz-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  10% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  40% {
+    opacity: 0;
+    right: -21px;
+  }
+
+  45% {
+    opacity: 1;
+    right: 80px;
+  }
+
+  50% {
+    opacity: 0;
+    right: -21px;
+  }
+
+  51% {
+    right: -21px;
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  60% {
+    opacity: 0;
+  }
+
+  65% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 0;
+    right: -21px;
+  }
+
+  95% {
+    opacity: 1;
+    right: 80px;
+  }
+
+  96% {
+    right: -21px;
+  }
+
+  100% {
+    opacity: 0;
+    right: -21px;
+  }
+}
+
+
+.mask-wrapper {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  padding-top:50%;
+  background: #000;
+  opacity: 0.8;
+  z-index: 10001;
+}
+
+.mask {
+  position: relative;
+  margin:20px auto;
+  text-align: right;
+  text-shadow: 0 0 6px #bce4ff;
+
+  -moz-animation: bg 1.5s linear infinite;
+  -webkit-animation: bg 1.5s linear infinite;
+  animation: bg 1.5s linear infinite;
+  -moz-box-shadow: inset 0 0 45px 30px black;
+  -webkit-box-shadow: inset 0 0 45px 30px black;
+  box-shadow: inset 0 0 45px 30px black;
+}
+.mask span {
+  color: #eee;
+  display: block;
+  text-transform: uppercase;
+  position: absolute;
+  right: 30px;
+  height: 20px;
+  width: 200px;
+  line-height: 20px;
+}
+.mask span:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  right: -21px;
+  height: 20px;
+  width: 16px;
+  background: #eee;
+  -moz-box-shadow: 0 0 15px #bce4ff;
+  -webkit-box-shadow: 0 0 15px #bce4ff;
+  box-shadow: 0 0 15px #bce4ff;
+  -moz-animation: blink 3s infinite;
+  -webkit-animation: blink 3s infinite;
+  animation: blink 3s infinite;
+}
+.mask span.title {
+  -moz-animation: title 3s linear infinite;
+  -webkit-animation: title 3s linear infinite;
+  animation: title 3s linear infinite;
+}
+.mask span.text {
+  -moz-animation: title 3s linear 1.5s infinite;
+  -webkit-animation: title 3s linear 1.5s infinite;
+  animation: title 3s linear 1.5s infinite;
+  opacity: 1;
+}

@@ -63,6 +63,8 @@ DROP TABLE IF EXISTS geak_appointment;
 CREATE TABLE geak_appointment (
   id               int         NOT NULL AUTO_INCREMENT COMMENT '预约主键标识(自增)',
   appointment_date datetime    NOT NULL                COMMENT '预约的具体时间',
+  confirmed_date   datetime        NULL                COMMENT '预约的确认时间',
+  cancelled_date   datetime        NULL                COMMENT '预约的取消时间',
   customer_count   int         NOT NULL                COMMENT '预约客户的数量',
   customer_id      int         NOT NULL                COMMENT '预约客户标识',
   state            varchar(16) NOT NULL                COMMENT '预约状态',
