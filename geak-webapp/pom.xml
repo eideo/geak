@@ -57,5 +57,9 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  
+  <build>
+    <finalName>geak</finalName>
+  </build>
 
 </project>
