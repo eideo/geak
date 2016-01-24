@@ -304,6 +304,8 @@
   background: #000;
   opacity: 0.8;
   z-index: 10001;
+  display: none;
+  font-size: 24px;
 }
 
 .mask {

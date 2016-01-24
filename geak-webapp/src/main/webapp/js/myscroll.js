@@ -10,7 +10,7 @@ var myScroll,
 function pullDownAction () {
   setTimeout(function () {  // <-- Simulate network congestion, remove setTimeout from production!
     var el, li, i;
-    el = document.getElementById('thelist');
+    el = document.getElementById('alist');
 
     for (i=0; i<3; i++) {
       li = document.createElement('li');
@@ -29,7 +29,7 @@ function pullDownAction () {
 function pullUpAction () {
   setTimeout(function () {  // <-- Simulate network congestion, remove setTimeout from production!
     var el, li, i;
-    el = document.getElementById('thelist');
+    el = document.getElementById('alist');
 
     for (i=0; i<3; i++) {
       li = document.createElement('li');
@@ -99,5 +99,5 @@ function loaded() {
 }
 
 //初始化绑定iScroll控件 
-document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+//document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 document.addEventListener('DOMContentLoaded', loaded, false); 

@@ -28,6 +28,11 @@
       <artifactId>xsocket-core</artifactId>
       <version>${xsocket.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.xsocket</groupId>
+      <artifactId>xsocket-weixin</artifactId>
+      <version>${xsocket.version}</version>
+    </dependency>
     
     <!-- json -->
     <dependency>

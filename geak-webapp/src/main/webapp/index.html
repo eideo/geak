@@ -15,25 +15,15 @@
 <link rel="stylesheet" href="css/scroll-style.css">
 <link rel="stylesheet" href="css/geak.css">
 <script type="text/javascript">
-  var USER = {"id":"1", };
+  var USER = {"id":"1" };
+  var COMPANY = {"id":"1"};
 </script>
 </head>
 <body>
-<div id="no_appointment" class="no-data">
-  <div class="callout callout-warning">
-    <h4>暂时没有任何预约数据！</h4>
-    <button class="btn btn-info"><i class="fa fa-refresh"></i> 刷新数据</button>
-    <button class="btn btn-primary"><i class="fa fa-plus"></i> 新建预约</button>
-  </div>
+
+<div id="mask" class="mask-wrapper">
+  <div class="mask"><span class="title">页面加载中...</span><span class="text">请稍后...</span></div>
 </div>
-<!--
-<div class="mask-wrapper">
-  <div class="mask">
-    <span class="title">页面加载中...</span>
-    <span class="text">请稍后...</span>
-  </div>
-</div>
--->
 
 <header class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
@@ -46,7 +36,7 @@
 
 <div id="pt-main" class="pt-perspective">
 
-  <div class="pt-page pt-page-1" style="display:none;">
+  <div class="pt-page pt-page-0">
     <!-- table-header -->
     <div class="container-fluid bg-primary" style="height:50px;line-height:50px;">
       <div class="row">
@@ -56,17 +46,24 @@
         <span class="col-xs-2 text-center">操作</span>
       </div>
     </div>
+    <div id="mask_a" style="">
+      <div class="callout callout-warning">
+        <h3>暂无任何预约信息 <button class="btn btn-link" id="link_refresh_a">点击刷新</button></h3>
+        <h4><i class="fa fa-spinner fa-pulse"></i> 数据加载中，请稍后...</h4>
+      </div>
+      
+    </div>
     <div id="wrapper">
       <div id="scroller">
         <div id="pullDown">
           <span class="pullDownIcon"></span><span class="pullDownLabel">下拉刷新...</span>
         </div>
-        <ul id="thelist" class="container-fluid">
+        <ul id="alist" class="container-fluid">
           <li class="row">
             <span class="col-xs-4 text-center">12月24日 10:30</span>
             <span class="col-xs-2 text-right">5</span>
             <span class="col-xs-4 text-center">大红门、小红帽</span>
-            <span class="col-xs-2 text-right"><button class="btn btn-xs btn-primary">确认到场</button></span>
+            <span class="col-xs-2 text-right"><span class="label label-danger">Danger</span></span>
           </li>
         </ul>
         <div id="pullUp">
@@ -75,44 +72,135 @@
         
       </div>
     </div><!-- #wrapper -->
-  </div><!-- .pt-page-1 -->
+
+    <footer>
+      <div class="col-xs-3 active">
+        <i class="fa fa-calendar-check-o"></i> 预约
+      </div>
+      <div class="col-xs-3" id="btn_go_o">
+        <i class="fa fa-hand-peace-o"></i> 接待
+      </div>
+      <div class="col-xs-3" id="btn_new_a">
+        <i class="fa fa-plus"></i> 新建预约
+      </div>
+      <div class="col-xs-3" id="btn_refresh_a">
+        <i class="fa fa-refresh"></i> 刷新预约
+      </div>
+    </footer>
+  </div><!-- .pt-page-0 预约 -->
+
+
+  <div class="pt-page pt-page-1">
+    <h1>接待</h1>
+
+
+    <footer id="f1">
+      <div class="col-xs-3" id="btn_go_a">
+        <i class="fa fa-calendar-check-o"></i> 预约
+      </div>
+      <div class="col-xs-3 active">
+        <i class="fa fa-hand-peace-o"></i> 接待
+      </div>
+      <div class="col-xs-3" id="btn_new_o">
+        <i class="fa fa-plus"></i> 新建接待
+      </div>
+      <div class="col-xs-3" id="btn_refresh_o">
+        <i class="fa fa-refresh"></i> 刷新接待
+      </div>
+    </footer>
+  </div><!-- .pt-page-1 接待 -->
+
 
   <div class="pt-page pt-page-2">
-
-
-<div class="container-fluid">
-  <div class="row">
-    <div class="form-groups">
-      <label for="exampleInputEmail1">Email address</label>
-      <div class="col-xs-6">
-        <input type="checkbox" checked="checked" data-label-text="主题1" data-off-text="未预约" data-on-text="已预约" value="1" />
-      </div>
-      <div class="col-xs-6">
-        <input type="checkbox" checked="checked" data-label-text="主题2" data-off-text="未预约" data-on-text="已预约" value="2" />
-      </div>
-      <div class="col-xs-6">
-        <input type="checkbox" checked="checked" data-label-text="主题3" data-off-text="未预约" data-on-text="已预约" value="3" />
-      </div>
+<fieldset class="container-fluid">
+  <legend>预约主题</legend>
+  <div id="a_businesses" class="row">
+    <div class="col-xs-4">
+      <input type="checkbox" data-label-text="主题1" data-off-text="未预约" data-on-text="已预约" value="1" />
+    </div>
+    <div class="col-xs-4">
+      <input type="checkbox" data-label-text="主题2" data-off-text="未预约" data-on-text="已预约" value="2" />
+    </div>
+    <div class="col-xs-4">
+      <input type="checkbox" data-label-text="主题3" data-off-text="未预约" data-on-text="已预约" value="3" />
     </div>
   </div>
-</div>  
-
-       
-  </div><!-- /.pt-page -->
-
-</div>
-
-<!-- 底部菜单 -->
-<div class="btn-group btn-group-justified navbar-fixed-bottom" role="group">
-  <div class="btn-group" role="group">
-    <button type="button" class="btn btn-default">Left</button>
+</fieldset>
+<fieldset class="container-fluid form-horizontal">
+  <legend>预约玩家</legend>
+  <div class="form-group">
+    <label for="a_customer" class="col-xs-2 control-label">称呼</label>
+    <div class="col-xs-6"><input id="a_customer" type="text" class="form-control" /></div>
+    <div class="radio col-xs-2">
+      <label><input id="a_customer_M" type="radio" name="a_type" value="M" checked="checked">先生</label> 
+    </div>
+    <div class="radio col-xs-2">
+      <label><input id="a_customer_F" type="radio" name="a_type" value="F">女士</label> 
+    </div>
   </div>
-  <div class="btn-group" role="group">
-    <button id="iterateEffects" type="button" class="btn btn-default">Middle</button>
+  <div class="form-group has-error">
+    <label for="a_count" class="col-xs-2 control-label">人数</label>
+    <div class="col-xs-10"><input id="a_count" type="text" class="form-control" /></div>
   </div>
-  <div class="btn-group" role="group">
-    <button type="button" class="btn btn-default">Right</button>
+  <div class="form-group">
+    <label for="a_phone" class="col-xs-2 control-label">电话</label>
+    <div class="col-xs-10"><input id="a_phone" type="text" class="form-control" /></div>
   </div>
+</fieldset>
+<fieldset class="container-fluid">
+  <legend>
+    <div class="pull-left">预约时间</div>
+    <div class="input-group date col-xs-9 col-xs-offset-3">
+      <input id="a_date" type="text" class="form-control  datepicker" placeholder="Amount">
+      <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+    </div>
+  </legend>
+  <table id="tbl_latest" class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>日期 时间</th>
+        <th>预约玩家</th>
+        <th>人数</th>
+        <th>主题</th>
+        <th>状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><i class="fa fa-spinner fa-pulse"></i></td>
+        <td>5</td>
+        <td>张先生</td>
+        <td>主题1 | 主题2</td>
+        <td>未到场</td>
+      </tr>
+      <tr>
+        <td>02月03日 11:23</td>
+        <td>5</td>
+        <td>张先生</td>
+        <td>主题1 | 主题2</td>
+        <td>未到场</td>
+      </tr>
+      <tr class="warning">
+        <td colspan="5">
+          暂时没有任何预约数据！
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
+    <footer>
+      <div class="col-xs-6" id="btn_back_a">
+        <i class="fa fa-arrow-left"></i> 返回
+      </div>
+      <div class="col-xs-6 primary" id="btn_save_a">
+        <i class="fa fa-save"></i> 保存预约
+      </div>
+    </footer>
+  </div><!-- .pt-page-2 预约详情 -->
+
+  <div class="pt-page pt-page-3"><h1>Page4</h1></div>
+
+
 </div>
 
 
@@ -123,19 +211,23 @@
 <script src="js/bootstrap-switch.min.js"></script>
 
 <script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap-datetimepicker.min.js"></script>
+<script src="js/bootstrap-datetimepicker.js"></script>
 <script src="js/pagetransitions.js"></script>
 <script src="js/iscroll.js"></script>
 <script src="js/myscroll.js"></script>
+<script src="js/moment.min.js"></script>
+<script src="js/geak.js"></script>
 <script>
   $(function(){
     //$(".loading-wrapper").hide();
     //$("#date").mask("9999-99-99 99:99",{placeholder:"yyyy-MM-dd HH:mm"});
-    $("#date_picker").datetimepicker({
-        format: "yyyy-MM-dd hh:ii",
+    $("#a_date").parent().datetimepicker({
+        language:"zh-CN",
+        format: "yyyy-mm-dd hh:ii",
         autoclose: true,
-        todayBtn: true,
-        pickerPosition: "bottom-left"
+        todayBtn: true
+    }).on("show", function(ev){
+      console.log($(this));
     });
 
     $("input[type='checkbox']").bootstrapSwitch();
