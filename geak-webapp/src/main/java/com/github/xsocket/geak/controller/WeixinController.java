@@ -35,6 +35,8 @@ public class WeixinController {
 
   private static final String CORP_ID = "wxb6ea60848a4abe21";
   
+ // private static final String CORP_SECRET = "jNBGmgUChixbFq2xafew1LBC5TuovjhgkrPwpIXiXvR4sB_9lqfIFBoorCsp3O2s";
+  
   private static final String TOKEN = "Geak2016";
   
   private static final String ENCODING_AES_KEY = "nvmywcrJK5294PT8duUT6ldwQIwHGklISX6vFUKobU5";
