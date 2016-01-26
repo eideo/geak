@@ -1,3 +1,78 @@
+-- Authority&Authenticate 
+
+-- 删除已有的表
+DROP TABLE IF EXISTS aa_user;
+DROP TABLE IF EXISTS aa_role;
+DROP TABLE IF EXISTS aa_user_role_relation;
+DROP TABLE IF EXISTS aa_resource;
+DROP TABLE IF EXISTS aa_permission;
+
+-- 系统用户表
+CREATE TABLE aa_user (
+  id       VARCHAR(36) NOT NULL COMMENT '用户标识-主键',
+  account  VARCHAR(50) NOT NULL COMMENT '用户账户名-唯一',
+  name     VARCHAR(50) NOT NULL COMMENT '用户姓名',
+  password VARCHAR(50) NOT NULL COMMENT '用户密码',
+  state    VARCHAR(20) NOT NULL COMMENT '用户状态:NORMAL|LOCKED...',
+  CONSTRAINT pk_aa_user PRIMARY KEY (id),
+  CONSTRAINT uk_aa_user UNIQUE (account)
+) COMMENT = '系统用户表';
+
+
+-- 系统角色表
+CREATE TABLE aa_role (
+  id    VARCHAR(36) NOT NULL COMMENT '角色标识-主键',
+  name  VARCHAR(50) NOT NULL COMMENT '角色名称-唯一',
+  state VARCHAR(20)          COMMENT '角色状态:ENABLED|DISABLED...',
+  note  VARCHAR(200)         COMMENT '角色描述',
+  CONSTRAINT pk_aa_role PRIMARY KEY (id),
+  CONSTRAINT uk_aa_role UNIQUE (name)
+) COMMENT = '系统角色表';
+
+
+-- 用户角色关联表
+CREATE TABLE aa_user_role_relation (
+  user_id VARCHAR(36) NOT NULL COMMENT '用户标识-外键',
+  role_id VARCHAR(36) NOT NULL COMMENT '角色标识-外键',
+  CONSTRAINT pk_aa_user_role_relation PRIMARY KEY (user_id, role_id),
+  CONSTRAINT fk_aa_user_role_relation_user FOREIGN KEY (user_id) REFERENCES aa_user(id)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE,
+  CONSTRAINT fk_aa_user_role_relation_role FOREIGN KEY (role_id) REFERENCES aa_role(id)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE,
+) COMMENT = '系统用户和角色关联表';
+
+
+-- 系统资源表
+CREATE TABLE aa_resource (
+  id    VARCHAR(36)  NOT NULL COMMENT '资源标识-主键',
+  name  VARCHAR(200) NOT NULL COMMENT '资源名称',
+  type  VARCHAR(50)  NOT NULL COMMENT '资源类型',
+  state VARCHAR(20)           COMMENT '资源状态:ENABLED|DISABLED...',
+  note  VARCHAR(200)          COMMENT '资源描述',
+  CONSTRAINT pk_aa_resource PRIMARY KEY (id)
+) COMMENT = '系统角色表';
+
+
+-- 系统权限表
+CREATE TABLE aa_permission (
+  id            VARCHAR(36)  NOT NULL COMMENT '权限标识-主键',
+  owner_id      VARCHAR(36)  NOT NULL COMMENT '权限所有者标识-可与多表主键关联',
+  resource_id   VARCHAR(36)  NOT NULL COMMENT '权限所保护资源的标识-外键',
+  action        VARCHAR(200) NOT NULL COMMENT '权限是表示的操作',
+  expired_date  INT          NOT NULL COMMENT '权限过期的时间',
+  state         VARCHAR(20)           COMMENT '权限状态:ENABLED|DISABLED|EXPIRED...',
+  note          VARCHAR(200)          COMMENT '权限描述',
+  CONSTRAINT pk_aa_permission PRIMARY KEY (id),
+  -- 资源+操作=权限
+  -- CONSTRAINT uk_aa_permission UNIQUE (resource_id, action),
+  CONSTRAINT fk_aa_permission FOREIGN KEY (resource_id) REFERENCES aa_resource(id)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
+) COMMENT = '系统权限表';
+
+
 -- ----------------------------
 -- 公司表(门店)
 -- ----------------------------
@@ -22,6 +97,17 @@ CREATE TABLE geak_business (
   company_id int         NOT NULL                COMMENT '业务所属门店',
   PRIMARY KEY (id),
   CONSTRAINT fk_business_company FOREIGN KEY (company_id) REFERENCES geak_company (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- ----------------------------
+-- 用户表
+-- ----------------------------
+DROP TABLE IF EXISTS geak_user;
+CREATE TABLE geak_user (
+  id         varchar(64) NOT NULL  COMMENT '用户标识',
+  company_id int         NOT NULL  COMMENT '业务所属门店',
+  PRIMARY KEY (id),
+  CONSTRAINT fk_user_company FOREIGN KEY (company_id) REFERENCES geak_company (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- ----------------------------

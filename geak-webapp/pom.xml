@@ -49,6 +49,16 @@
       <groupId>com.alibaba</groupId>
       <artifactId>druid</artifactId>
     </dependency>
+    
+    <!-- http-client -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>fluent-hc</artifactId>
+    </dependency>
 
     <!-- spec -->
     <dependency>
