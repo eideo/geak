@@ -40,7 +40,7 @@ CREATE TABLE aa_user_role_relation (
     ON UPDATE CASCADE,
   CONSTRAINT fk_aa_user_role_relation_role FOREIGN KEY (role_id) REFERENCES aa_role(id)
     ON DELETE CASCADE 
-    ON UPDATE CASCADE,
+    ON UPDATE CASCADE
 ) COMMENT = '系统用户和角色关联表';
 
 
