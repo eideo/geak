@@ -26,6 +26,8 @@ public interface AppointmentService {
    */
   List<Appointment> query(Integer companyId, Date start, Date end, Integer[] business, Integer page);
   
+  Appointment query(Integer id);
+  
   /**
    * 保存预约数据。
    * <p>

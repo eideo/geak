@@ -79,6 +79,10 @@ public class DefaultAppointmentService implements AppointmentService {
     }
   }
   
+  public Appointment query(Integer id) {
+    return appointmentDao.selectById(id);
+  }
+  
   @Override
   public List<Order> confirm(Integer id, Date date) {
     Appointment appointment = appointmentDao.selectById(id);

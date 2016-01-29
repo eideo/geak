@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,6 +46,12 @@ public class AppointmentController {
     Date pivot = datetime == null ? new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000L) : new Date(datetime);
     Integer pageNo = (page == null || page == 0) ? 1 : page;
     return service.query(companyId, pivot, null, business, pageNo);
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/appointments/{id}", method = RequestMethod.GET, produces="application/json")
+  public Appointment detail(@PathVariable("id") Integer id) {
+    return service.query(id);
   }
   
   @ResponseBody

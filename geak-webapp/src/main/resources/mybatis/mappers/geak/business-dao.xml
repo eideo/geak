@@ -48,7 +48,7 @@
   </select>
   
   <select id="selectByAppointment" resultMap="com.github.xsocket.geak.dao.BusinessDao.resultBasic" 
-    flushCache="false" useCache="true">
+    flushCache="false" useCache="false">
     SELECT b.id, b.name, b.alias, b.note
     FROM geak_business b
       JOIN geak_appointment_business a ON b.id = a.business_id
