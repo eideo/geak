@@ -7,21 +7,21 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <title>极客密室</title>
+    <title>极客密室 | ${user.company.name} | ${user.name}</title>
 
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="css/light7.min.css">
     <link rel="stylesheet" href="css/geak.css">
+    <script type="text/javascript">
+      var USER = {"id":"${user.id}", "name":"${user.name}" };
+      var COMPANY = {"id":"${user.company.id}", "name":"${user.company.name}" };
+    </script>
     <style> 
       #list_payment input, #list_promotion input{ display: inline; width:45%;} 
       .row .col-33 { width: 30%; margin-left: 3%; }
       .row .col-29 { width: 26%; margin-left: 3%; }
       .row .col-38 { width: 35%; margin-left: 3%; }
     </style>
-    <script type="text/javascript">
-      var USER = {"id":"1", "name":"麻文强" };
-      var COMPANY = {"id":"1", "name":"大南门店" };
-    </script>
   </head>
   <body class="theme-green">
     <!-- page 容器 -->

@@ -1,11 +1,26 @@
 -- Authority&Authenticate 
 
 -- 删除已有的表
+DROP TABLE IF EXISTS aa_user_role_relation;
+DROP TABLE IF EXISTS aa_permission;
 DROP TABLE IF EXISTS aa_user;
 DROP TABLE IF EXISTS aa_role;
-DROP TABLE IF EXISTS aa_user_role_relation;
 DROP TABLE IF EXISTS aa_resource;
-DROP TABLE IF EXISTS aa_permission;
+
+-- 删除业务表
+DROP TABLE IF EXISTS geak_order_payment;
+DROP TABLE IF EXISTS geak_order_promotion;
+DROP TABLE IF EXISTS geak_payment_mode;
+DROP TABLE IF EXISTS geak_promotion_plan;
+DROP TABLE IF EXISTS geak_appointment_business;
+DROP TABLE IF EXISTS geak_appointment;
+DROP TABLE IF EXISTS geak_order;
+DROP TABLE IF EXISTS geak_customer;
+DROP TABLE IF EXISTS geak_business;
+DROP TABLE IF EXISTS geak_user;
+DROP TABLE IF EXISTS geak_company;
+DROP TABLE IF EXISTS geak_action_log;
+
 
 -- 系统用户表
 CREATE TABLE aa_user (
@@ -76,7 +91,6 @@ CREATE TABLE aa_permission (
 -- ----------------------------
 -- 公司表(门店)
 -- ----------------------------
-DROP TABLE IF EXISTS geak_company;
 CREATE TABLE geak_company (
   id      int         NOT NULL AUTO_INCREMENT COMMENT '门店主键标识(自增)',
   name    varchar(64) NOT NULL                COMMENT '门店名称',
@@ -88,7 +102,6 @@ CREATE TABLE geak_company (
 -- ----------------------------
 -- 业务表(主题)
 -- ----------------------------
-DROP TABLE IF EXISTS geak_business;
 CREATE TABLE geak_business (
   id         int         NOT NULL AUTO_INCREMENT COMMENT '业务主键标识(自增)',
   name       varchar(32) NOT NULL                COMMENT '业务名称',
@@ -102,7 +115,6 @@ CREATE TABLE geak_business (
 -- ----------------------------
 -- 用户表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_user;
 CREATE TABLE geak_user (
   id         varchar(64) NOT NULL  COMMENT '用户标识',
   company_id int         NOT NULL  COMMENT '业务所属门店',
@@ -113,7 +125,6 @@ CREATE TABLE geak_user (
 -- ----------------------------
 -- 客户表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_customer;
 CREATE TABLE geak_customer (
   id        int         NOT NULL AUTO_INCREMENT COMMENT '客户主键标识(自增)',
   name      varchar(32) NOT NULL                COMMENT '客户姓名',
@@ -125,7 +136,6 @@ CREATE TABLE geak_customer (
 -- ----------------------------
 -- 支付模式表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_payment_mode;
 CREATE TABLE geak_payment_mode (
   id   int         NOT NULL AUTO_INCREMENT COMMENT '支付渠道标识(自增)',
   name varchar(32) NOT NULL                COMMENT '支付渠道名称',
@@ -135,7 +145,6 @@ CREATE TABLE geak_payment_mode (
 -- ----------------------------
 -- 业务优惠活动计划表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_promotion_plan;
 CREATE TABLE geak_promotion_plan (
   id   int         NOT NULL AUTO_INCREMENT COMMENT '促销计划主键标识(自增)',
   name varchar(32) NOT NULL                COMMENT '促销计划名称',
@@ -145,7 +154,6 @@ CREATE TABLE geak_promotion_plan (
 -- ----------------------------
 --  预约表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_appointment;
 CREATE TABLE geak_appointment (
   id               int         NOT NULL AUTO_INCREMENT COMMENT '预约主键标识(自增)',
   appointment_date datetime    NOT NULL                COMMENT '预约的具体时间',
@@ -163,7 +171,6 @@ CREATE TABLE geak_appointment (
 -- ----------------------------
 -- 预约所含的业务表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_appointment_business;
 CREATE TABLE geak_appointment_business (
   appointment_id int NOT NULL COMMENT '预约标识',
   business_id    int NOT NULL COMMENT '业务标识',
@@ -175,7 +182,6 @@ CREATE TABLE geak_appointment_business (
 -- ----------------------------
 -- 订单表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_order;
 CREATE TABLE geak_order (
   id             int         NOT NULL AUTO_INCREMENT COMMENT '订单标识(自增)',
   entrance_date  datetime        NULL                COMMENT '进场时间',
@@ -198,7 +204,6 @@ CREATE TABLE geak_order (
 -- ----------------------------
 -- 订单支付明细表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_order_payment;
 CREATE TABLE geak_order_payment (
   order_id   int NOT NULL COMMENT '订单标识',
   payment_id int NOT NULL COMMENT '支付渠道标识',
@@ -211,7 +216,6 @@ CREATE TABLE geak_order_payment (
 -- ----------------------------
 -- 订单活动明细表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_order_promotion;
 CREATE TABLE geak_order_promotion (
   order_id     int NOT NULL COMMENT '订单标识',
   promotion_id int NOT NULL COMMENT '促销活动标识',
@@ -224,7 +228,6 @@ CREATE TABLE geak_order_promotion (
 -- ----------------------------
 -- 重要操作日志表
 -- ----------------------------
-DROP TABLE IF EXISTS geak_action_log;
 CREATE TABLE geak_action_log (
   id           int          NOT NULL AUTO_INCREMENT COMMENT '操作标识(自增)',
   user_id      varchar(36)  NOT NULL COMMENT '操作人标识',

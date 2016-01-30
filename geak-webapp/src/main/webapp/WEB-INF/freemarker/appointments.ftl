@@ -7,14 +7,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-    <title>极客密室</title>
+    <title>极客密室 | ${user.company.name} | ${user.name}</title>
 
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="css/light7.min.css">
     <link rel="stylesheet" href="css/geak.css">
     <script type="text/javascript">
-      var USER = {"id":"1", "name":"麻文强" };
-      var COMPANY = {"id":"1", "name":"大南门店" };
+      var USER = {"id":"${user.id}", "name":"${user.name}" };
+      var COMPANY = {"id":"${user.company.id}", "name":"${user.company.name}" };
     </script>
   </head>
   <body>

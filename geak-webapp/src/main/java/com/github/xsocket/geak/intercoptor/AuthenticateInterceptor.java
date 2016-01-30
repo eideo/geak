@@ -21,29 +21,22 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
 
   public static final String COOKIE_ACCESS_TOKEN = "_geak_tk";
   
-  private static final String REDIRECT_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6ea60848a4abe21&redirect_uri=http://geak.weikuai01.com/&response_type=code&scope=snsapi_base&state=appointments#wechat_redirect";
+  private static final String REDIRECT_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6ea60848a4abe21&redirect_uri=http://geak.weikuai01.com/&response_type=code&scope=snsapi_base&state=%s#wechat_redirect";
   
   @Autowired
   private GeakUserDao service;  
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-    // 根据提交的 token 获取相应的用户数据
-    /*
-    Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, "2016012301");
-    token.setPath("/");
-    token.setMaxAge(3600 * 24 * 30);
-    response.addCookie(token);
-    response.sendRedirect("/js/light7.min.js");
-    return false;
-    */
+
     // 测试环境
     //Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, "2016012301");
     Cookie token = WebUtils.getCookie(request, COOKIE_ACCESS_TOKEN);
     if(token == null || Strings.isNullOrEmpty(token.getValue())) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("UserId Cookie不存在，需获取用户信息后才能访问应用。");
-      response.sendRedirect(REDIRECT_URL);
+      String page = request.getParameter("page"); // appointments | orders
+      response.sendRedirect(String.format(REDIRECT_URL, Strings.isNullOrEmpty(page) ? "appointments" : page));
       return false;
     } else {
       String userId = token.getValue();
