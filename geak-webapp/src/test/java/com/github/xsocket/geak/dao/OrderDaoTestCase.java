@@ -80,6 +80,7 @@ public class OrderDaoTestCase extends AbstractTestCase {
       promotions.add(new OrderPromotion(plan, random.nextInt()));
     }
     order.setPromotions(promotions);
+    order.setCreatedDatetime(new Date());
     
     // 测试插入
     Assert.assertEquals(1, dao.insert(order));
