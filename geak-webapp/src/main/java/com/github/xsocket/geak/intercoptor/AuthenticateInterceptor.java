@@ -38,8 +38,8 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
     return false;
     */
     // 测试环境
-    Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, "2016012301");
-    //Cookie token = WebUtils.getCookie(request, COOKIE_ACCESS_TOKEN);
+    //Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, "2016012301");
+    Cookie token = WebUtils.getCookie(request, COOKIE_ACCESS_TOKEN);
     if(token == null || Strings.isNullOrEmpty(token.getValue())) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("UserId Cookie不存在，需获取用户信息后才能访问应用。");
