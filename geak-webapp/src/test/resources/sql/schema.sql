@@ -182,7 +182,7 @@ CREATE TABLE geak_order (
   exit_date      datetime        NULL                COMMENT '退场时间',
   state          varchar(32) NOT NULL                COMMENT '订单状态',
   customer_count int         NOT NULL                COMMENT '参与的用户总数',
-  customer_type  varchar(32) NOT NULL                COMMENT '参与的主体用户群类型',
+  customer_type  varchar(32)     NULL                COMMENT '参与的主体用户群类型',
   customer_id    int         NOT NULL                COMMENT '订单客户标识',
   business_id    int         NOT NULL                COMMENT '订单对应的业务标识',
   company_id     int         NOT NULL                COMMENT '订单所属公司(门店)标识',

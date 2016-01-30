@@ -80,7 +80,7 @@
       $.showIndicator();
       $.ajax({
         type : "POST",
-        url : "/appointments/",
+        url : "/appointments",
         data : JSON.stringify(detail),
         contentType : "application/json",
         success : function(data){
@@ -181,11 +181,14 @@
 
   // 确认到场
   function confirmAppointment(id) {
-    $.prompt('请确认玩家的到场时间', function (value) {
-        var date = moment(value);
-        if(date.isValid()) {
-          // TODO
-          $.alert("确认到场" + date)
+    var name = $("#card_"+id+" .item-name").text();
+    var business = $("#card_"+id+" .item-business").text();
+    var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
+          + name + "<br/>主题：" +  business + "<br/>到场时间：</div>";
+    $.prompt(content,"确认玩家到场", function (value) {
+        var date = new Date(value).getTime();
+        if(date) {
+          apiComfirmAppointment(id, date);
         } else {
           $.toast("请输入正确的到场时间！");
         }
@@ -195,6 +198,28 @@
     $("div.modal-inner input.modal-text-input").val(now.format("YYYY-MM-DD HH:mm"));
   }
 
+  /* 确认到场 */
+  function apiComfirmAppointment(id, date) {
+    $.showIndicator();
+    $.ajax({
+      type : "POST",
+      url : "/appointments/" + id + "/confirm",
+      data : {"datetime":date},
+      success : function(list){
+        $.hideIndicator();
+        $.confirm('<div style="text-align:left;">根据玩家预约主题自动生成 <b class="color-primary">'+list.length+'</b> 条接待信息，是否转到接待页面？</div>',
+          "确认到场成功", function () {
+          window.location.href="orders.html";
+        }, function(){
+          $.showIndicator(); // 不跳转则刷新当前信息
+          $.get("/appointments/"+id, function(detail){
+            refreshDetail(detail);
+            $.hideIndicator();
+          }); 
+        });
+      }
+    });
+  }
 
   /* 加载预约列表 */
   function apiGetAppointments(datetime, business, page, callback) {

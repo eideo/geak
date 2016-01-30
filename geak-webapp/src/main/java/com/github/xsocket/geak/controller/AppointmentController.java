@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.xsocket.geak.entity.Appointment;
+import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.service.AppointmentService;
 import com.google.common.base.Strings;
 
@@ -58,6 +59,14 @@ public class AppointmentController {
   @RequestMapping(value = "/appointments/{id}", method = RequestMethod.GET, produces="application/json")
   public Appointment detail(@PathVariable("id") Integer id) {
     return service.query(id);
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/appointments/{id}/confirm", method = RequestMethod.POST, produces="application/json")
+  public List<Order> confirm(
+      @PathVariable("id") Integer id, 
+      @RequestParam(value="datetime", required=true) Long datetime) {
+    return service.confirm(id, new Date(datetime));
   }
   
   @ResponseBody

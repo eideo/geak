@@ -1,5 +1,6 @@
 package com.github.xsocket.geak.service.impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -86,10 +87,12 @@ public class DefaultAppointmentService implements AppointmentService {
     Appointment appointment = appointmentDao.selectById(id);
     if(appointment == null) {
       LOGGER.warn("标识为 {} 的预约不存在，无法确认到场！", id);
+      return Collections.emptyList();
     }
     if(!STATE_NEW.equals(appointment.getState())) {
       LOGGER.warn("预约\"{}\"的当前状态为\"{}\"，无法确认到场！", id, appointment.getState());
       //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+      return Collections.emptyList();
     }
     
     appointment.setConfirmedDatetime(date);

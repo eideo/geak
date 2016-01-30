@@ -163,15 +163,15 @@
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
         <div class="card-header">
           <label class="pull-left">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
-          <label class="pull-right">{%= o.businesses[0].alias %}
+          <label class="pull-right item-business">{%= o.businesses[0].alias %}
             {% for (var j=1; j<o.businesses.length; j++) { %}
-              | {%= o.businesses[j].alias %}
+              &amp; {%= o.businesses[j].alias %}
             {% } %}
           </label>
         </div>
         <div class="card-content">
           <div class="card-content-inner row">
-            <div class="col-80">
+            <div class="col-80 item-name">
               {%= o.customer.name %}  
               {% if (o.customer.sex == 'M')print('先生'); else print('女士'); %}
               ({%= o.customer.telephone %}) 
