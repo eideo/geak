@@ -72,9 +72,6 @@ public class AppointmentController {
   @ResponseBody
   @RequestMapping(value = "/appointments", method = RequestMethod.POST, produces="application/json")
   public Appointment save(@RequestBody Appointment appointment) {
-    
-    service.save(appointment);
-    
-    return appointment;
+    return service.save(appointment);
   }
 }

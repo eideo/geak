@@ -4,8 +4,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.xsocket.geak.dao.OrderPromotionDao">
 
-  <cache />
-
   <resultMap id="result" type="com.github.xsocket.geak.entity.OrderPromotion">
     <result property="count"     column="count"          javaType="Integer" jdbcType="INTEGER" />
     <result property="plan.id"   column="promotion_id"   javaType="Integer" jdbcType="INTEGER" />

@@ -20,10 +20,12 @@ public class Order extends AbstractEntity {
   protected Date exitDatetime;
   /** 订单客户 */
   protected Customer customer;
-  /** 订单客户类型，青年、少年、老年... */
-  protected String customerType;
   /** 订单客户总人数 */
   protected Integer customerCount;
+  /** 订单客户类型，青年、少年、老年... */
+  protected String customerType;
+  /** 订单来源，搜索、老玩家、朋友介绍... */
+  protected String source;
   /** 订单状态 */
   protected String state;
   /** 订单业务 */
@@ -34,6 +36,16 @@ public class Order extends AbstractEntity {
   protected List<OrderPromotion> promotions;
   /** 该订单的支付记录 */
   protected List<OrderPayment> payments;
+  /** 创建时间 */
+  protected Date createdDatetime;
+
+  public Date getCreatedDatetime() {
+    return createdDatetime;
+  }
+
+  public void setCreatedDatetime(Date createdDatetime) {
+    this.createdDatetime = createdDatetime;
+  }
 
   public Appointment getAppointment() {
     return appointment;
@@ -121,6 +133,14 @@ public class Order extends AbstractEntity {
 
   public void setPayments(List<OrderPayment> payments) {
     this.payments = payments;
+  }
+
+  public String getSource() {
+    return source;
+  }
+
+  public void setSource(String source) {
+    this.source = source;
   }
 
 }

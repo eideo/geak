@@ -4,8 +4,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.xsocket.geak.dao.OrderPaymentDao">
 
-  <cache />
-
   <resultMap id="result" type="com.github.xsocket.geak.entity.OrderPayment">
     <result property="amount"    column="amount"       javaType="Integer" jdbcType="INTEGER" />
     <result property="mode.id"   column="payment_id"   javaType="Integer" jdbcType="INTEGER" />

@@ -39,7 +39,7 @@ public class OrderController {
   public List<Order> list(
       @RequestParam(value="company", required=true) Integer companyId,
       @RequestParam(value="datetime", required=true) Long datetime,
-      @RequestParam(value="page", required=false) Integer page) {
+      @RequestParam(value="page", required=true) Integer page) {
     
     return service.query(companyId, new Date(datetime), null, page);
   }
@@ -53,9 +53,22 @@ public class OrderController {
   @ResponseBody
   @RequestMapping(value = "/orders", method = RequestMethod.POST, produces="application/json")
   public Order save(@RequestBody Order order) {
-    
-    service.save(order);
-    
-    return order;
+    return service.save(order);
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/orders/{id}/entrance", method = RequestMethod.POST, produces="application/json")
+  public Order entrance(
+      @PathVariable("id") Integer id, 
+      @RequestParam(value="datetime", required=true) Long datetime) {
+    return service.entrance(id, new Date(datetime));
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/orders/{id}/exit", method = RequestMethod.POST, produces="application/json")
+  public Order exit(
+      @PathVariable("id") Integer id, 
+      @RequestParam(value="datetime", required=true) Long datetime) {
+    return service.exit(id, new Date(datetime));
   }
 }

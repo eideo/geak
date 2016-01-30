@@ -113,6 +113,7 @@ public class DefaultAppointmentService implements AppointmentService {
       order.setCustomerCount(appointment.getCustomerCount());
       order.setCompany(appointment.getCompany());
       order.setState(STATE_NEW);
+      order.setCreatedDatetime(date);
       updated = orderDao.insert(order);
       if(updated == 1) {
         orders.add(order);

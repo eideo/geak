@@ -27,6 +27,11 @@ public class DefaultOrderService implements OrderService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultOrderService.class);
   
+  private static final String STATE_NEW = "NEW";
+  private static final String STATE_PAYED = "PAYED";
+  private static final String STATE_ENTRANCED = "ENTRANCED";
+  private static final String STATE_EXITED = "EXITED";
+  
   @Autowired
   protected OrderDao orderDao;
   
@@ -61,25 +66,92 @@ public class DefaultOrderService implements OrderService {
   public Order query(Integer id) {
     return orderDao.selectById(id);
   }
+  
+  @Override
+  public Order entrance(Integer id, Date date) {
+    Order order = orderDao.selectById(id);
+    if(order == null) {
+      LOGGER.warn("标识为 {} 的订单不存在，无法确认入场！", id);
+      return null;
+    }
+    if(!STATE_PAYED.equals(order.getState())) {
+      LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，请先进行支付后再确认入场！", id, order.getState());
+      //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+      return order;
+    }
+    
+    order.setEntranceDatetime(date);
+    order.setState(STATE_ENTRANCED);
+    int updated = orderDao.update(order);
+    if(updated == 1) {
+      // TODO 处理 updated 为其他值的情况
+      logDao.insert(new ActionLog("ENTRANCE", order));
+    }
+    
+    return order;
+  }
+  
+  @Override
+  public Order exit(Integer id, Date date) {
+    Order order = orderDao.selectById(id);
+    if(order == null) {
+      LOGGER.warn("标识为 {} 的订单不存在，无法确认离场！", id);
+      return null;
+    }
+    if(!STATE_ENTRANCED.equals(order.getState())) {
+      LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，请先确认入场后再确认离场！", id, order.getState());
+      //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+      return order;
+    }
+    
+    order.setExitDatetime(date);
+    order.setState(STATE_EXITED);
+    int updated = orderDao.update(order);
+    if(updated == 1) {
+      // TODO 处理 updated 为其他值的情况
+      logDao.insert(new ActionLog("EXIT", order));
+    }
+    
+    return order;
+  }
 
   @Override
-  public int save(Order order) {
+  public Order save(Order order) {
     validate(order);
-    LOGGER.debug("开始保存预约信息");
+    LOGGER.debug("开始保存订单信息");
     
     // 首先登记客户信息
     Customer customer = registerOrderCustomer(order);
     order.setCustomer(customer);
     
-    // 保存预约主体信息
+    
+    // 保存订单主体信息
     int updated = 0;
     Integer id = order.getId();
     if(id != null && id.intValue() > 0) {
+      // 只有入场前的订单才可以修改
+      if(!STATE_NEW.equals(order.getState()) && !STATE_PAYED.equals(order.getState())) {
+        LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，不能进行更新！", id, order.getState());
+        return order;
+      }
+
+      if(order.getPayments() == null || order.getPayments().isEmpty()) {
+        order.setState(STATE_NEW);
+      } else {
+        order.setState(STATE_PAYED);
+      }
       updated = orderDao.update(order);
       if(updated == 1) {
         logDao.insert(new ActionLog(ActionLog.ACTION_UPDATE, order));
       }
     } else {
+      order.setCreatedDatetime(new Date());
+      if(order.getPayments() == null || order.getPayments().isEmpty()) {
+        order.setState(STATE_NEW);
+      } else {
+        order.setState(STATE_PAYED);
+      }
+      
       updated = orderDao.insert(order);
       if(updated == 1) {
         logDao.insert(new ActionLog(ActionLog.ACTION_INSERT, order));
@@ -88,13 +160,17 @@ public class DefaultOrderService implements OrderService {
     
     // 重新记录预约的支付和促销信息
     orderDao.deletePayments(order);
-    orderDao.insertPayments(order, order.getPayments());
+    if(order.getPayments() != null && !order.getPayments().isEmpty()) {
+      orderDao.insertPayments(order, order.getPayments());
+    }
     
     orderDao.deletePromotions(order);
-    orderDao.insertPromotions(order, order.getPromotions());
+    if(order.getPromotions() != null && !order.getPromotions().isEmpty()) {
+      orderDao.insertPromotions(order, order.getPromotions());
+    }
     
     LOGGER.debug("成功保存预约信息");
-    return updated;
+    return orderDao.selectById(order.getId());
   }
   
   /**

@@ -70,13 +70,18 @@
         <button id="btn_back" class="button button-link button-nav pull-left">
           <span class="icon icon-left"></span> 返回
         </button>
+        <button id="btn_exit" class="button button-success button-nav pull-right"> 确认离场 </button>
+        <button id="btn_extrnace" class="button button-primary button-nav pull-right"> 确认入场 </button>
         <button id="btn_save" class="button button-primary button-nav pull-right"> 保存 </button>
         <h1 class="title">接待详情</h1>
       </header>
       <div class="content">
         <input id="item_id" type="hidden" />
         <input id="item_state" type="hidden" />
-        <div class="content-block-title color-success">接待主题及时间</div>
+        <div class="content-block-title color-success">
+          <div class="pull-left">接待主题及时间</div>
+          <div class="pull-right">当前状态：<b id="state_name">未支付</b></div>
+        </div>
         <div class="list-block">
           <ul>
             <li id="list_business"></li>
@@ -85,21 +90,21 @@
                 <div class="item-inner">
                   <div class="item-title label color-primary">入场时间</div>
                   <div class="item-input">
-                    <input id="item_entrance_datetime" type="text" />
+                    <input id="item_entrance_datetime" type="text" readonly="readonly"/>
                   </div>
                 </div>
               </div>
               <div class="item-content">
                 <div class="item-inner">
-                  <div class="item-title label color-warning">离场时间</div>
+                  <div class="item-title label color-success">离场时间</div>
                   <div class="item-input">
-                    <input id="item_exit_datetime" type="text" />
+                    <input id="item_exit_datetime" type="text" readonly="readonly"/>
                   </div>
                 </div>
               </div>
               <div class="item-content">
                 <div class="item-inner">
-                  <div class="item-title label">预约时间</div>
+                  <div class="item-title label">到场时间</div>
                   <div class="item-input">
                     <input id="item_datetime" type="text" readonly="readonly"/>
                   </div>
@@ -108,7 +113,7 @@
             </li>
           </ul>
         </div><!-- /.list-block -->
-        <div class="content-block-title color-success">支付信息</div>
+        <div class="content-block-title color-success">支付总额： ￥ <b id="item_sum">0</b></div>
         <div class="list-block">
           <ul>
             <li id="list_payment"></li>
@@ -161,6 +166,12 @@
             <li id="list_promotion"></li>
           </ul>
         </div><!-- /.list-block -->
+        <div class="content-block-title color-success">玩家身份</div>
+        <div class="list-block">
+          <ul>
+            <li id="list_customer_type"></li>
+          </ul>
+        </div><!-- /.list-block -->
         <div class="content-block-title color-success">来源渠道</div>
         <div class="list-block">
           <ul>
@@ -176,18 +187,14 @@
       {% } %}
     </script>
     <script type="text/x-tmpl" id="tmpl_card_item">
-      <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
+      <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.createdDatetime %}">
         <div class="card-header">
-          <label class="pull-left">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
-          <label class="pull-right">{%= o.businesses[0].alias %}
-            {% for (var j=1; j<o.businesses.length; j++) { %}
-              | {%= o.businesses[j].alias %}
-            {% } %}
-          </label>
+          <label class="pull-left">{%= moment(new Date(o.createdDatetime)).format("MM月DD日 HH:mm") %}</label>
+          <label class="pull-right item-business">{%= o.business.alias %}</label>
         </div>
         <div class="card-content">
           <div class="card-content-inner row">
-            <div class="col-80">
+            <div class="col-80 item-name">
               {%= o.customer.name %}  
               {% if (o.customer.sex == 'M')print('先生'); else print('女士'); %}
               ({%= o.customer.telephone %}) 
@@ -197,18 +204,25 @@
         </div>
         <div class="card-footer">
           {% if (o.state == 'NEW') { %}
-              <label class="color-warning pull-left">待确认</label>
-              <button class="button button-warning button-fill pull-right" data-id="{%= o.id %}">
-                确认到场</button>
+              <label class="color-danger pull-left">等待支付</label>
+              <button class="button button-danger button-fill pull-right" data-id="{%= o.id %}" data-state="{%= o.state %}">
+                确认支付</button>
           {% } %}
-          {% if (o.state == 'CONFIRMED') { %}
-              <label class="color-success pull-left">已到场：
-                {%= moment(new Date(o.confirmedDatetime)).format("MM月DD日 HH:mm") %}
+          {% if (o.state == 'PAYED') { %}
+              <label class="color-warning pull-left">等待入场</label>
+              <button class="button button-warning button-fill pull-right" data-id="{%= o.id %}" data-state="{%= o.state %}">
+                确认入场</button>
+          {% } %}
+          {% if (o.state == 'ENTRANCED') { %}
+              <label class="color-primary pull-left">等待离场，入场时间：
+                {%= moment(new Date(o.entranceDatetime)).format("MM月DD日 HH:mm") %}
               </label>
+              <button class="button button-primary button-fill pull-right" data-id="{%= o.id %}" data-state="{%= o.state %}">
+                确认离场</button>
           {% } %}
-          {% if (o.state == 'CANCELLED') { %}
-              <label class="color-danger pull-left">已取消：
-                {%= moment(new Date(o.cancelledDatetime)).format("MM月DD日 HH:mm") %}
+          {% if (o.state == 'EXITED') { %}
+              <label class="color-success pull-left">已离场：
+                {%= moment(new Date(o.exitDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}
         </div>
@@ -229,6 +243,27 @@
                   <label class="label-switch">                    
                     <input id="_b_{%= o[i].id %}" type="checkbox" 
                       value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
+                    <div class="checkbox"></div>
+                  </label>
+                </div>
+      {% } %}
+              </div>
+            </div>
+    </script>
+    <script type="text/x-tmpl" id="tmpl_customer_type">
+      {% for (var i=0; i<o.length; i++) { %}
+        {% if (i%3 == 0) { %}
+          {% if (i > 0) { %}
+              </div>
+            </div>
+          {% } %} 
+            <div class="item-content">
+              <div class="item-inner row">
+        {% } %} 
+                <div class="col-33">
+                  <label>{%= o[i] %}</label>
+                  <label class="label-switch">                    
+                    <input id="_t_{%= i %}" type="checkbox" value="{%= o[i] %}" />
                     <div class="checkbox"></div>
                   </label>
                 </div>
@@ -269,7 +304,7 @@
         {% } %} 
                 <div class="col-33">
                   <label>{%= o[i].name %}</label>
-                  <input id="_m_{%= o[i].id %}" type="text" value="0" />
+                  <input id="_m_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
                 </div>
       {% } %}
               </div>
@@ -287,7 +322,7 @@
         {% } %} 
                 <div class="col-33">
                   <label>{%= o[i].name %}</label>
-                  <input id="_p_{%= o[i].id %}" type="text" value="0" />
+                  <input id="_p_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
                 </div>
       {% } %}
               </div>

@@ -59,7 +59,7 @@
       // 按顺序查找应该插入的位置
       $("#list>li").each(function(){
         var d = parseInt($(this).data("datetime"));
-        if(d > datetime) {
+        if(d < datetime) {
           refLi = $(this);
           return false;
         }
@@ -111,7 +111,7 @@
     });
 
     if(detail.businesses.length == 0) {
-      $.toast("请选择预约主题！");
+      $.toast("请选择预约的主题！");
       return false;
     } else if(!detail.datetime){
       $.toast("请输入正确的预约时间！");

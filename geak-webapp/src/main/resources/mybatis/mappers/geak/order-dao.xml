@@ -13,7 +13,9 @@
     <result property="exitDatetime"     column="exit_date"      javaType="Date"    jdbcType="TIMESTAMP" />
     <result property="customerCount"    column="customer_count" javaType="Integer" jdbcType="INTEGER" />
     <result property="customerType"     column="customer_type"  javaType="String"  jdbcType="VARCHAR" />
+    <result property="source"           column="source"         javaType="String"  jdbcType="VARCHAR" />
     <result property="state"            column="state"          javaType="String"  jdbcType="VARCHAR" />
+    <result property="createdDatetime"  column="created_date"   javaType="Date"    jdbcType="TIMESTAMP" />
     <!-- 关联客户数据 -->
     <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
       <id     property="id"        column="customer_id"   javaType="Integer" jdbcType="INTEGER" />
@@ -37,6 +39,7 @@
     <association property="appointment" javaType="com.github.xsocket.geak.entity.Appointment">
       <id     property="id"       column="appointment_id"   javaType="Integer" jdbcType="INTEGER" />
       <result property="datetime" column="appointment_date" javaType="Date"    jdbcType="TIMESTAMP" />
+      <result property="confirmedDatetime" column="confirmed_date" javaType="Date"    jdbcType="TIMESTAMP" />
     </association>
   </resultMap>
   <resultMap id="resultAll" type="com.github.xsocket.geak.entity.Order" 
@@ -48,11 +51,11 @@
   </resultMap>
   
   <sql id="_select_order">
-      o.id, o.entrance_date, o.exit_date, o.customer_type, o.customer_count, o.state,
+      o.id, o.entrance_date, o.exit_date, o.customer_type, o.customer_count, o.source, o.state, o.created_date,
         t.id as customer_id, t.name as customer_name, t.sex as customer_sex, t.telephone,
         c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias,
         b.id AS business_id, b.name AS business_name, b.alias AS business_alias,
-        a.id AS appointment_id, a.appointment_date
+        a.id AS appointment_id, a.appointment_date, a.confirmed_date
     FROM geak_order o
           JOIN geak_customer    t ON o.customer_id    = t.id
           JOIN geak_company     c ON o.company_id     = c.id
@@ -75,24 +78,27 @@
         o.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
       </if>
       <if test="start != null">
-          AND ( o.entrance_date >= #{start,jdbcType=TIMESTAMP} OR a.appointment_date >= #{start,jdbcType=TIMESTAMP} )
+          AND o.created_date >= #{start,jdbcType=TIMESTAMP}
       </if>
       <if test="end != null">
-          AND ( o.entrance_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP} OR a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP} )
+          AND o.created_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
       </if>
     </where>
+    ORDER BY o.created_date DESC, o.id DESC
   </select>
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_order 
-      (entrance_date, exit_date, customer_count, customer_type, state, 
+      (entrance_date, exit_date, customer_count, customer_type, source, state, created_date,
        customer_id, company_id, business_id, appointment_id) 
     VALUES 
       ( #{entranceDatetime,jdbcType=TIMESTAMP}, 
         #{exitDatetime,jdbcType=TIMESTAMP}, 
         #{customerCount,jdbcType=INTEGER}, 
         #{customerType,jdbcType=VARCHAR}, 
+        #{source,jdbcType=VARCHAR}, 
         #{state,jdbcType=VARCHAR},
+        #{createdDatetime,jdbcType=TIMESTAMP}, 
         #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{business.id,jdbcType=Integer,jdbcType=INTEGER},
@@ -104,7 +110,8 @@
     <set>
       <if test="entranceDatetime != null">entrance_date = #{entranceDatetime,jdbcType=TIMESTAMP},</if>
       <if test="exitDatetime != null">exit_date = #{exitDatetime,jdbcType=TIMESTAMP},</if>
-      <if test="customerType != null">customer_type = #{customerType,jdbcType=INTEGER},</if>
+      <if test="source != null">source = #{source,jdbcType=VARCHAR},</if>
+      <if test="customerType != null">customer_type = #{customerType,jdbcType=VARCHAR},</if>
       <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
       <if test="customer != null and customer.id != null">customer_id = #{customer.id,jdbcType=Integer,jdbcType=INTEGER},</if>

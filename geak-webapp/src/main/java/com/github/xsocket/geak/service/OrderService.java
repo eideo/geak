@@ -20,6 +20,12 @@ public interface OrderService {
   List<Order> query(Integer companyId, Date start, Date end, Integer page);
   
   Order query(Integer id);
+  
+  @Transactional
+  Order entrance(Integer id, Date date);
+  
+  @Transactional
+  Order exit(Integer id, Date date);
 
   /**
    * 保存订单(接待)数据。
@@ -30,5 +36,5 @@ public interface OrderService {
    * @return 新建/更新订单(接待)的数量
    */
   @Transactional
-  int save(Order order);
+  Order save(Order order);
 }
