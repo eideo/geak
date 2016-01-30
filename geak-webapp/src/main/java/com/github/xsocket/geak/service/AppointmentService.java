@@ -24,7 +24,7 @@ public interface AppointmentService {
    * @param page 页码
    * @return
    */
-  List<Appointment> query(Integer companyId, Date start, Date end, Integer[] business, Integer page);
+  List<Appointment> query(Integer companyId, Date start, Date end, String business, Integer page);
   
   Appointment query(Integer id);
   

@@ -48,7 +48,7 @@
           AND a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
       </if>
     </where>
-    ORDER BY a.appointment_date
+    ORDER BY a.appointment_date DESC
   </select>
   
   <!-- 查询某些主题的预约 -->
@@ -57,9 +57,9 @@
     SELECT  <include refid="_select_appointment" />
       JOIN geak_appointment_business ab ON a.id = ab.appointment_id
       JOIN geak_business b ON b.id = ab.business_id
-    <where>
+    WHERE a.state <![CDATA[<>]]> 'CANCELLED'
       <if test="companyId != null">
-        a.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+        AND a.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
       </if>
       <if test="start != null">
         AND a.appointment_date >= #{start,jdbcType=TIMESTAMP}
@@ -68,13 +68,9 @@
         AND a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
       </if>
       <if test="business != null">
-        AND ab.business_id IN
-          <foreach item="businessId" collection="business" open="(" separator="," close=")">
-              #{businessId,javaType=Integer,jdbcType=INTEGER}
-          </foreach> 
+        AND ab.business_id IN ( ${business} )
       </if>
-    </where>
-    ORDER BY a.appointment_date
+    ORDER BY a.appointment_date DESC
   </select>
   
   <sql id="_select_appointment">

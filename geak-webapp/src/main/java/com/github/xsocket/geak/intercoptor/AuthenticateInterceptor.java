@@ -37,21 +37,29 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
     response.sendRedirect("/js/light7.min.js");
     return false;
     */
-    Cookie token = WebUtils.getCookie(request, COOKIE_ACCESS_TOKEN);
+    // 测试环境
+    Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, "2016012301");
+    //Cookie token = WebUtils.getCookie(request, COOKIE_ACCESS_TOKEN);
     if(token == null || Strings.isNullOrEmpty(token.getValue())) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("UserId Cookie不存在，需获取用户信息后才能访问应用。");
       response.sendRedirect(REDIRECT_URL);
       return false;
     } else {
-      GeakUser user = service.selectById(token.getValue());
+      String userId = token.getValue();
+      GeakUser user = service.selectById(userId);
       if(user == null) {
-        LOGGER.debug("UserId为'{}'的用户不存在。", token.getValue());
+        LOGGER.debug("UserId为'{}'的用户不存在。", userId);
         response.sendRedirect("/error.html");
         return false;
       } else {
         // @see WebContextUtils.getAuthenticatedUser(request);
         request.setAttribute(GeakUser.class.getName(), user);
+        // 设置cookie
+        token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, userId);
+        token.setPath("/");
+        token.setMaxAge(3600 * 24 * 30);
+        response.addCookie(token);
         return true;
       }
     }

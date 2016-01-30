@@ -30,7 +30,7 @@ public interface AppointmentDao extends BasicDao<Appointment, Integer>, BasicRel
       @Param("companyId") Integer companyId, 
       @Param("start") Date start,
       @Param("end") Date end, 
-      @Param("business") Integer[] business,
+      @Param("business") String business,   // (1,2)
       Pagination page);
 
 }

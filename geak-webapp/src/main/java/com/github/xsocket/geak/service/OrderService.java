@@ -18,6 +18,8 @@ public interface OrderService {
    * @return
    */
   List<Order> query(Integer companyId, Date start, Date end, Integer page);
+  
+  Order query(Integer id);
 
   /**
    * 保存订单(接待)数据。

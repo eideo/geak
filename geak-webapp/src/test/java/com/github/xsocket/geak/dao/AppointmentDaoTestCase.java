@@ -16,7 +16,6 @@ import com.github.xsocket.geak.entity.Company;
 import com.github.xsocket.geak.entity.Customer;
 import com.github.xsocket.util.DefaultPair;
 import com.github.xsocket.util.Pair;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class AppointmentDaoTestCase extends AbstractTestCase {
@@ -84,14 +83,6 @@ public class AppointmentDaoTestCase extends AbstractTestCase {
     temp = dao.selectById(appointment.getId());
     appointment.setCustomer(customer);
     assertEquals(appointment, temp);
-    
-    // 测试搜索
-    Assert.assertEquals(1, dao.selectByCompany(company.getId(), null, null, null).size());
-    List<Integer> ids = Lists.newArrayList();
-    for(Business b : businesses) {
-      ids.add(b.getId());
-    }
-    Assert.assertEquals(1, dao.selectByBusiness(company.getId(), null, null, ids.toArray(new Integer[]{}), null).size());
     
     // 测试删除
     dao.delete(appointment);

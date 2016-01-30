@@ -1,4 +1,5 @@
 (function($){
+  var SOURCES = ["老玩家","团购","朋友介绍","连续场","地推","各店互推","合作商","搜索","其他来源"];
   var LOADING = false;
   var CACHE = {};
 
@@ -14,11 +15,12 @@
   var UPPER_LOADING = LOWER_LOADING = false;
 
   function showDetail(id) {
-    bindDetail();
+    //bindDetail();
     $.router.loadPage("#page_detail");
+    return;
     if(id > 0) {
       $.showIndicator();
-      $.get("/appointments/"+id, function(detail){
+      $.get("/orders/"+id, function(detail){
         bindDetail(detail);
         $.hideIndicator();
       });
@@ -30,12 +32,12 @@
     $.showIndicator();
     CACHE = {}; // 清空缓存列表
     UPPER_DATE = LOWER_DATE = TODAY; // 重新绑定上下限时间
-    apiGetAppointments(TODAY, null, 1, function(list){
+    apiGetOrders(TODAY, null, 1, function(list){
       if(list.length == 0) {
         // 展示空提示
         $("#list").html('<li id="card_empty" class="card"><div class="card-header">'
-              +  '<label class="color-danger pull-left">今日暂时没有任何预约</label>'
-              +  '<button class="button button-fill pull-right" onclick="$(\'#btn_refresh\').click();">'
+              +  '<label class="color-danger pull-left">今日暂时没有任何接待</label>'
+              +  '<button class="button pull-right" onclick="$(\'#btn_refresh\').click();">'
               +    '<i class="icon icon-refresh"></i> 刷新</label>'
               + '</div>'
             + '</li>');
@@ -197,73 +199,60 @@
 
 
   /* 加载预约列表 */
-  function apiGetAppointments(datetime, business, page, callback) {
+  function apiGetOrders(datetime, business, page, callback) {
     if(LOADING) return;
     LOADING = true;
     $.ajax({
-      url:"/appointments",
-      traditional: true,
+      url:"/orders",
       data:{
         "company" : COMPANY.id,
         "page" : page,
-        "datetime" : datetime,
-        "business" : business
+        "datetime" : datetime
       },
       dataType:"json", 
       success:function(list){
-        if(!business) {
-          // 整体加载数据的情况
-          if(list && list.length > 0) {
-            if(list[0].datetime > UPPER_DATE ) {
-              UPPER_DATE = list[0].datetime;
-            }
-            if(list[list.length-1].datetime < LOWER_DATE ) {
-              LOWER_DATE = list[list.length-1].datetime;
-            }
+        // 整体加载数据的情况
+        if(list && list.length > 0) {
+          if(list[0].datetime > UPPER_DATE ) {
+            UPPER_DATE = list[0].datetime;
           }
-          var data = [];
-          $.each(list, function(i,item){
-            if(!CACHE[item.id]) {
-              CACHE[item.id] = true;
-              data.push(item);
-            }
-          });
-          callback(data);
-          if(data.length > 0) {
-            $("#card_empty").remove();
+          if(list[list.length-1].datetime < LOWER_DATE ) {
+            LOWER_DATE = list[list.length-1].datetime;
           }
-        } else {
-          callback(list);
+        }
+        var data = [];
+        $.each(list, function(i,item){
+          if(!CACHE[item.id]) {
+            CACHE[item.id] = true;
+            data.push(item);
+          }
+        });
+        callback(data);
+        if(data.length > 0) {
+          $("#card_empty").remove();
         }
         LOADING = false;
       }
     });
   }
 
-  /* 加载门店的主题信息 */
+  /* 加载各类基础信息信息 */
   function loadBusinesses() {
     $.get("/businesses?company=" + COMPANY.id, function(list){
       $("#list_business").html(tmpl("tmpl_business", list));
-
-      $("#list_business input[type='checkbox'],#item_datetime").change(function(){
-        var datetime = parseInt(new Date($("#item_datetime").val()).getTime());
-        var ids = [];
-        $("#list_business input:checked").each(function(){
-          ids.push($(this).val());
-        });
-        if(datetime && ids.length > 0) {
-          // 加载相关预约信息
-          loadRelate(datetime, ids);
-        } else {
-          $("#list_relate").html(tmpl("tmpl_relate", []));
-        }
-      });
     });
   }
-
-  function loadRelate(datetime, ids) {
-    apiGetAppointments(datetime, ids.join(","), 0, function(list){
-      $("#list_relate").html(tmpl("tmpl_relate", list));
+  function loadSources() {
+    $("#list_source").html(tmpl("tmpl_source", SOURCES));
+  }
+  function loadPayments() {
+    $.get("/payments", function(list){
+      $("#list_payment").html(tmpl("tmpl_payment", list));
+    });
+  }
+  function loadPromotions() {
+    $.get("/promotions", function(list){
+      $("#list_promotion").html(tmpl("tmpl_promotion", list));
     });
   }
 
@@ -272,12 +261,12 @@
     LOWER_LOADING = true;
     $("#btn_more").hide();
     $('.infinite-scroll-preloader .preloader').show();
-    apiGetAppointments(LOWER_DATE, null, -1, function(list){
+    apiGetOrders(LOWER_DATE, null, -1, function(list){
       if(list.length == 0) {
         $.detachInfiniteScroll($('.infinite-scroll'));
         $('.infinite-scroll-preloader .preloader').hide();
         $("#btn_more").show();
-        $.toast("已经没有更早的预约数据。");
+        $.toast("已经没有更早的接待数据。");
       } else {
         $("#list").append(tmpl("tmpl_card", list));
         $("#list>li").each(function(){
@@ -304,19 +293,22 @@
     $("#btn_refresh").click(function(){ refresh(); });
     $("#btn_create").click(function(){ showDetail(); });
     $("#btn_back").click(function(){ $.router.back("#page_list"); });
-    $("#btn_save").click(function(){ saveDetail(); });
+    //$("#btn_save").click(function(){ saveDetail(); });
     $("#btn_more").click(function(){ loadMore(); });
     refresh();
 
     loadBusinesses();
-
+    loadSources();
+    loadPayments();
+    loadPromotions();
+return;
     // 下拉刷新
     $(document).on('refresh', '.pull-to-refresh-content',function(e) {
       if (UPPER_LOADING) return;
       UPPER_LOADING = true;
-      apiGetAppointments(UPPER_DATE, null, 1, function(list){
+      apiGetOrders(UPPER_DATE, null, 1, function(list){
         if(list.length == 0) {
-          $.toast("暂无最新的预约数据。");
+          $.toast("暂无最新的接待数据。");
         } else {
           $("#list").prepend(tmpl("tmpl_card", list));
           $("#list>li").each(function(){
@@ -333,7 +325,7 @@
       loadMore();
     });
 
-    $("#item_datetime").datetimePicker({
+    $("#item_entrance_datetime, #item_exit_datetime").datetimePicker({
       toolbarTemplate: '<header class="bar bar-nav">\
       <button class="button button-link pull-right close-picker">确定</button>\
       <h1 class="title">选择日期和时间</h1>\

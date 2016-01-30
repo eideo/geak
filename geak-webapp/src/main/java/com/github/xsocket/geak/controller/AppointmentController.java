@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.xsocket.geak.entity.Appointment;
 import com.github.xsocket.geak.service.AppointmentService;
+import com.google.common.base.Strings;
 
 /**
  * 预约相关业务的控制器。
@@ -38,14 +39,19 @@ public class AppointmentController {
   @RequestMapping(value = "/appointments", method = RequestMethod.GET, produces="application/json")
   public List<Appointment> list(
       @RequestParam(value="company", required=true) Integer companyId,
-      @RequestParam(value="datetime", required=false) Long datetime,
-      @RequestParam(value="business", required=false) Integer[] business,
+      @RequestParam(value="datetime", required=true) Long datetime,
+      @RequestParam(value="business", required=false) String business,
       @RequestParam(value="page", required=false) Integer page) {
     
     // 不传时间，则从24小时前的预约开始显示
-    Date pivot = datetime == null ? new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000L) : new Date(datetime);
-    Integer pageNo = (page == null || page == 0) ? 1 : page;
-    return service.query(companyId, pivot, null, business, pageNo);
+    if(Strings.isNullOrEmpty(business)) {
+      // 不传 business 则以company为基准进行查询
+      return service.query(companyId, new Date(datetime), null, business, page);
+    } else {
+      // 查询相关主题的近期预约
+      long interval = 1L * 60 * 60 * 1000;   // 前后间隔是 1 小时
+      return service.query(companyId, new Date(datetime - interval), new Date(datetime + interval), business, null);
+    }
   }
   
   @ResponseBody

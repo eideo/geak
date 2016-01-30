@@ -38,26 +38,28 @@ public class DefaultOrderService implements OrderService {
 
   @Override
   public List<Order> query(Integer companyId, Date start, Date end, Integer page) {
-    // TODO 查询逻辑有问题
     Date begin = start == null ? new Date() : start;
     Date over = null;
     Pagination pagination = null;
-    if(page == null) {
-      // 不分页
-    } else if(page == 1) {
+    if(page == null || page == 0) {
       over = end;
+    } else if(page > 0) {
+      // over = null; 分页的话不设置下限
       pagination = new Pagination(page);
-    } else if(page > 1) {
-      pagination = new Pagination(page);
-      over = null;
     } else if(page < 0) {
       // 页码小于0，则反查小于begin日期的数据
       pagination = new Pagination(0 - page);
       over = begin;
+      begin = null;
     }
     
     // 返回查询数据
     return orderDao.selectByCompany(companyId, begin, over, pagination);
+  }
+
+  @Override
+  public Order query(Integer id) {
+    return orderDao.selectById(id);
   }
 
   @Override

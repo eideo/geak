@@ -19,7 +19,7 @@
   </head>
   <body>
     <!-- page 容器 -->
-    <div class="page">
+    <div id="page_list" class="page page-current">
       <!-- 标题栏 -->
       <header class="bar bar-nav">
         <button id="btn_refresh" class="button button-link button-nav pull-left">
@@ -33,11 +33,11 @@
 
       <!-- 工具栏 -->
       <nav class="bar bar-tab">
-        <a class="tab-item active" href="#">
+        <a class="external tab-item active" href="#">
           <span class="icon icon-edit"></span>
           <span class="tab-label">预约</span>
         </a>
-        <a class="tab-item" href="#">
+        <a class="external tab-item" href="orders.html">
           <span class="icon icon-emoji"></span>
           <span class="tab-label">接待</span>
         </a>
@@ -53,12 +53,13 @@
           <ul id="list"></ul>
         </div><!-- /.cards-list -->
         <div class="infinite-scroll-preloader">
-          <div class="preloader"></div>
+          <div class="preloader" style="display:none;"></div>
+          <a id="btn_more" class="button button-round">加载更多过往预约数据...</a>
         </div><!-- /.infinite-scroll-preloader -->
       </div><!-- /.content -->
     </div><!-- /.page -->
 
-    <div class="popup popup-detail">
+    <div id="page_detail" class="page">
       <header class="bar bar-nav">
         <button id="btn_back" class="button button-link button-nav pull-left">
           <span class="icon icon-left"></span> 返回
@@ -109,7 +110,7 @@
               </div>
             </li>
           </ul>
-        </div><!-- /.form -->
+        </div><!-- /.list-block -->
         <div class="content-block-title color-primary">预约主题及时间</div>
         <div class="list-block">
           <ul>
@@ -141,49 +142,61 @@
               </div>
             </li>
           </ul>
-        </div><!-- /.form -->
+        </div>
+        <div class="content-block-title color-primary">相关预约信息</div>
+        <div class="list-block">
+          <ul id="list_relate">
+            <li class="item-content">
+              <div class="item-inner"><div class="item-title color-danger">暂无相关预约</div></div>
+            </li>
+          </ul>
+        </div><!-- /.list-block -->
       </div><!-- /.content-block -->
-    </div><!-- /.popup -->
+    </div><!-- /.page page-detail -->
+    
     <script type="text/x-tmpl" id="tmpl_card">
       {% for (var i=0; i<o.length; i++) { %}
-          <li id="card_{%= o[i].id %}" class="card" data-id="{%= o[i].id %}">
-            <div class="card-header">
-              <label class="pull-left">{%= moment(new Date(o[i].datetime)).format("MM月DD日 HH:mm") %}</label>
-              <label class="pull-right">{%= o[i].businesses[0].alias %}
-                {% for (var j=1; j<o[i].businesses.length; j++) { %}
-                  | {%= o[i].businesses[j].alias %}
-                {% } %}
-              </label>
-            </div>
-            <div class="card-content">
-              <div class="card-content-inner row">
-                <div class="col-80">
-                  {%= o[i].customer.name %}  
-                  {% if (o[i].customer.sex == 'M')print('先生'); else print('女士'); %}
-                  ({%= o[i].customer.telephone %}) 
-                </div>
-                <div class="col-20" style="text-align:right;"><b>{%= o[i].customerCount %}</b> 人</div>
-              </div>
-            </div>
-            <div class="card-footer">
-              {% if (o[i].state == 'NEW') { %}
-                  <label class="color-warning pull-left">待确认</label>
-                  <button class="button button-warning button-fill pull-right" data-id="{%= o[i].id %}">
-                    确认到场</button>
-              {% } %}
-              {% if (o[i].state == 'CONFIRMED') { %}
-                  <label class="color-success pull-left">已到场：
-                    {%= moment(new Date(o[i].confirmedDatetime)).format("MM月DD日 HH:mm") %}
-                  </label>
-              {% } %}
-              {% if (o[i].state == 'CANCELLED') { %}
-                  <label class="color-danger pull-left">已取消：
-                    {%= moment(new Date(o[i].cancelledDatetime)).format("MM月DD日 HH:mm") %}
-                  </label>
-              {% } %}
-            </div>
-          </li>
+        {% include('tmpl_card_item', o[i]); %}
       {% } %}
+    </script>
+    <script type="text/x-tmpl" id="tmpl_card_item">
+      <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
+        <div class="card-header">
+          <label class="pull-left">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
+          <label class="pull-right">{%= o.businesses[0].alias %}
+            {% for (var j=1; j<o.businesses.length; j++) { %}
+              | {%= o.businesses[j].alias %}
+            {% } %}
+          </label>
+        </div>
+        <div class="card-content">
+          <div class="card-content-inner row">
+            <div class="col-80">
+              {%= o.customer.name %}  
+              {% if (o.customer.sex == 'M')print('先生'); else print('女士'); %}
+              ({%= o.customer.telephone %}) 
+            </div>
+            <div class="col-20" style="text-align:right;"><b>{%= o.customerCount %}</b> 人</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          {% if (o.state == 'NEW') { %}
+              <label class="color-warning pull-left">待确认</label>
+              <button class="button button-warning button-fill pull-right" data-id="{%= o.id %}">
+                确认到场</button>
+          {% } %}
+          {% if (o.state == 'CONFIRMED') { %}
+              <label class="color-success pull-left">已到场：
+                {%= moment(new Date(o.confirmedDatetime)).format("MM月DD日 HH:mm") %}
+              </label>
+          {% } %}
+          {% if (o.state == 'CANCELLED') { %}
+              <label class="color-danger pull-left">已取消：
+                {%= moment(new Date(o.cancelledDatetime)).format("MM月DD日 HH:mm") %}
+              </label>
+          {% } %}
+        </div>
+      </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_business">
       {% for (var i=0; i<o.length; i++) { %}
@@ -197,14 +210,40 @@
         {% } %} 
                 <div class="col-33">
                   <label>{%= o[i].alias %}</label>
-                  <label class="label-switch">
-                    <input id="_b_{%= o[i].id %}" type="checkbox" value="{%= o[i].id %}" />
+                  <label class="label-switch">                    
+                    <input id="_b_{%= o[i].id %}" type="checkbox" 
+                      value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
                     <div class="checkbox"></div>
                   </label>
                 </div>
       {% } %}
               </div>
             </div>
+    </script>
+    <script type="text/x-tmpl" id="tmpl_relate">
+      {% if(o.length == 0) { %}
+        <li class="item-content">
+          <div class="item-inner"><div class="item-title color-danger">暂无相关预约</div></div>
+        </li>
+      {% } else { %}
+        {% for (var i=0; i<o.length; i++) { %}
+          <li class="item-content">
+            <div class="item-inner">
+              <div class="item-title">
+                <b class="color-primary">{%= moment(new Date(o[i].datetime)).format("HH:mm") %}</b>
+                <span>{%= o[i].customer.name %} 
+                  {% if (o[i].customer.sex == 'M')print('先生'); else print('女士'); %}
+                </span>
+              </div>
+              <div class="item-after">{%= o[i].businesses[0].alias %}
+                {% for (var j=1; j<o[i].businesses.length; j++) { %}
+                  | {%= o[i].businesses[j].alias %}
+                {% } %}
+              </div>
+            </div>
+          </li>
+        {% } %}
+      {% } %}
     </script>
 
     <!-- 你的html代码 -->
