@@ -1,4 +1,6 @@
-html{font-size:16px;}
+/*html{font-size:16px;}*/
 
 .content-block-title { margin: 0.75rem 0.5rem; }
 .list-block { margin: 0.5rem 0;}
+
+.card-header label { margin-right: 0.5rem; }

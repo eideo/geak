@@ -1,5 +1,13 @@
 package com.github.xsocket.geak.controller;
 
+import java.io.IOException;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,23 +18,37 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.xsocket.geak.dao.GeakUserDao;
 import com.github.xsocket.geak.entity.GeakUser;
+import com.github.xsocket.geak.intercoptor.AuthenticateInterceptor;
 import com.github.xsocket.geak.util.WeixinUtils;
 
 @Controller
 public class IndexController {
   
-  // private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
   
   @Autowired
   protected GeakUserDao service;
 
   @RequestMapping(value = "/", method = RequestMethod.GET)
-  public ModelAndView index(@RequestParam("code") String code, @RequestParam("state") String page) {
+  public ModelAndView index(@RequestParam("code") String code, @RequestParam("state") String page,
+      HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     // 通过code参数获取员工ID
     String userId = WeixinUtils.getUserId(code);
     GeakUser user = service.selectById(userId);
     
-    // TODO 处理 user 获取失败的问题！！！
+    if(user == null) {
+      LOGGER.debug("UserId为'{}'的用户不存在。", userId);
+      response.sendRedirect("/error.html");
+    } else {
+      // @see WebContextUtils.getAuthenticatedUser(request);
+      request.setAttribute(GeakUser.class.getName(), user);
+      // 设置cookie
+      Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_ACCESS_TOKEN, userId);
+      token.setPath("/");
+      token.setMaxAge(3600 * 24 * 30);
+      response.addCookie(token);
+    }
     
     ModelAndView mv = new ModelAndView(page);
     mv.addObject("user", user);

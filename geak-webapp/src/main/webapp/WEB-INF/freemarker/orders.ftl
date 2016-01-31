@@ -39,7 +39,7 @@
 
       <!-- 工具栏 -->
       <nav class="bar bar-tab">
-        <a class="external tab-item" href="appointments.html">
+        <a class="external tab-item" href="appointments.html?page=appointments">
           <span class="icon icon-edit"></span>
           <span class="tab-label">预约</span>
         </a>
@@ -143,7 +143,7 @@
                 <div class="item-inner">
                   <div class="item-title label">接待人数</div>
                   <div class="item-input">
-                    <input id="item_customer_count" type="text" />
+                    <input id="item_customer_count" type="number" />
                   </div>
                 </div>
               </div>
@@ -153,7 +153,7 @@
                 <div class="item-inner">
                   <div class="item-title label">联系方式</div>
                   <div class="item-input">
-                    <input id="item_customer_tele" type="text"/>
+                    <input id="item_customer_tele" type="number"/>
                   </div>
                 </div>
               </div>
@@ -189,8 +189,8 @@
     <script type="text/x-tmpl" id="tmpl_card_item">
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.createdDatetime %}">
         <div class="card-header">
-          <label class="pull-left">{%= moment(new Date(o.createdDatetime)).format("MM月DD日 HH:mm") %}</label>
-          <label class="pull-right item-business">{%= o.business.alias %}</label>
+          <label class="item-title">{%= moment(new Date(o.createdDatetime)).format("MM月DD日 HH:mm") %}</label>
+          <label class="item-after item-business">{%= o.business.alias %}</label>
         </div>
         <div class="card-content">
           <div class="card-content-inner row">
@@ -204,24 +204,24 @@
         </div>
         <div class="card-footer">
           {% if (o.state == 'NEW') { %}
-              <label class="color-danger pull-left">等待支付</label>
-              <button class="button button-danger button-fill pull-right" data-id="{%= o.id %}" data-state="{%= o.state %}">
+              <label class="item-title color-danger">等待支付</label>
+              <button class="item-after button button-danger button-fill" data-id="{%= o.id %}" data-state="{%= o.state %}">
                 确认支付</button>
           {% } %}
           {% if (o.state == 'PAYED') { %}
-              <label class="color-warning pull-left">等待入场</label>
-              <button class="button button-warning button-fill pull-right" data-id="{%= o.id %}" data-state="{%= o.state %}">
+              <label class="item-title color-warning">等待入场</label>
+              <button class="item-after button button-warning button-fill" data-id="{%= o.id %}" data-state="{%= o.state %}">
                 确认入场</button>
           {% } %}
           {% if (o.state == 'ENTRANCED') { %}
-              <label class="color-primary pull-left">等待离场，入场时间：
+              <label class="item-title color-primary">等待离场，入场时间：
                 {%= moment(new Date(o.entranceDatetime)).format("MM月DD日 HH:mm") %}
               </label>
-              <button class="button button-primary button-fill pull-right" data-id="{%= o.id %}" data-state="{%= o.state %}">
+              <button class="item-after button button-primary button-fill" data-id="{%= o.id %}" data-state="{%= o.state %}">
                 确认离场</button>
           {% } %}
           {% if (o.state == 'EXITED') { %}
-              <label class="color-success pull-left">已离场：
+              <label class="item-title color-success">已离场：
                 {%= moment(new Date(o.exitDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}
@@ -230,103 +230,63 @@
     </script>
     <script type="text/x-tmpl" id="tmpl_business">
       {% for (var i=0; i<o.length; i++) { %}
-        {% if (i%3 == 0) { %}
-          {% if (i > 0) { %}
-              </div>
-            </div>
-          {% } %} 
-            <div class="item-content">
-              <div class="item-inner row">
-        {% } %} 
-                <div class="col-33">
-                  <label>{%= o[i].alias %}</label>
-                  <label class="label-switch">                    
-                    <input id="_b_{%= o[i].id %}" type="checkbox" 
-                      value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
-                    <div class="checkbox"></div>
-                  </label>
-                </div>
+        <div class="item-content">
+          <div class="item-inner">
+            <label>{%= o[i].alias %}</label>
+            <label class="label-switch">                    
+              <input id="_b_{%= o[i].id %}" type="checkbox" 
+                value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
+              <div class="checkbox"></div>
+            </label>
+          </div>
+        </div>
       {% } %}
-              </div>
-            </div>
     </script>
     <script type="text/x-tmpl" id="tmpl_customer_type">
       {% for (var i=0; i<o.length; i++) { %}
-        {% if (i%3 == 0) { %}
-          {% if (i > 0) { %}
-              </div>
-            </div>
-          {% } %} 
-            <div class="item-content">
-              <div class="item-inner row">
-        {% } %} 
-                <div class="col-33">
-                  <label>{%= o[i] %}</label>
-                  <label class="label-switch">                    
-                    <input id="_t_{%= i %}" type="checkbox" value="{%= o[i] %}" />
-                    <div class="checkbox"></div>
-                  </label>
-                </div>
+        <div class="item-content">
+          <div class="item-inner">
+            <label>{%= o[i] %}</label>
+            <label class="label-switch">                    
+              <input id="_t_{%= i %}" type="checkbox" value="{%= o[i] %}" />
+              <div class="checkbox"></div>
+            </label>
+          </div>
+        </div>
       {% } %}
-              </div>
-            </div>
     </script>
     <script type="text/x-tmpl" id="tmpl_source">
-      {% var _w = [32,30,38]; for (var i=0; i<o.length; i++) { %}
-        {% if (i%3 == 0) { %}
-          {% if (i > 0) { %}
-              </div>
-            </div>
-          {% } %} 
-            <div class="item-content">
-              <div class="item-inner row">
-        {% } %} 
-                <div class="col-{%= _w[i%3] %}">
-                  <label>{%= o[i] %}</label>
-                  <label class="label-switch">                    
-                    <input id="_s_{%= i %}" type="checkbox" value="{%= o[i] %}" />
-                    <div class="checkbox"></div>
-                  </label>
-                </div>
+      {% for (var i=0; i<o.length; i++) { %}
+        <div class="item-content">
+          <div class="item-inner">
+            <label>{%= o[i] %}</label>
+            <label class="label-switch">                    
+              <input id="_s_{%= i %}" type="checkbox" value="{%= o[i] %}" />
+              <div class="checkbox"></div>
+            </label>
+          </div>
+        </div>
       {% } %}
-              </div>
-            </div>
     </script>
     <script type="text/x-tmpl" id="tmpl_payment">
       {% for (var i=0; i<o.length; i++) { %}
-        {% if (i%3 == 0) { %}
-          {% if (i > 0) { %}
-              </div>
-            </div>
-          {% } %} 
-            <div class="item-content">
-              <div class="item-inner row">
-        {% } %} 
-                <div class="col-33">
-                  <label>{%= o[i].name %}</label>
-                  <input id="_m_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
-                </div>
+        <div class="item-content">
+          <div class="item-inner">
+            <label>{%= o[i].name %}</label>
+            <input id="_m_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+          </div>
+        </div>
       {% } %}
-              </div>
-            </div>
     </script>
     <script type="text/x-tmpl" id="tmpl_promotion">
-      {% for (var i=0; i<o.length; i++) { %}
-        {% if (i%3 == 0) { %}
-          {% if (i > 0) { %}
-              </div>
-            </div>
-          {% } %} 
-            <div class="item-content">
-              <div class="item-inner row">
-        {% } %} 
-                <div class="col-33">
-                  <label>{%= o[i].name %}</label>
-                  <input id="_p_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
-                </div>
+      {% for (var i=0; i<o.length; i++) { %} 
+        <div class="item-content">
+          <div class="item-inner">
+            <label>{%= o[i].name %}</label>
+            <input id="_p_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+          </div>
+        </div>
       {% } %}
-              </div>
-            </div>
     </script>
 
     <!-- 你的html代码 -->

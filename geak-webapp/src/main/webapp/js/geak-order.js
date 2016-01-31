@@ -36,8 +36,8 @@
       if(list.length == 0) {
         // 展示空提示
         $("#list").html('<li id="card_empty" class="card"><div class="card-header">'
-              +  '<label class="color-danger pull-left">今日暂时没有任何接待</label>'
-              +  '<button class="button pull-right" onclick="$(\'#btn_refresh\').click();">'
+              +  '<label class="color-danger">今日暂时没有任何接待</label>'
+              +  '<button class="button" onclick="$(\'#btn_refresh\').click();">'
               +    '<i class="icon icon-refresh"></i> 刷新</label>'
               + '</div>'
             + '</li>');
@@ -165,7 +165,7 @@
     var item = detail ? detail :  {
       "business": {},
       "customer": { "name": "", "sex": "M", "telephone": "" },
-      "customerCount": 0,
+      "customerCount": 5,
       "createdDatetime": new Date().getTime(),
       "entranceDatetime": null,
       "exitDatetime": null,
@@ -438,6 +438,7 @@
         $("#btn_more").show();
         $.toast("已经没有更早的接待数据。");
       } else {
+        $("#card_empty").remove();
         $("#list").append(tmpl("tmpl_card", list));
         $("#list>li").each(function(){
           bindEvent(this);
@@ -483,6 +484,7 @@
         if(list.length == 0) {
           $.toast("暂无最新的接待数据。");
         } else {
+          $("#card_empty").remove();
           $("#list").prepend(tmpl("tmpl_card", list));
           $("#list>li").each(function(){
             bindEvent(this);

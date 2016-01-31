@@ -37,7 +37,7 @@
           <span class="icon icon-edit"></span>
           <span class="tab-label">预约</span>
         </a>
-        <a class="external tab-item" href="orders.html">
+        <a class="external tab-item" href="orders.html?page=orders">
           <span class="icon icon-emoji"></span>
           <span class="tab-label">接待</span>
         </a>
@@ -94,7 +94,7 @@
                 <div class="item-inner">
                   <div class="item-title label">预约人数</div>
                   <div class="item-input">
-                    <input id="item_customer_count" type="text" />
+                    <input id="item_customer_count" type="number" />
                   </div>
                 </div>
               </div>
@@ -104,23 +104,22 @@
                 <div class="item-inner">
                   <div class="item-title label">联系方式</div>
                   <div class="item-input">
-                    <input id="item_customer_tele" type="text"/>
+                    <input id="item_customer_tele" type="number"/>
                   </div>
                 </div>
               </div>
             </li>
           </ul>
         </div><!-- /.list-block -->
-        <div class="content-block-title color-primary">预约主题及时间</div>
+        <div class="content-block-title color-primary">预约时间及主题</div>
         <div class="list-block">
           <ul>
-            <li id="list_business"></li>
             <li>
               <div class="item-content">
                 <div class="item-inner">
                   <div class="item-title label">预约时间</div>
                   <div class="item-input">
-                    <input id="item_datetime" type="text"/>
+                    <input id="item_datetime" type="text" />
                   </div>
                 </div>
               </div>
@@ -143,6 +142,9 @@
             </li>
           </ul>
         </div>
+        <div class="list-block">
+          <ul id="list_business"></ul>
+        </div>
         <div class="content-block-title color-primary">相关预约信息</div>
         <div class="list-block">
           <ul id="list_relate">
@@ -162,8 +164,8 @@
     <script type="text/x-tmpl" id="tmpl_card_item">
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
         <div class="card-header">
-          <label class="pull-left">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
-          <label class="pull-right item-business">{%= o.businesses[0].alias %}
+          <label class="item-title">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
+          <label class="item-after item-business">{%= o.businesses[0].alias %}
             {% for (var j=1; j<o.businesses.length; j++) { %}
               &amp; {%= o.businesses[j].alias %}
             {% } %}
@@ -181,17 +183,17 @@
         </div>
         <div class="card-footer">
           {% if (o.state == 'NEW') { %}
-              <label class="color-warning pull-left">待确认</label>
-              <button class="button button-warning button-fill pull-right" data-id="{%= o.id %}">
+              <label class="item-title color-warning">待确认</label>
+              <button class="button button-warning button-fill item-after" data-id="{%= o.id %}">
                 确认到场</button>
           {% } %}
           {% if (o.state == 'CONFIRMED') { %}
-              <label class="color-success pull-left">已到场：
+              <label class="item-title color-success">已到场：
                 {%= moment(new Date(o.confirmedDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}
           {% if (o.state == 'CANCELLED') { %}
-              <label class="color-danger pull-left">已取消：
+              <label class="item-title color-danger">已取消：
                 {%= moment(new Date(o.cancelledDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}
@@ -200,25 +202,24 @@
     </script>
     <script type="text/x-tmpl" id="tmpl_business">
       {% for (var i=0; i<o.length; i++) { %}
-        {% if (i%3 == 0) { %}
+        {% if (i%2 == 0) { %}
           {% if (i > 0) { %}
-              </div>
-            </div>
-          {% } %} 
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
             <div class="item-content">
-              <div class="item-inner row">
-        {% } %} 
-                <div class="col-33">
-                  <label>{%= o[i].alias %}</label>
-                  <label class="label-switch">                    
-                    <input id="_b_{%= o[i].id %}" type="checkbox" 
-                      value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
-                    <div class="checkbox"></div>
-                  </label>
-                </div>
-      {% } %}
+              <div class="item-inner">
+                <label class="item-title">{%= o[i].alias %}</label>
+                <label class="item-after label-switch">                    
+                  <input id="_b_{%= o[i].id %}" type="checkbox" value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
+                  <div class="checkbox"></div>
+                </label>
               </div>
             </div>
+          </div>
+      {% } %}
+        </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_relate">
       {% if(o.length == 0) { %}
@@ -237,7 +238,7 @@
               </div>
               <div class="item-after">{%= o[i].businesses[0].alias %}
                 {% for (var j=1; j<o[i].businesses.length; j++) { %}
-                  | {%= o[i].businesses[j].alias %}
+                  &amp; {%= o[i].businesses[j].alias %}
                 {% } %}
               </div>
             </div>

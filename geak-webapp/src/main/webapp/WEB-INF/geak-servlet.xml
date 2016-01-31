@@ -39,6 +39,12 @@
   <!-- 拦截器设置 -->
   <mvc:interceptors>
     <mvc:interceptor>
+      <mvc:mapping path="/appointments.html*" />
+      <mvc:mapping path="/orders.html*" />
+      <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 -->
+      <bean class="com.github.xsocket.geak.intercoptor.AuthenticateInterceptor" />
+    </mvc:interceptor>
+    <mvc:interceptor>
       <mvc:mapping path="/**" />
 
       <mvc:exclude-mapping path="/" />
@@ -49,7 +55,7 @@
       <mvc:exclude-mapping path="/fonts/**" />
       <mvc:exclude-mapping path="/weixin/qy/callback" />
       <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 -->
-      <bean class="com.github.xsocket.geak.intercoptor.AuthenticateInterceptor" />
+      <bean class="com.github.xsocket.geak.intercoptor.CurrentUserInterceptor" />
     </mvc:interceptor>
   </mvc:interceptors>
 
