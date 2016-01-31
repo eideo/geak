@@ -94,7 +94,7 @@
                 <div class="item-inner">
                   <div class="item-title label">预约人数</div>
                   <div class="item-input">
-                    <input id="item_customer_count" type="number" />
+                    <input id="item_customer_count" type="text" />
                   </div>
                 </div>
               </div>
@@ -104,7 +104,7 @@
                 <div class="item-inner">
                   <div class="item-title label">联系方式</div>
                   <div class="item-input">
-                    <input id="item_customer_tele" type="number"/>
+                    <input id="item_customer_tele" type="text"/>
                   </div>
                 </div>
               </div>
@@ -123,6 +123,8 @@
                   </div>
                 </div>
               </div>
+            </li>
+            <li>
               <div class="item-content">
                 <div class="item-inner">
                   <div class="item-title label color-success">到场时间</div>

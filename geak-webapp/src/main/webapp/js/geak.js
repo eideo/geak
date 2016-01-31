@@ -153,16 +153,16 @@
     $("#btn_save").hide();
     if(a.state == "NEW") {
       $("#btn_save").show();
-      $("#item_cancelled_datetime").parents(".item-content").hide();
-      $("#item_confirmed_datetime").parents(".item-content").hide();
+      $("#item_cancelled_datetime").parents("li").hide();
+      $("#item_confirmed_datetime").parents("li").hide();
     } else if(a.state == "CONFIRMED") {
       $("#item_confirmed_datetime").val(moment(a.confirmedDatetime).format("YYYY-MM-DD HH:mm"));
-      $("#item_cancelled_datetime").parents(".item-content").hide();
-      $("#item_confirmed_datetime").parents(".item-content").show();
+      $("#item_cancelled_datetime").parents("li").hide();
+      $("#item_confirmed_datetime").parents("li").show();
     } else if(a.state == "CANCELLED") {
       $("#item_cancelled_datetime").val(moment(a.cancelledDatetime).format("YYYY-MM-DD HH:mm"));
-      $("#item_cancelled_datetime").parents(".item-content").show();
-      $("#item_confirmed_datetime").parents(".item-content").hide();
+      $("#item_cancelled_datetime").parents("li").show();
+      $("#item_confirmed_datetime").parents("li").hide();
     }
   }
 
