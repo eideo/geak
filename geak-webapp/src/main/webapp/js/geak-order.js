@@ -88,6 +88,7 @@
         success : function(data){
           refreshDetail(data);
           bindDetail(data);
+          $("#card_empty").remove();
           $.hideIndicator();
           $.toast("接待信息保存成功！");
         }

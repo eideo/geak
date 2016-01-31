@@ -85,6 +85,7 @@
         contentType : "application/json",
         success : function(data){
           refreshDetail(data);
+          $("#card_empty").remove();
           $.hideIndicator();
           $.router.back("#page_list");
         }
