@@ -16,12 +16,6 @@
       var USER = {"id":"${user.id}", "name":"${user.name}" };
       var COMPANY = {"id":"${user.company.id}", "name":"${user.company.name}" };
     </script>
-    <style> 
-      #list_payment input, #list_promotion input{ display: inline; width:45%;} 
-      .row .col-33 { width: 30%; margin-left: 3%; }
-      .row .col-29 { width: 26%; margin-left: 3%; }
-      .row .col-38 { width: 35%; margin-left: 3%; }
-    </style>
   </head>
   <body class="theme-green">
     <!-- page 容器 -->
@@ -83,8 +77,10 @@
           <div class="pull-right">当前状态：<b id="state_name">未支付</b></div>
         </div>
         <div class="list-block">
+          <ul id="list_business"></ul>
+        </div>
+        <div class="list-block">
           <ul>
-            <li id="list_business"></li>
             <li>
               <div class="item-content">
                 <div class="item-inner">
@@ -94,6 +90,8 @@
                   </div>
                 </div>
               </div>
+            </li>
+            <li>
               <div class="item-content">
                 <div class="item-inner">
                   <div class="item-title label color-success">离场时间</div>
@@ -102,6 +100,8 @@
                   </div>
                 </div>
               </div>
+            </li>
+            <li>
               <div class="item-content">
                 <div class="item-inner">
                   <div class="item-title label">到场时间</div>
@@ -115,9 +115,7 @@
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">支付总额： ￥ <b id="item_sum">0</b></div>
         <div class="list-block">
-          <ul>
-            <li id="list_payment"></li>
-          </ul>
+          <ul id="list_payment"></ul>
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">接待玩家信息</div>
         <div class="list-block">
@@ -162,21 +160,15 @@
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">优惠信息</div>
         <div class="list-block">
-          <ul>
-            <li id="list_promotion"></li>
-          </ul>
+          <ul id="list_promotion"></ul>
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">玩家身份</div>
         <div class="list-block">
-          <ul>
-            <li id="list_customer_type"></li>
-          </ul>
+          <ul id="list_customer_type"></ul>
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">来源渠道</div>
         <div class="list-block">
-          <ul>
-            <li id="list_source"></li>
-          </ul>
+          <ul id="list_source"></ul>
         </div><!-- /.list-block -->
       </div><!-- /.content-block -->
     </div><!-- /.page page-detail -->
@@ -230,63 +222,106 @@
     </script>
     <script type="text/x-tmpl" id="tmpl_business">
       {% for (var i=0; i<o.length; i++) { %}
-        <div class="item-content">
-          <div class="item-inner">
-            <label>{%= o[i].alias %}</label>
-            <label class="label-switch">                    
-              <input id="_b_{%= o[i].id %}" type="checkbox" 
-                value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
-              <div class="checkbox"></div>
-            </label>
+        {% if (i%2 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
+            <div class="item-content">
+              <div class="item-inner">
+                <label class="item-title">{%= o[i].alias %}</label>
+                <label class="item-after label-switch">                    
+                  <input id="_b_{%= o[i].id %}" type="checkbox" value="{%= o[i].id %}" data-alias="{%= o[i].alias %}" />
+                  <div class="checkbox"></div>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
       {% } %}
+        </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_customer_type">
       {% for (var i=0; i<o.length; i++) { %}
-        <div class="item-content">
-          <div class="item-inner">
-            <label>{%= o[i] %}</label>
-            <label class="label-switch">                    
-              <input id="_t_{%= i %}" type="checkbox" value="{%= o[i] %}" />
-              <div class="checkbox"></div>
-            </label>
+        {% if (i%2 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
+            <div class="item-content">
+              <div class="item-inner">
+                <label class="item-title">{%= o[i] %}</label>
+                <label class="item-after label-switch">                    
+                  <input id="_t_{%= i %}" type="checkbox" value="{%= o[i] %}" />
+                  <div class="checkbox"></div>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
       {% } %}
+        </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_source">
       {% for (var i=0; i<o.length; i++) { %}
-        <div class="item-content">
-          <div class="item-inner">
-            <label>{%= o[i] %}</label>
-            <label class="label-switch">                    
-              <input id="_s_{%= i %}" type="checkbox" value="{%= o[i] %}" />
-              <div class="checkbox"></div>
-            </label>
+        {% if (i%2 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
+            <div class="item-content">
+              <div class="item-inner">
+                <label class="item-title">{%= o[i] %}</label>
+                <label class="item-after label-switch">                    
+                  <input id="_s_{%= i %}" type="checkbox" value="{%= o[i] %}" />
+                  <div class="checkbox"></div>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
       {% } %}
+        </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_payment">
       {% for (var i=0; i<o.length; i++) { %}
-        <div class="item-content">
-          <div class="item-inner">
-            <label>{%= o[i].name %}</label>
-            <input id="_m_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+        {% if (i%2 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
+            <div class="item-content">
+              <div class="item-inner">
+                <label class="item-title label">{%= o[i].name %}</label>
+                <label class="item-input">                    
+                  <input id="_m_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
       {% } %}
+        </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_promotion">
-      {% for (var i=0; i<o.length; i++) { %} 
-        <div class="item-content">
-          <div class="item-inner">
-            <label>{%= o[i].name %}</label>
-            <input id="_p_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+      {% for (var i=0; i<o.length; i++) { %}
+        {% if (i%2 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
+            <div class="item-content">
+              <div class="item-inner">
+                <label class="item-title label">{%= o[i].name %}</label>
+                <label class="item-input">                    
+                  <input id="_p_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
       {% } %}
+        </li>
     </script>
 
     <!-- 你的html代码 -->

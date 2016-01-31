@@ -195,8 +195,8 @@
       $("#btn_save").show();
       $("#btn_extrnace").hide();
       $("#btn_exit").hide();
-      $("#item_entrance_datetime").parents(".item-content").hide();
-      $("#item_exit_datetime").parents(".item-content").hide();
+      $("#item_entrance_datetime").parents("li").hide();
+      $("#item_exit_datetime").parents("li").hide();
       if(item.id == 0) {
         // 新建
         $("#state_name").text("新建");
@@ -209,8 +209,8 @@
       $("#btn_save").show();
       $("#btn_extrnace").show();
       $("#btn_exit").hide();
-      $("#item_entrance_datetime").parents(".item-content").hide();
-      $("#item_exit_datetime").parents(".item-content").hide();
+      $("#item_entrance_datetime").parents("li").hide();
+      $("#item_exit_datetime").parents("li").hide();
       $("#state_name").text("已支付");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-warning");
     } else if(item.state == "ENTRANCED") {
@@ -218,8 +218,8 @@
       $("#btn_extrnace").hide();
       $("#btn_exit").show();
       $("#item_entrance_datetime").val(moment(item.entranceDatetime).format("YYYY-MM-DD HH:mm"));
-      $("#item_entrance_datetime").parents(".item-content").show();
-      $("#item_exit_datetime").parents(".item-content").hide();
+      $("#item_entrance_datetime").parents("li").show();
+      $("#item_exit_datetime").parents("li").hide();
       $("#state_name").text("已入场");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-primary");
     } else if(item.state == "EXITED") {
@@ -228,8 +228,8 @@
       $("#btn_exit").hide();
       $("#item_entrance_datetime").val(moment(item.entranceDatetime).format("YYYY-MM-DD HH:mm"));
       $("#item_exit_datetime").val(moment(item.exitDatetime).format("YYYY-MM-DD HH:mm"));
-      $("#item_entrance_datetime").parents(".item-content").show();
-      $("#item_exit_datetime").parents(".item-content").show();
+      $("#item_entrance_datetime").parents("li").show();
+      $("#item_exit_datetime").parents("li").show();
       $("#state_name").text("已离场");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-success");
     }
