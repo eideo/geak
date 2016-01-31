@@ -1,5 +1,5 @@
 (function($){
-  var SOURCES = ["老玩家","团购","朋友介绍","连续场","地推","各店互推","合作商","搜索","其他来源"];
+  var SOURCES = ["老玩家","团购","连续场","地推","朋友介绍","搜索","各店互推","其他","合作商"];
   var CUSTOMER_TYPES = ["小学生", "中学生", "大学生", "青年人", "中年人", "老年人"];
   var LOADING = false;
   var CACHE = {};
@@ -87,10 +87,10 @@
         contentType : "application/json",
         success : function(data){
           refreshDetail(data);
-          bindDetail(data);
+          //bindDetail(data);
           $("#card_empty").remove();
           $.hideIndicator();
-          $.toast("接待信息保存成功！");
+          $.router.back("#page_list");
         }
       });
     }

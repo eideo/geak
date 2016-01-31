@@ -59,7 +59,7 @@
     FROM geak_order o
           JOIN geak_customer    t ON o.customer_id    = t.id
           JOIN geak_company     c ON o.company_id     = c.id
-          JOIN geak_business    b ON o.business_id    = b.id
+     LEFT JOIN geak_business    b ON o.business_id    = b.id
      LEFT JOIN geak_appointment a ON o.appointment_id = a.id  
   </sql>
 

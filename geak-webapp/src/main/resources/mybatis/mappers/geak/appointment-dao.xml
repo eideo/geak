@@ -14,6 +14,7 @@
     <result property="cancelledDatetime" column="cancelled_date"   javaType="Date"    jdbcType="TIMESTAMP" />
     <result property="customerCount"     column="customer_count"   javaType="Integer" jdbcType="INTEGER" />
     <result property="state"             column="state"            javaType="String"  jdbcType="VARCHAR" />
+    <result property="note"              column="note"             javaType="String"  jdbcType="VARCHAR" />
     <!-- 关联客户数据 -->
     <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
       <id     property="id"        column="customer_id"   javaType="Integer" jdbcType="INTEGER" />
@@ -48,7 +49,7 @@
           AND a.appointment_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
       </if>
     </where>
-    ORDER BY a.appointment_date DESC
+    ORDER BY a.appointment_date
   </select>
   
   <!-- 查询某些主题的预约 -->
@@ -70,11 +71,11 @@
       <if test="business != null">
         AND ab.business_id IN ( ${business} )
       </if>
-    ORDER BY a.appointment_date DESC
+    ORDER BY a.appointment_date
   </select>
   
   <sql id="_select_appointment">
-      a.id, a.appointment_date, a.confirmed_date, a.cancelled_date, a.customer_count, a.state,
+      a.id, a.appointment_date, a.confirmed_date, a.cancelled_date, a.customer_count, a.state, a.note,
         customer.id as customer_id, customer.name as customer_name, customer.sex as customer_sex, customer.telephone,
         c.id AS company_id, c.name AS company_name, c.alias AS company_alias, c.address AS company_address
     FROM geak_appointment a
@@ -91,7 +92,7 @@
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_appointment 
-      (appointment_date, confirmed_date, cancelled_date, customer_count, customer_id, company_id, state) 
+      (appointment_date, confirmed_date, cancelled_date, customer_count, customer_id, company_id, state, note) 
     VALUES 
       ( #{datetime,jdbcType=TIMESTAMP}, 
         #{confirmedDatetime,jdbcType=TIMESTAMP}, 
@@ -99,7 +100,8 @@
         #{customerCount,jdbcType=INTEGER}, 
         #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
-        #{state,jdbcType=VARCHAR} )
+        #{state,jdbcType=VARCHAR}, 
+        #{note,jdbcType=VARCHAR} )
   </insert>
   
   <update id="update" flushCache="true">
@@ -111,6 +113,7 @@
       <if test="cancelledDatetime != null">cancelled_date = #{cancelledDatetime,jdbcType=TIMESTAMP},</if>
       <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="note != null">note = #{note,jdbcType=VARCHAR},</if>
     </set>
     WHERE 
       id = #{id,jdbcType=Integer,jdbcType=INTEGER}

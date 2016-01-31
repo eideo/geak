@@ -47,7 +47,7 @@ public class AppointmentController {
     // 不传时间，则从24小时前的预约开始显示
     if(Strings.isNullOrEmpty(business)) {
       // 不传 business 则以company为基准进行查询
-      return service.query(companyId, new Date(datetime), null, business, page);
+      return service.query(companyId, new Date(datetime), new Date(datetime + 24*60*60*1000 - 1), business, null);
     } else {
       // 查询相关主题的近期预约
       long interval = 1L * 60 * 60 * 1000;   // 前后间隔是 1 小时
@@ -67,6 +67,12 @@ public class AppointmentController {
       @PathVariable("id") Integer id, 
       @RequestParam(value="datetime", required=true) Long datetime) {
     return service.confirm(id, new Date(datetime));
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/appointments/{id}/cancel", method = RequestMethod.POST, produces="application/json")
+  public Appointment cancel(@PathVariable("id") Integer id) {
+    return service.cancel(id);
   }
   
   @ResponseBody

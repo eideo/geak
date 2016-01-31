@@ -105,10 +105,11 @@ public class DefaultAppointmentService implements AppointmentService {
     
     // 为确认到场的预约，自动生成对应的接待
     List<Order> orders = Lists.newArrayList();
-    for(Business b : appointment.getBusinesses()) {
+    List<Business> bs = appointment.getBusinesses();
+    if(bs == null || bs.isEmpty()) {
+      // 未定主题
       Order order = new Order();
       order.setAppointment(appointment);
-      order.setBusiness(b);
       order.setCustomer(appointment.getCustomer());
       order.setCustomerCount(appointment.getCustomerCount());
       order.setCompany(appointment.getCompany());
@@ -119,6 +120,23 @@ public class DefaultAppointmentService implements AppointmentService {
         orders.add(order);
         // TODO 处理 updated 为其他值的情况
         logDao.insert(new ActionLog("AUTO_INSERT", order));
+      }
+    } else {
+      for(Business b : appointment.getBusinesses()) {
+        Order order = new Order();
+        order.setAppointment(appointment);
+        order.setBusiness(b);
+        order.setCustomer(appointment.getCustomer());
+        order.setCustomerCount(appointment.getCustomerCount());
+        order.setCompany(appointment.getCompany());
+        order.setState(STATE_NEW);
+        order.setCreatedDatetime(date);
+        updated = orderDao.insert(order);
+        if(updated == 1) {
+          orders.add(order);
+          // TODO 处理 updated 为其他值的情况
+          logDao.insert(new ActionLog("AUTO_INSERT", order));
+        }
       }
     }
     
@@ -134,6 +152,7 @@ public class DefaultAppointmentService implements AppointmentService {
     if(!STATE_NEW.equals(appointment.getState())) {
       LOGGER.warn("预约\"{}\"的当前状态为\"{}\"，无法取消预约！", id, appointment.getState());
       //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+      return appointment;
     }
     
     appointment.setCancelledDatetime(new Date());
@@ -175,12 +194,14 @@ public class DefaultAppointmentService implements AppointmentService {
     
     // 重新记录预约的业务(主题)信息
     appointmentDao.deleteRelation(appointment, null);
-    Set<Pair<Appointment, Business>> sets = Sets.newHashSet();
-    for(Business b : appointment.getBusinesses()) {
-      sets.add(DefaultPair.newPair(appointment, b));
+    List<Business> list = appointment.getBusinesses();
+    if(list != null && !list.isEmpty()) {
+      Set<Pair<Appointment, Business>> sets = Sets.newHashSet();
+      for(Business b : appointment.getBusinesses()) {
+        sets.add(DefaultPair.newPair(appointment, b));
+      }
+      appointmentDao.insertRelation(sets);
     }
-    appointmentDao.insertRelation(sets);
-    
     LOGGER.debug("成功保存预约信息");
     return appointmentDao.selectById(appointment.getId());
   }

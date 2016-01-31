@@ -24,6 +24,8 @@ public class Appointment extends AbstractEntity {
   protected int customerCount;
   /** 预约状态 */
   protected String state;
+  /** 预约备注 */
+  protected String note;
   /** 预约所属公司(门店) */
   protected Company company;
   /** 预约的业务列表 */
@@ -91,6 +93,14 @@ public class Appointment extends AbstractEntity {
 
   public void setBusinesses(List<Business> businesses) {
     this.businesses = businesses;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 
 }

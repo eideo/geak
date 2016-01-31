@@ -1,6 +1,5 @@
 (function($){
   var LOADING = false;
-  var CACHE = {};
 
   // 获取预约的起始时间
   var TODAY = new Date();
@@ -9,9 +8,6 @@
   TODAY.setSeconds(0);
   TODAY.setMilliseconds(0);
   TODAY = TODAY.getTime();
-
-  var UPPER_DATE = LOWER_DATE = TODAY;
-  var UPPER_LOADING = LOWER_LOADING = false;
 
   function showDetail(id) {
     bindDetail();
@@ -28,50 +24,56 @@
   //刷新预约
   function refresh() {
     $.showIndicator();
-    CACHE = {}; // 清空缓存列表
-    UPPER_DATE = LOWER_DATE = TODAY; // 重新绑定上下限时间
     apiGetAppointments(TODAY, null, 1, function(list){
-      if(list.length == 0) {
-        // 展示空提示
-        $("#list").html('<li id="card_empty" class="card"><div class="card-header">'
-              +  '<label class="color-danger">今日暂时没有任何预约</label>'
-              +  '<button class="button" onclick="$(\'#btn_refresh\').click();">'
-              +    '<i class="icon icon-refresh"></i> 刷新</label>'
-              + '</div>'
-            + '</li>');
-      } else {
-        $("#list").html(tmpl("tmpl_card", list));
-        $("#list>li").each(function(){
+      // 先清空列表
+      $("#list_new, #list_confirmed, #list_cancelled").empty();
+      if(list.length > 0) {
+        $.each(list, function(i,item){
+          var html = tmpl("tmpl_card_item", item)
+          $("#list_" + item.state.toLowerCase()).append(html);
+        });
+        $("#list_new > li, #list_confirmed > li, #list_cancelled > li").each(function(){ 
           bindEvent(this);
         });
       }
+      refreshView();
       $.hideIndicator();
     });
   }
 
-  function refreshDetail(detail) {
-    var result = tmpl("tmpl_card_item", detail);
-    if(CACHE[detail.id]) {
-      $("#card_" + detail.id).prop("outerHTML", result);
-    } else {
-      var datetime = detail.datetime;
-      var refLi = null;
-      // 按顺序查找应该插入的位置
-      $("#list>li").each(function(){
-        var d = parseInt($(this).data("datetime"));
-        if(d < datetime) {
-          refLi = $(this);
-          return false;
-        }
-      });
-      if(refLi) {
-        $(result).insertBefore(refLi);
+  // 根据列表详情决定是否显示
+  function refreshView() {
+    $.each(["new", "confirmed", "cancelled"], function(i,name){
+      if($("#list_"+name + ">li").length == 0) {
+        $("#list_"+name+"_empty").show();
       } else {
-        $("#list").append(result);
+        $("#list_"+name+"_empty").hide();
       }
-      CACHE[detail.id] = true;
+    });
+  }
+
+  function refreshDetail(detail) {
+    var id = detail.id;
+    var datetime = detail.datetime;
+    var $list = $("#list_"+detail.state.toLowerCase());
+    var $ref = null;
+    // 按顺序查找应该插入的位置
+    $("li", $list).each(function(){
+      var d = parseInt($(this).data("datetime"));
+      if(d > datetime) {
+        $ref = $(this);
+        return false;
+      }
+    });
+    $("#card_" + id).remove();
+    var result = tmpl("tmpl_card_item", detail);
+    if($ref) {
+      $(result).insertBefore(refLi);
+    } else {
+      $list.append(result);
     }
-    bindEvent($("#card_" + detail.id));
+    bindEvent($("#card_" + id));
+    refreshView();
   }
 
   function saveDetail() {
@@ -105,16 +107,14 @@
       "datetime": moment($("#item_datetime").val()).valueOf(),
       "id": $("#item_id").val(),
       "state": $("#item_state").val(),
+      "note": $("#item_note").val().trim(),
       "company": COMPANY
     };
     $("#list_business input:checked").each(function(){
       detail.businesses.push({"id":$(this).val(), "alias":$(this).data("alias")});
     });
 
-    if(detail.businesses.length == 0) {
-      $.toast("请选择预约的主题！");
-      return false;
-    } else if(!detail.datetime){
+    if(!detail.datetime){
       $.toast("请输入正确的预约时间！");
       return false;
     } else if(isNullOrEmpty(detail.customer.name)){
@@ -138,10 +138,12 @@
       "customerCount": 5,
       "datetime": moment().valueOf() + 60*60*1000,
       "id": 0,
+      "note": "",
       "state": "NEW"
     };
     $("#item_id").val(a.id);
     $("#item_state").val(a.state);
+    $("#item_note").val(a.note);
     $("#item_customer_name").val(a.customer.name);
     $("#item_customer_sex option[value='"+a.customer.sex+"']").attr("selected", "selected");
     $("#item_customer_count").val(a.customerCount);
@@ -174,9 +176,30 @@
       showDetail(id);
     });
 
-    $("button", li).click(function(e){
+    $("button.confirm", li).click(function(e){
       e.stopPropagation();
       confirmAppointment(id);
+    });
+
+    $("button.cancel", li).click(function(e){
+      e.stopPropagation();
+      cancelAppointment(id);
+    });
+  }
+
+  // 取消预约
+  function cancelAppointment(id) {
+    var name = $("#card_"+id+" .item-name").text();
+    var business = $("#card_"+id+" .item-business").text();
+    var datetime = $("#card_"+id+" .card-header .item-title").text();
+    var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
+          + name + "<br/>主题：" +  business + "<br/>时间：" + datetime + "</div>";
+    $.confirm(content, "您确定取消预约吗？", function (value) {
+      $.showIndicator();
+      $.post("/appointments/" + id + "/cancel", function(detail){
+        refreshDetail(detail);
+        $.hideIndicator();
+      });
     });
   }
 
@@ -237,30 +260,7 @@
       },
       dataType:"json", 
       success:function(list){
-        if(!business) {
-          // 整体加载数据的情况
-          if(list && list.length > 0) {
-            if(list[0].datetime > UPPER_DATE ) {
-              UPPER_DATE = list[0].datetime;
-            }
-            if(list[list.length-1].datetime < LOWER_DATE ) {
-              LOWER_DATE = list[list.length-1].datetime;
-            }
-          }
-          var data = [];
-          $.each(list, function(i,item){
-            if(!CACHE[item.id]) {
-              CACHE[item.id] = true;
-              data.push(item);
-            }
-          });
-          callback(data);
-          if(data.length > 0) {
-            $("#card_empty").remove();
-          }
-        } else {
-          callback(list);
-        }
+        callback(list);
         LOADING = false;
       }
     });
@@ -293,28 +293,6 @@
     });
   }
 
-  function loadMore() {
-    if (LOWER_LOADING) return;
-    LOWER_LOADING = true;
-    $("#btn_more").hide();
-    $('.infinite-scroll-preloader .preloader').show();
-    apiGetAppointments(LOWER_DATE, null, -1, function(list){
-      if(list.length == 0) {
-        $.detachInfiniteScroll($('.infinite-scroll'));
-        $('.infinite-scroll-preloader .preloader').hide();
-        $("#btn_more").show();
-        $.toast("已经没有更早的预约数据。");
-      } else {
-        $("#card_empty").remove();
-        $("#list").append(tmpl("tmpl_card", list));
-        $("#list>li").each(function(){
-          bindEvent(this);
-        });
-      }
-      LOWER_LOADING = false;
-    });
-  }
-
   /* 判断字符串是否为空 */
   function isNullOrEmpty(str) {
     if (str == null || str == undefined) {
@@ -339,26 +317,7 @@
 
     // 下拉刷新
     $(document).on('refresh', '.pull-to-refresh-content',function(e) {
-      if (UPPER_LOADING) return;
-      UPPER_LOADING = true;
-      apiGetAppointments(UPPER_DATE, null, 1, function(list){
-        if(list.length == 0) {
-          $.toast("暂无最新的预约数据。");
-        } else {
-          $("#card_empty").remove();
-          $("#list").prepend(tmpl("tmpl_card", list));
-          $("#list>li").each(function(){
-            bindEvent(this);
-          });
-        }
-        $.pullToRefreshDone('.pull-to-refresh-content');
-        UPPER_LOADING = false;
-      });
-    });
-
-    // 向下滚动加载
-    $(document).on('infinite', '.infinite-scroll',function() {
-      loadMore();
+      refresh();
     });
 
     $("#item_datetime").datetimePicker({

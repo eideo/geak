@@ -44,18 +44,28 @@
       </nav>
 
       <!-- 这里是页面内容区 -->
-      <div class="content pull-to-refresh-content infinite-scroll">
+      <div class="content pull-to-refresh-content">
         <div class="pull-to-refresh-layer">
           <div class="preloader"></div>
           <div class="pull-to-refresh-arrow"></div>
         </div><!-- /.pull-to-refresh-layer -->
+        <div class="content-block-title color-warning">待确认的预约</div>
         <div class="list-block cards-list">
-          <ul id="list"></ul>
+          <ul id="list_new"></ul>
+          <ul id="list_new_empty"><li class="card"><div class="card-header">暂无待确认的预约</div></li></ul>
         </div><!-- /.cards-list -->
-        <div class="infinite-scroll-preloader">
-          <div class="preloader" style="display:none;"></div>
-          <a id="btn_more" class="button button-round">加载更多过往预约数据...</a>
-        </div><!-- /.infinite-scroll-preloader -->
+
+        <div class="content-block-title color-success">已确认的预约</div>
+        <div class="list-block cards-list">
+          <ul id="list_confirmed"></ul>
+          <ul id="list_confirmed_empty"><li class="card"><div class="card-header">暂无已确认的预约</div></li></ul>
+        </div><!-- /.cards-list -->
+
+        <div class="content-block-title color-danger">已取消的预约</div>
+        <div class="list-block cards-list">
+          <ul id="list_cancelled"></ul>
+          <ul id="list_cancelled_empty"><li class="card"><div class="card-header">暂无已取消的预约</div></li></ul>
+        </div><!-- /.cards-list -->
       </div><!-- /.content -->
     </div><!-- /.page -->
 
@@ -109,6 +119,14 @@
                 </div>
               </div>
             </li>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title label">备注信息</div>
+                  <div class="item-input"><textarea id="item_note"></textarea></div>
+                </div>
+              </div>
+            </li>
           </ul>
         </div><!-- /.list-block -->
         <div class="content-block-title color-primary">预约时间及主题</div>
@@ -133,6 +151,8 @@
                   </div>
                 </div>
               </div>
+            </li>
+            <li>
               <div class="item-content">
                 <div class="item-inner">
                   <div class="item-title label color-danger">取消时间</div>
@@ -167,9 +187,14 @@
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
         <div class="card-header">
           <label class="item-title">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
-          <label class="item-after item-business">{%= o.businesses[0].alias %}
-            {% for (var j=1; j<o.businesses.length; j++) { %}
-              &amp; {%= o.businesses[j].alias %}
+          <label class="item-after item-business">
+            {% if(o.businesses && o.businesses.length > 0) { %}
+              {%= o.businesses[0].alias %}
+              {% for (var j=1; j<o.businesses.length; j++) { %}
+                &amp; {%= o.businesses[j].alias %}
+              {% } %}
+            {% } else { %}
+              <b class="color-danger">未定</b>
             {% } %}
           </label>
         </div>
@@ -182,20 +207,25 @@
             </div>
             <div class="col-20" style="text-align:right;"><b>{%= o.customerCount %}</b> 人</div>
           </div>
+          {% if(o.note) { %}
+          <small class="card-content-inner">{%= o.note %}</small>
+          {% } %}
         </div>
+
         <div class="card-footer">
           {% if (o.state == 'NEW') { %}
-              <label class="item-title color-warning">待确认</label>
-              <button class="button button-warning button-fill item-after" data-id="{%= o.id %}">
+              <button class="cancel button button-danger button-fill item-title" data-id="{%= o.id %}">
+                取消预约</button>
+              <button class="confirm button button-primary button-fill item-after" data-id="{%= o.id %}">
                 确认到场</button>
           {% } %}
           {% if (o.state == 'CONFIRMED') { %}
-              <label class="item-title color-success">已到场：
+              <label class="item-title color-success">到场时间：
                 {%= moment(new Date(o.confirmedDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}
           {% if (o.state == 'CANCELLED') { %}
-              <label class="item-title color-danger">已取消：
+              <label class="item-title color-danger">取消时间：
                 {%= moment(new Date(o.cancelledDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}

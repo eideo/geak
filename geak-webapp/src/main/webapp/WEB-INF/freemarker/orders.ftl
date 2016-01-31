@@ -182,7 +182,13 @@
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.createdDatetime %}">
         <div class="card-header">
           <label class="item-title">{%= moment(new Date(o.createdDatetime)).format("MM月DD日 HH:mm") %}</label>
-          <label class="item-after item-business">{%= o.business.alias %}</label>
+          <label class="item-after item-business">
+            {% if(o.business && o.business.alias) { %}
+              {%= o.business.alias %}
+            {% } else { %}
+              <b class="color-danger">未定</b>
+            {% } %}
+          </label>
         </div>
         <div class="card-content">
           <div class="card-content-inner row">
