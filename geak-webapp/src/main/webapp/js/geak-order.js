@@ -24,8 +24,10 @@
   }
 
   //刷新接待
-  function refresh() {
-    $.showIndicator();
+  function refresh(ispull) {
+    if(!ispull) {
+	  $.showIndicator();
+    }
     apiGetOrders(TODAY, null, 1, function(list){
       // 先清空列表
       $("#list_new,#list_payed,#list_entranced,#list_exited,#list_cancelled").empty();
@@ -39,7 +41,11 @@
         });
       }
       refreshView();
-      $.hideIndicator();
+      if(!ispull) {
+        $.hideIndicator();
+      } else {
+        $.pullToRefreshDone('.pull-to-refresh-content');
+      }
     });
   }
 
@@ -508,7 +514,7 @@
 
     // 下拉刷新
     $(document).on('refresh', '.pull-to-refresh-content',function(e) {
-      refresh();
+      refresh(true);
     });
   });
 

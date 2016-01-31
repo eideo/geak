@@ -22,8 +22,10 @@
   }
 
   //刷新预约
-  function refresh() {
-    $.showIndicator();
+  function refresh(ispull) {
+	if(!ispull) {
+	  $.showIndicator();
+	}  
     apiGetAppointments(TODAY, null, 1, function(list){
       // 先清空列表
       $("#list_new, #list_confirmed, #list_cancelled").empty();
@@ -37,6 +39,11 @@
         });
       }
       refreshView();
+      if(!ispull) {
+	    $.hideIndicator();
+	  } else {
+	    $.pullToRefreshDone('.pull-to-refresh-content');
+	  }
       $.hideIndicator();
     });
   }
@@ -318,7 +325,7 @@
 
     // 下拉刷新
     $(document).on('refresh', '.pull-to-refresh-content',function(e) {
-      refresh();
+      refresh(true);
     });
 
     $("#item_datetime").datetimePicker({
