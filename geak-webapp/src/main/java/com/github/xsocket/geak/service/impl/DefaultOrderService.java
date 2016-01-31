@@ -132,7 +132,7 @@ public class DefaultOrderService implements OrderService {
       // 只有入场前的订单才可以修改
       if(!STATE_NEW.equals(order.getState()) && !STATE_PAYED.equals(order.getState())) {
         LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，不能进行更新！", id, order.getState());
-        return order;
+        return orderDao.selectById(order.getId());
       }
 
       if(order.getPayments() == null || order.getPayments().isEmpty()) {
