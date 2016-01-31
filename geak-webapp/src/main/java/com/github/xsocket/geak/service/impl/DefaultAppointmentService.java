@@ -148,6 +148,7 @@ public class DefaultAppointmentService implements AppointmentService {
     Appointment appointment = appointmentDao.selectById(id);
     if(appointment == null) {
       LOGGER.warn("标识为 {} 的预约不存在，无法取消预约！", id);
+      return null;
     }
     if(!STATE_NEW.equals(appointment.getState())) {
       LOGGER.warn("预约\"{}\"的当前状态为\"{}\"，无法取消预约！", id, appointment.getState());

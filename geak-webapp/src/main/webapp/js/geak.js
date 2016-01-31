@@ -68,7 +68,7 @@
     $("#card_" + id).remove();
     var result = tmpl("tmpl_card_item", detail);
     if($ref) {
-      $(result).insertBefore(refLi);
+      $(result).insertBefore($ref);
     } else {
       $list.append(result);
     }
@@ -199,6 +199,7 @@
       $.post("/appointments/" + id + "/cancel", function(detail){
         refreshDetail(detail);
         $.hideIndicator();
+        $.toast("预约已取消");
       });
     });
   }

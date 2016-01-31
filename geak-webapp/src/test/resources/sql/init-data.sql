@@ -23,5 +23,5 @@ COMMIT;
 --  Records of `geak_payment_mode`
 -- ----------------------------
 BEGIN;
-INSERT INTO `geak_payment_mode` VALUES ('1', '现金'), ('2', '支付宝'), ('3', '微信'), ('4', '美团'), ('5', '大众'), ('6', '糯米');
+INSERT INTO `geak_payment_mode` VALUES ('1', '现金', 1), ('2', '大众', 58), ('3', '微信', 1), ('4', '美团', 58), ('5', '支付宝', 1), ('6', '糯米', 58);
 COMMIT;

@@ -9,12 +9,15 @@
   <resultMap id="result" type="com.github.xsocket.geak.entity.Order">
     <!-- 基本预约数据 -->
     <id     property="id"               column="id"             javaType="Integer" jdbcType="INTEGER" />
+    <result property="totalPrice"       column="total_price"    javaType="Integer" jdbcType="INTEGER" />
     <result property="entranceDatetime" column="entrance_date"  javaType="Date"    jdbcType="TIMESTAMP" />
     <result property="exitDatetime"     column="exit_date"      javaType="Date"    jdbcType="TIMESTAMP" />
     <result property="customerCount"    column="customer_count" javaType="Integer" jdbcType="INTEGER" />
     <result property="customerType"     column="customer_type"  javaType="String"  jdbcType="VARCHAR" />
+    <result property="promotionNote"    column="promotion_note" javaType="String"  jdbcType="VARCHAR" />
     <result property="source"           column="source"         javaType="String"  jdbcType="VARCHAR" />
     <result property="state"            column="state"          javaType="String"  jdbcType="VARCHAR" />
+    <result property="cancelledDatetime" column="cancelled_date" javaType="Date"    jdbcType="TIMESTAMP" />
     <result property="createdDatetime"  column="created_date"   javaType="Date"    jdbcType="TIMESTAMP" />
     <!-- 关联客户数据 -->
     <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
@@ -51,7 +54,8 @@
   </resultMap>
   
   <sql id="_select_order">
-      o.id, o.entrance_date, o.exit_date, o.customer_type, o.customer_count, o.source, o.state, o.created_date,
+      o.id, o.total_price, o.entrance_date, o.exit_date, o.customer_type, 
+      o.customer_count, o.source, o.state, o.created_date, o.promotion_note, o.cancelled_date,
         t.id as customer_id, t.name as customer_name, t.sex as customer_sex, t.telephone,
         c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias,
         b.id AS business_id, b.name AS business_name, b.alias AS business_alias,
@@ -84,36 +88,42 @@
           AND o.created_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
       </if>
     </where>
-    ORDER BY o.created_date DESC, o.id DESC
+    ORDER BY o.id
   </select>
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_order 
-      (entrance_date, exit_date, customer_count, customer_type, source, state, created_date,
-       customer_id, company_id, business_id, appointment_id) 
+      (total_price, entrance_date, exit_date, customer_count, customer_type, source, state, created_date, promotion_note,
+       customer_id, company_id, business_id, appointment_id, cancelled_date) 
     VALUES 
-      ( #{entranceDatetime,jdbcType=TIMESTAMP}, 
+      ( #{totalPrice,jdbcType=Integer,jdbcType=INTEGER}, 
+        #{entranceDatetime,jdbcType=TIMESTAMP}, 
         #{exitDatetime,jdbcType=TIMESTAMP}, 
         #{customerCount,jdbcType=INTEGER}, 
         #{customerType,jdbcType=VARCHAR}, 
         #{source,jdbcType=VARCHAR}, 
         #{state,jdbcType=VARCHAR},
         #{createdDatetime,jdbcType=TIMESTAMP}, 
+        #{promotionNote,jdbcType=VARCHAR}, 
         #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{business.id,jdbcType=Integer,jdbcType=INTEGER},
-        #{appointment.id,jdbcType=Integer,jdbcType=INTEGER} )
+        #{appointment.id,jdbcType=Integer,jdbcType=INTEGER},
+        #{cancelledDatetime,jdbcType=TIMESTAMP} )
   </insert>
   
   <update id="update" flushCache="true">
     UPDATE geak_order 
     <set>
+      <if test="totalPrice != null">total_price = #{totalPrice,jdbcType=INTEGER},</if>
+      <if test="cancelledDatetime != null">cancelled_date = #{cancelledDatetime,jdbcType=TIMESTAMP},</if>
       <if test="entranceDatetime != null">entrance_date = #{entranceDatetime,jdbcType=TIMESTAMP},</if>
       <if test="exitDatetime != null">exit_date = #{exitDatetime,jdbcType=TIMESTAMP},</if>
       <if test="source != null">source = #{source,jdbcType=VARCHAR},</if>
       <if test="customerType != null">customer_type = #{customerType,jdbcType=VARCHAR},</if>
       <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="promotionNote != null">promotion_note = #{promotionNote,jdbcType=VARCHAR},</if>
       <if test="customer != null and customer.id != null">customer_id = #{customer.id,jdbcType=Integer,jdbcType=INTEGER},</if>
       <if test="business != null and business.id != null">business_id = #{business.id,jdbcType=Integer,jdbcType=INTEGER},</if>
     </set>

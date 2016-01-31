@@ -18,6 +18,8 @@ public class Order extends AbstractEntity {
   protected Date entranceDatetime;
   /** 退场时间 */
   protected Date exitDatetime;
+  /** 取消时间 */
+  protected Date cancelledDatetime;
   /** 订单客户 */
   protected Customer customer;
   /** 订单客户总人数 */
@@ -32,12 +34,16 @@ public class Order extends AbstractEntity {
   protected Business business;
   /** 订单所属公司(门店) */
   protected Company company;
+  /** 其他促销说明 */
+  protected String promotionNote;
   /** 该订单参与的活动 */
   protected List<OrderPromotion> promotions;
   /** 该订单的支付记录 */
   protected List<OrderPayment> payments;
   /** 创建时间 */
   protected Date createdDatetime;
+  /** 总价 */
+  protected Integer totalPrice;
 
   public Date getCreatedDatetime() {
     return createdDatetime;
@@ -141,6 +147,30 @@ public class Order extends AbstractEntity {
 
   public void setSource(String source) {
     this.source = source;
+  }
+
+  public String getPromotionNote() {
+    return promotionNote;
+  }
+
+  public void setPromotionNote(String promotionNote) {
+    this.promotionNote = promotionNote;
+  }
+
+  public Integer getTotalPrice() {
+    return totalPrice;
+  }
+
+  public void setTotalPrice(Integer totalPrice) {
+    this.totalPrice = totalPrice;
+  }
+
+  public Date getCancelledDatetime() {
+    return cancelledDatetime;
+  }
+
+  public void setCancelledDatetime(Date cancelledDatetime) {
+    this.cancelledDatetime = cancelledDatetime;
   }
 
 }

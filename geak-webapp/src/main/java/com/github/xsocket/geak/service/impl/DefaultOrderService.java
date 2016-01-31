@@ -31,6 +31,7 @@ public class DefaultOrderService implements OrderService {
   private static final String STATE_PAYED = "PAYED";
   private static final String STATE_ENTRANCED = "ENTRANCED";
   private static final String STATE_EXITED = "EXITED";
+  private static final String STATE_CANCELLED = "CANCELLED";
   
   @Autowired
   protected OrderDao orderDao;
@@ -110,6 +111,30 @@ public class DefaultOrderService implements OrderService {
     if(updated == 1) {
       // TODO 处理 updated 为其他值的情况
       logDao.insert(new ActionLog("EXIT", order));
+    }
+    
+    return order;
+  }
+  
+  @Override
+  public Order cancel(Integer id) {
+    Order order = orderDao.selectById(id);
+    if(order == null) {
+      LOGGER.warn("标识为 {} 的订单不存在，无法取消订单！", id);
+      return null;
+    }
+    if(!STATE_NEW.equals(order.getState())) {
+      LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，只有新建订单才可以取消！", id, order.getState());
+      //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
+      return order;
+    }
+    
+    order.setCancelledDatetime(new Date());
+    order.setState(STATE_CANCELLED);
+    int updated = orderDao.update(order);
+    if(updated == 1) {
+      // TODO 处理 updated 为其他值的情况
+      logDao.insert(new ActionLog("CANCEL", order));
     }
     
     return order;

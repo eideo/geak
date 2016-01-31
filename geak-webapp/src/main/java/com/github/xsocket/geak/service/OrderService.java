@@ -26,6 +26,9 @@ public interface OrderService {
   
   @Transactional
   Order exit(Integer id, Date date);
+  
+  @Transactional
+  Order cancel(Integer id);
 
   /**
    * 保存订单(接待)数据。

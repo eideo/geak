@@ -8,5 +8,15 @@ package com.github.xsocket.geak.entity;
 public class PaymentMode extends AbstractEntity {
 
   private static final long serialVersionUID = 3509505111252056190L;
+  
+  /** 单价 */
+  protected Integer price;
 
+  public Integer getPrice() {
+    return price;
+  }
+
+  public void setPrice(Integer price) {
+    this.price = price;
+  }
 }

@@ -71,4 +71,10 @@ public class OrderController {
       @RequestParam(value="datetime", required=true) Long datetime) {
     return service.exit(id, new Date(datetime));
   }
+  
+  @ResponseBody
+  @RequestMapping(value = "/orders/{id}/cancel", method = RequestMethod.POST, produces="application/json")
+  public Order cancel(@PathVariable("id") Integer id) {
+    return service.cancel(id);
+  }
 }

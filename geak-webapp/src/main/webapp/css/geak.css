@@ -4,3 +4,6 @@
 .list-block { margin: 0.5rem 0;}
 
 .card-header label { margin-right: 0.5rem; }
+
+#list_payment input { text-align: right; }
+#item_total_price { border:none; background-color: transparent; }

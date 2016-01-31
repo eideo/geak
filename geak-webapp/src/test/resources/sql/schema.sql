@@ -137,8 +137,9 @@ CREATE TABLE geak_customer (
 -- 支付模式表
 -- ----------------------------
 CREATE TABLE geak_payment_mode (
-  id   int         NOT NULL AUTO_INCREMENT COMMENT '支付渠道标识(自增)',
-  name varchar(32) NOT NULL                COMMENT '支付渠道名称',
+  id    int         NOT NULL AUTO_INCREMENT COMMENT '支付渠道标识(自增)',
+  name  varchar(32) NOT NULL                COMMENT '支付渠道名称',
+  price int         NOT NULL                COMMENT '支付单价',
   PRIMARY KEY (id)
 );
 
@@ -185,16 +186,19 @@ CREATE TABLE geak_appointment_business (
 -- ----------------------------
 CREATE TABLE geak_order (
   id             int         NOT NULL AUTO_INCREMENT COMMENT '订单标识(自增)',
+  total_price    int             NULL                COMMENT '订单实际支付的总价',
   entrance_date  datetime        NULL                COMMENT '进场时间',
   exit_date      datetime        NULL                COMMENT '退场时间',
   state          varchar(32) NOT NULL                COMMENT '订单状态',
   customer_id    int         NOT NULL                COMMENT '订单客户标识',
   customer_count int         NOT NULL                COMMENT '参与的用户总数',
   customer_type  varchar(64)     NULL                COMMENT '参与的主体用户群类型',
+  promotion_note varchar(255)    NULL                COMMENT '其他促销活动说明',
   source         varchar(64)     NULL                COMMENT '客户来源渠道',
   business_id    int             NULL                COMMENT '订单对应的业务标识',
   company_id     int         NOT NULL                COMMENT '订单所属公司(门店)标识',
   appointment_id int             NULL                COMMENT '订单对应预约的标识,为空表示没有对应订单',
+  cancelled_date datetime        NULL                COMMENT '取消订单时间',
   created_date   datetime    NOT NULL                COMMENT '创建时间',
   PRIMARY KEY (id),
   CONSTRAINT fk_order_company  FOREIGN KEY (company_id)  REFERENCES geak_company  (id) ON DELETE CASCADE ON UPDATE CASCADE,

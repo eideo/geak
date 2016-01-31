@@ -2,7 +2,6 @@
   var SOURCES = ["老玩家","团购","连续场","地推","朋友介绍","搜索","各店互推","其他","合作商"];
   var CUSTOMER_TYPES = ["小学生", "中学生", "大学生", "青年人", "中年人", "老年人"];
   var LOADING = false;
-  var CACHE = {};
 
   // 获取预约的起始时间
   var TODAY = new Date();
@@ -11,9 +10,6 @@
   TODAY.setSeconds(0);
   TODAY.setMilliseconds(0);
   TODAY = TODAY.getTime();
-
-  var UPPER_DATE = LOWER_DATE = TODAY;
-  var UPPER_LOADING = LOWER_LOADING = false;
 
   function showDetail(id) {
     bindDetail();
@@ -27,53 +23,59 @@
     }
   }
 
-  //刷新预约
+  //刷新接待
   function refresh() {
     $.showIndicator();
-    CACHE = {}; // 清空缓存列表
-    UPPER_DATE = LOWER_DATE = TODAY; // 重新绑定上下限时间
     apiGetOrders(TODAY, null, 1, function(list){
-      if(list.length == 0) {
-        // 展示空提示
-        $("#list").html('<li id="card_empty" class="card"><div class="card-header">'
-              +  '<label class="color-danger">今日暂时没有任何接待</label>'
-              +  '<button class="button" onclick="$(\'#btn_refresh\').click();">'
-              +    '<i class="icon icon-refresh"></i> 刷新</label>'
-              + '</div>'
-            + '</li>');
-      } else {
-        $("#list").html(tmpl("tmpl_card", list));
-        $("#list>li").each(function(){
+      // 先清空列表
+      $("#list_new,#list_payed,#list_entranced,#list_exited,#list_cancelled").empty();
+      if(list.length > 0) {
+        $.each(list, function(i,item){
+          var html = tmpl("tmpl_card_item", item)
+          $("#list_" + item.state.toLowerCase()).append(html);
+        });
+        $("#list_new>li,#list_payed>li,#list_entranced>li,#list_exited>li,#list_cancelled>li").each(function(){ 
           bindEvent(this);
         });
       }
+      refreshView();
       $.hideIndicator();
     });
   }
 
-  function refreshDetail(detail) {
-    var result = tmpl("tmpl_card_item", detail);
-    if(CACHE[detail.id]) {
-      $("#card_" + detail.id).prop("outerHTML", result);
-    } else {
-      var datetime = detail.createdDatetime;
-      var refLi = null;
-      // 按顺序查找应该插入的位置
-      $("#list>li").each(function(){
-        var d = parseInt($(this).data("datetime"));
-        if(d < datetime) {
-          refLi = $(this);
-          return false;
-        }
-      });
-      if(refLi) {
-        $(result).insertBefore(refLi);
+  // 根据列表详情决定是否显示
+  function refreshView() {
+    $.each(["new", "payed", "entranced", "exited", "cancelled"], function(i,name){
+      if($("#list_"+name + ">li").length == 0) {
+        $("#list_"+name+"_empty").show();
       } else {
-        $("#list").append(result);
+        $("#list_"+name+"_empty").hide();
       }
-      CACHE[detail.id] = true;
+    });
+  }
+
+  function refreshDetail(detail) {
+    var id = detail.id;
+    var datetime = detail.createdDatetime;
+    var $list = $("#list_"+detail.state.toLowerCase());
+    var $ref = null;
+    // 按顺序查找应该插入的位置
+    $("li", $list).each(function(){
+      var d = parseInt($(this).data("datetime"));
+      if(d > datetime) {
+        $ref = $(this);
+        return false;
+      }
+    });
+    $("#card_" + id).remove();
+    var result = tmpl("tmpl_card_item", detail);
+    if($ref) {
+      $(result).insertBefore($ref);
+    } else {
+      $list.append(result);
     }
-    bindEvent($("#card_" + detail.id));
+    bindEvent($("#card_" + id));
+    refreshView();
   }
 
   function saveDetail() {
@@ -97,6 +99,7 @@
   }
 
   function parseDetail() {
+    var price = isNullOrEmpty($("#item_total_price").val()) ? 0 : $("#item_total_price").val().trim();
     var detail = {
       "business": null,
       "customer": { 
@@ -106,7 +109,9 @@
       },
       "customerCount": parseInt($("#item_customer_count").val()),
       "id": $("#item_id").val(),
-      "state": $("#item_state").val(),
+      "state": $("#item_state").val(),      
+      "promotionNote": $("#item_promotion_note").val(),
+      "totalPrice": parseInt(price),
       "source": _parseCheckboxData("#list_source input:checked"),
       "customerType": _parseCheckboxData("#list_customer_type input:checked"),
       "payments":_parsePayment(),
@@ -122,6 +127,9 @@
       return false;
     } else if(isNullOrEmpty(detail.customer.name)){
       $.toast("请输入玩家姓名！");
+      return false;
+    } else if(isNaN(detail.totalPrice)){
+      $.toast("请输入正确的支付总额！");
       return false;
     } else if(!(detail.customerCount>0)){
       $.toast("请输入玩家人数！");
@@ -154,9 +162,11 @@
   function _parsePromotion() {
     var promotions = [];
     $("#list_promotion input").each(function(){ 
-      var count = parseInt($(this).val());
-      if(count > 0) {
-        promotions.push({ "count":count, "plan":{"id":$(this).data("id")} });
+      if($(this).attr("id") != "item_promotion_note") {  // 忽略其他优惠
+        var count = parseInt($(this).val());
+        if(count > 0) {
+          promotions.push({ "count":count, "plan":{"id":$(this).data("id")} });
+        }
       }
     });
     return promotions;
@@ -170,6 +180,7 @@
       "createdDatetime": moment().valueOf(),
       "entranceDatetime": null,
       "exitDatetime": null,
+      "totalPrice": 0,
       "id": 0,
       "payments": [],
       "promotions": [],
@@ -177,17 +188,21 @@
     };
     $("#item_id").val(item.id);
     $("#item_state").val(item.state);
+    $("#item_total_price").val(item.totalPrice);
     $("#item_customer_name").val(item.customer.name);
     $("#item_customer_sex option[value='"+item.customer.sex+"']").attr("selected", "selected");
     $("#item_customer_count").val(item.customerCount);
     $("#item_customer_tele").val(item.customer.telephone);
     $("#list_business input[type='checkbox']").prop("checked",false);
-    $("#_b_"+item.business.id).prop("checked",true);
+    if(item.business && item.business.id) {
+      $("#_b_"+item.business.id).prop("checked",true);
+    }
     _bindSource(item.source);
     _bindCustomerType(item.customerType);
     _bindPayments(item.payments);
     _bindPromotions(item.promotions);
-    computeSum();
+    $("#item_promotion_note").val(item.promotionNote);
+    $("#item_total_price").val(item.totalPrice);
     // 绑定时间信息
     var datetime = item.appointments ? item.appointments.confirmedDatetime : item.createdDatetime;
     $("#item_datetime").val(moment(datetime).format("YYYY-MM-DD HH:mm"));
@@ -198,11 +213,14 @@
       $("#btn_exit").hide();
       $("#item_entrance_datetime").parents("li").hide();
       $("#item_exit_datetime").parents("li").hide();
+      $("#item_cancel_datetime").parents("li").hide();
       if(item.id == 0) {
         // 新建
+        $("#btn_cancel").hide();
         $("#state_name").text("新建");
         $("#page_detail .content-block-title").attr("class", "content-block-title");
       } else {
+        $("#btn_cancel").show();
         $("#state_name").text("未支付");
         $("#page_detail .content-block-title").attr("class", "content-block-title color-danger");
       }
@@ -210,29 +228,46 @@
       $("#btn_save").show();
       $("#btn_extrnace").show();
       $("#btn_exit").hide();
+      $("#btn_cancel").hide();
       $("#item_entrance_datetime").parents("li").hide();
       $("#item_exit_datetime").parents("li").hide();
+      $("#item_cancel_datetime").parents("li").hide();
       $("#state_name").text("已支付");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-warning");
     } else if(item.state == "ENTRANCED") {
       $("#btn_save").hide();
       $("#btn_extrnace").hide();
       $("#btn_exit").show();
+      $("#btn_cancel").hide();
       $("#item_entrance_datetime").val(moment(item.entranceDatetime).format("YYYY-MM-DD HH:mm"));
       $("#item_entrance_datetime").parents("li").show();
       $("#item_exit_datetime").parents("li").hide();
+      $("#item_cancel_datetime").parents("li").hide();
       $("#state_name").text("已入场");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-primary");
     } else if(item.state == "EXITED") {
       $("#btn_save").hide();
       $("#btn_extrnace").hide();
       $("#btn_exit").hide();
+      $("#btn_cancel").hide();
       $("#item_entrance_datetime").val(moment(item.entranceDatetime).format("YYYY-MM-DD HH:mm"));
       $("#item_exit_datetime").val(moment(item.exitDatetime).format("YYYY-MM-DD HH:mm"));
       $("#item_entrance_datetime").parents("li").show();
       $("#item_exit_datetime").parents("li").show();
+      $("#item_cancel_datetime").parents("li").hide();
       $("#state_name").text("已离场");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-success");
+    } else if(item.state == "CANCELLED") {
+      $("#btn_save").hide();
+      $("#btn_extrnace").hide();
+      $("#btn_exit").hide();
+      $("#btn_cancel").hide();
+      $("#item_cancel_datetime").val(moment(item.cancelledDatetime).format("YYYY-MM-DD HH:mm"));
+      $("#item_cancel_datetime").parents("li").show();
+      $("#item_entrance_datetime").parents("li").hide();
+      $("#item_exit_datetime").parents("li").hide();
+      $("#state_name").text("已取消");
+      $("#page_detail .content-block-title").attr("class", "content-block-title");
     }
   }
 
@@ -270,21 +305,49 @@
       showDetail(id);
     });
 
-    $("button", li).click(function(e){
+    $("button.pay", li).click(function(e){
       e.stopPropagation();
-      var state = $(this).data("state");
-      if(state == "NEW") {
-        showDetail(id);
-      } else if(state == "PAYED") {
-        confirmEntrance(id);
-      } else if(state == "ENTRANCED") {
-        confirmExit(id);
-      } 
+      showDetail(id);
+    });
+
+    $("button.cancel", li).click(function(e){
+      e.stopPropagation();
+      confirmCancel(id);
+    });
+
+    $("button.entrance", li).click(function(e){
+      e.stopPropagation();
+      confirmEntrance(id);
+    });
+
+    $("button.exit", li).click(function(e){
+      e.stopPropagation();
+      confirmExit(id);
+    });
+  }
+
+  // 取消接待
+  function confirmCancel(id, goback) {
+    var name = $("#card_"+id+" .item-name").text();
+    var business = $("#card_"+id+" .item-business").text();
+    var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
+          + name + "<br/>主题：" +  business + "</div>";
+    $.confirm(content, "您确定取消接待吗？", function (value) {
+      $.showIndicator();
+      $.post("/orders/" + id + "/cancel", function(detail){
+        $.hideIndicator();
+        $.toast("接待已取消");
+        refreshDetail(detail);
+        bindDetail(detail);
+        if(goback) {
+          $.router.back("#page_list");
+        }
+      });
     });
   }
 
   // 确认入场
-  function confirmEntrance(id) {
+  function confirmEntrance(id, goback) {
     var name = $("#card_"+id+" .item-name").text();
     var business = $("#card_"+id+" .item-business").text();
     var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
@@ -299,9 +362,12 @@
             data : {"datetime":date},
             success : function(detail){
               $.hideIndicator();
-              $.toast("确认成功！");
+              $.toast("确认成功");
               refreshDetail(detail);
               bindDetail(detail);
+              if(goback) {
+                $.router.back("#page_list");
+              }
             }
           });
         } else {
@@ -314,7 +380,7 @@
   }
 
   // 确认离场
-  function confirmExit(id) {
+  function confirmExit(id, goback) {
     var name = $("#card_"+id+" .item-name").text();
     var business = $("#card_"+id+" .item-business").text();
     var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
@@ -329,9 +395,12 @@
             data : {"datetime":date},
             success : function(detail){
               $.hideIndicator();
-              $.toast("确认成功！");
+              $.toast("确认成功");
               refreshDetail(detail);
               bindDetail(detail);
+              if(goback) {
+                $.router.back("#page_list");
+              }
             }
           });
         } else {
@@ -356,26 +425,7 @@
       },
       dataType:"json", 
       success:function(list){
-        // 整体加载数据的情况
-        if(list && list.length > 0) {
-          if(list[0].datetime > UPPER_DATE ) {
-            UPPER_DATE = list[0].datetime;
-          }
-          if(list[list.length-1].datetime < LOWER_DATE ) {
-            LOWER_DATE = list[list.length-1].datetime;
-          }
-        }
-        var data = [];
-        $.each(list, function(i,item){
-          if(!CACHE[item.id]) {
-            CACHE[item.id] = true;
-            data.push(item);
-          }
-        });
-        callback(data);
-        if(data.length > 0) {
-          $("#card_empty").remove();
-        }
+        callback(list);
         LOADING = false;
       }
     });
@@ -414,7 +464,7 @@
   }
   function loadPromotions() {
     $.get("/promotions", function(list){
-      $("#list_promotion").html(tmpl("tmpl_promotion", list));
+      $("#list_promotion").prepend(tmpl("tmpl_promotion", list));
     });
   }
 
@@ -422,31 +472,10 @@
     var sum = 0;
     $("#list_payment input").each(function(){
       var amount = parseInt($(this).val());
-      if(amount) sum += amount;
+      var price = parseInt($(this).data("price"));
+      if(amount) sum += amount * price;
     });
-    $("#item_sum").text(sum);
-  }
-
-  function loadMore() {
-    if (LOWER_LOADING) return;
-    LOWER_LOADING = true;
-    $("#btn_more").hide();
-    $('.infinite-scroll-preloader .preloader').show();
-    apiGetOrders(LOWER_DATE, null, -1, function(list){
-      if(list.length == 0) {
-        $.detachInfiniteScroll($('.infinite-scroll'));
-        $('.infinite-scroll-preloader .preloader').hide();
-        $("#btn_more").show();
-        $.toast("已经没有更早的接待数据。");
-      } else {
-        $("#card_empty").remove();
-        $("#list").append(tmpl("tmpl_card", list));
-        $("#list>li").each(function(){
-          bindEvent(this);
-        });
-      }
-      LOWER_LOADING = false;
-    });
+    $("#item_total_price").val(sum);
   }
 
   /* 判断字符串是否为空 */
@@ -466,9 +495,9 @@
     $("#btn_create").click(function(){ showDetail(); });
     $("#btn_back").click(function(){ $.router.back("#page_list"); });
     $("#btn_save").click(function(){ saveDetail(); });
-    $("#btn_more").click(function(){ loadMore(); });
-    $("#btn_extrnace").click(function(){ confirmEntrance($("#item_id").val()); });
-    $("#btn_exit").click(function(){ confirmExit($("#item_id").val()); });
+    $("#btn_extrnace").click(function(){ confirmEntrance($("#item_id").val(), true);});
+    $("#btn_exit").click(function(){ confirmExit($("#item_id").val(), true);  });
+    $("#btn_cancel").click(function(){ confirmCancel($("#item_id").val(), true);});
     refresh();
 
     loadBusinesses();
@@ -479,26 +508,7 @@
 
     // 下拉刷新
     $(document).on('refresh', '.pull-to-refresh-content',function(e) {
-      if (UPPER_LOADING) return;
-      UPPER_LOADING = true;
-      apiGetOrders(UPPER_DATE, null, 1, function(list){
-        if(list.length == 0) {
-          $.toast("暂无最新的接待数据。");
-        } else {
-          $("#card_empty").remove();
-          $("#list").prepend(tmpl("tmpl_card", list));
-          $("#list>li").each(function(){
-            bindEvent(this);
-          });
-        }
-        $.pullToRefreshDone('.pull-to-refresh-content');
-        UPPER_LOADING = false;
-      });
-    });
-
-    // 向下滚动加载
-    $(document).on('infinite', '.infinite-scroll',function() {
-      loadMore();
+      refresh();
     });
   });
 

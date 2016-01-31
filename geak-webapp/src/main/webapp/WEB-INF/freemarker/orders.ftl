@@ -17,7 +17,7 @@
       var COMPANY = {"id":"${user.company.id}", "name":"${user.company.name}" };
     </script>
   </head>
-  <body class="theme-green">
+  <body>
     <!-- page 容器 -->
     <div id="page_list" class="page page-current">
       <!-- 标题栏 -->
@@ -44,18 +44,41 @@
       </nav>
 
       <!-- 这里是页面内容区 -->
-      <div class="content pull-to-refresh-content infinite-scroll">
+      <div class="content pull-to-refresh-content">
         <div class="pull-to-refresh-layer">
           <div class="preloader"></div>
           <div class="pull-to-refresh-arrow"></div>
         </div><!-- /.pull-to-refresh-layer -->
+
+        <div class="content-block-title color-danger">未支付的接待</div>
         <div class="list-block cards-list">
-          <ul id="list"></ul>
+          <ul id="list_new"></ul>
+          <ul id="list_new_empty"><li class="card"><div class="card-header">暂无未支付的接待</div></li></ul>
         </div><!-- /.cards-list -->
-        <div class="infinite-scroll-preloader">
-          <div class="preloader" style="display:none;"></div>
-          <a id="btn_more" class="button button-round">加载更多过往接待数据...</a>
-        </div><!-- /.infinite-scroll-preloader -->
+
+        <div class="content-block-title color-warning">已支付的接待</div>
+        <div class="list-block cards-list">
+          <ul id="list_payed"></ul>
+          <ul id="list_payed_empty"><li class="card"><div class="card-header">暂无已支付的接待</div></li></ul>
+        </div><!-- /.cards-list -->
+
+        <div class="content-block-title color-primary">已入场的接待</div>
+        <div class="list-block cards-list">
+          <ul id="list_entranced"></ul>
+          <ul id="list_entranced_empty"><li class="card"><div class="card-header">暂无已入场的接待</div></li></ul>
+        </div><!-- /.cards-list -->
+
+        <div class="content-block-title color-success">已离场的接待</div>
+        <div class="list-block cards-list">
+          <ul id="list_exited"></ul>
+          <ul id="list_exited_empty"><li class="card"><div class="card-header">暂无已离场的接待</div></li></ul>
+        </div><!-- /.cards-list -->
+
+        <div class="content-block-title">已取消的接待</div>
+        <div class="list-block cards-list">
+          <ul id="list_cancelled"></ul>
+          <ul id="list_cancelled_empty"><li class="card"><div class="card-header">暂无已取消的接待</div></li></ul>
+        </div><!-- /.cards-list -->
       </div><!-- /.content -->
     </div><!-- /.page -->
 
@@ -65,8 +88,9 @@
           <span class="icon icon-left"></span> 返回
         </button>
         <button id="btn_exit" class="button button-success button-nav pull-right"> 确认离场 </button>
-        <button id="btn_extrnace" class="button button-primary button-nav pull-right"> 确认入场 </button>
+        <button id="btn_extrnace" class="button button-warning button-nav pull-right"> 确认入场 </button>
         <button id="btn_save" class="button button-primary button-nav pull-right"> 保存 </button>
+        <button id="btn_cancel" class="button button-danger button-nav pull-right"> 取消接待 </button>
         <h1 class="title">接待详情</h1>
       </header>
       <div class="content">
@@ -111,9 +135,19 @@
                 </div>
               </div>
             </li>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title label color-danger">取消时间</div>
+                  <div class="item-input">
+                    <input id="item_cancel_datetime" type="text" readonly="readonly"/>
+                  </div>
+                </div>
+              </div>
+            </li>
           </ul>
         </div><!-- /.list-block -->
-        <div class="content-block-title color-success">支付总额： ￥ <b id="item_sum">0</b></div>
+        <div class="content-block-title color-success">支付总额：￥ <input id="item_total_price" type="text" /></div>
         <div class="list-block">
           <ul id="list_payment"></ul>
         </div><!-- /.list-block -->
@@ -160,7 +194,18 @@
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">优惠信息</div>
         <div class="list-block">
-          <ul id="list_promotion"></ul>
+          <ul id="list_promotion">
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title label">其他优惠</div>
+                  <div class="item-input">
+                    <input id="item_promotion_note" type="text" />
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">玩家身份</div>
         <div class="list-block">
@@ -202,25 +247,31 @@
         </div>
         <div class="card-footer">
           {% if (o.state == 'NEW') { %}
-              <label class="item-title color-danger">等待支付</label>
-              <button class="item-after button button-danger button-fill" data-id="{%= o.id %}" data-state="{%= o.state %}">
+              <button class="cancel button button-danger button-fill item-title" data-id="{%= o.id %}">
+                取消接待</button>
+              <button class="pay item-after button button-primary button-fill" data-id="{%= o.id %}">
                 确认支付</button>
           {% } %}
           {% if (o.state == 'PAYED') { %}
               <label class="item-title color-warning">等待入场</label>
-              <button class="item-after button button-warning button-fill" data-id="{%= o.id %}" data-state="{%= o.state %}">
+              <button class="entrance item-after button button-warning button-fill" data-id="{%= o.id %}">
                 确认入场</button>
           {% } %}
           {% if (o.state == 'ENTRANCED') { %}
               <label class="item-title color-primary">等待离场，入场时间：
                 {%= moment(new Date(o.entranceDatetime)).format("MM月DD日 HH:mm") %}
               </label>
-              <button class="item-after button button-primary button-fill" data-id="{%= o.id %}" data-state="{%= o.state %}">
+              <button class="exit item-after button button-primary button-fill" data-id="{%= o.id %}">
                 确认离场</button>
           {% } %}
           {% if (o.state == 'EXITED') { %}
               <label class="item-title color-success">已离场：
                 {%= moment(new Date(o.exitDatetime)).format("MM月DD日 HH:mm") %}
+              </label>
+          {% } %}
+          {% if (o.state == 'CANCELLED') { %}
+              <label class="item-title">已取消：
+                {%= moment(new Date(o.cancelledDatetime)).format("MM月DD日 HH:mm") %}
               </label>
           {% } %}
         </div>
@@ -301,8 +352,9 @@
               <div class="item-inner">
                 <label class="item-title label">{%= o[i].name %}</label>
                 <label class="item-input">                    
-                  <input id="_m_{%= o[i].id %}" type="text" value="" data-id="{%= o[i].id %}" />
+                  <input id="_m_{%= o[i].id %}" type="text" data-price="{%= o[i].price %}" data-id="{%= o[i].id %}" />
                 </label>
+                <label class="item-after">{% if(o[i].price == 1) print("元"); else print("张"); %}</label>
               </div>
             </div>
           </div>
