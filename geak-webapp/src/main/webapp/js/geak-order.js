@@ -167,7 +167,7 @@
       "business": {},
       "customer": { "name": "", "sex": "M", "telephone": "" },
       "customerCount": 5,
-      "createdDatetime": new Date().getTime(),
+      "createdDatetime": moment().valueOf(),
       "entranceDatetime": null,
       "exitDatetime": null,
       "id": 0,
@@ -290,7 +290,7 @@
     var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
           + name + "<br/>主题：" +  business + "<br/>入场时间：</div>";
     $.prompt(content,"确认玩家入场", function (value) {
-        var date = new Date(value).getTime();
+        var date = moment(value).valueOf();
         if(date) {
           $.showIndicator();
           $.ajax({
@@ -309,7 +309,7 @@
         }
       }
     );
-    var now = moment(new Date());
+    var now = moment();
     $("div.modal-inner input.modal-text-input").val(now.format("YYYY-MM-DD HH:mm"));
   }
 
@@ -320,7 +320,7 @@
     var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
           + name + "<br/>主题：" +  business + "<br/>离场时间：</div>";
     $.prompt(content,"确认玩家离场", function (value) {
-        var date = new Date(value).getTime();
+        var date = moment(value).valueOf();
         if(date) {
           $.showIndicator();
           $.ajax({
@@ -339,7 +339,7 @@
         }
       }
     );
-    var now = moment(new Date());
+    var now = moment();
     $("div.modal-inner input.modal-text-input").val(now.format("YYYY-MM-DD HH:mm"));
   }
 

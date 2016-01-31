@@ -102,7 +102,7 @@
         "telephone": $("#item_customer_tele").val() 
       },
       "customerCount": parseInt($("#item_customer_count").val()),
-      "datetime": new Date($("#item_datetime").val()).getTime(),
+      "datetime": moment($("#item_datetime").val()).valueOf(),
       "id": $("#item_id").val(),
       "state": $("#item_state").val(),
       "company": COMPANY
@@ -136,7 +136,7 @@
       "businesses": [],
       "customer": { "name": "", "sex": "M", "telephone": "" },
       "customerCount": 5,
-      "datetime": new Date().getTime() + 60*60*1000,
+      "datetime": moment().valueOf() + 60*60*1000,
       "id": 0,
       "state": "NEW"
     };
@@ -187,15 +187,15 @@
     var content = "<div style='text-align:left;margin-bottom:-0.5rem'>玩家：" 
           + name + "<br/>主题：" +  business + "<br/>到场时间：</div>";
     $.prompt(content,"确认玩家到场", function (value) {
-        var date = new Date(value).getTime();
-        if(date) {
+        var date = moment(value).valueOf();
+        if(date>0) {
           apiComfirmAppointment(id, date);
         } else {
           $.toast("请输入正确的到场时间！");
         }
       }
     );
-    var now = moment(new Date());
+    var now = moment();
     $("div.modal-inner input.modal-text-input").val(now.format("YYYY-MM-DD HH:mm"));
   }
 
@@ -272,7 +272,7 @@
       $("#list_business").html(tmpl("tmpl_business", list));
 
       $("#list_business input[type='checkbox'],#item_datetime").change(function(){
-        var datetime = parseInt(new Date($("#item_datetime").val()).getTime());
+        var datetime = moment($("#item_datetime").val()).valueOf();
         var ids = [];
         $("#list_business input:checked").each(function(){
           ids.push($(this).val());
