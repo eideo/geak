@@ -124,6 +124,9 @@
     if(!detail.datetime){
       $.toast("请输入正确的预约时间！");
       return false;
+    } else if(detail.datetime < new Date().getTime()){
+      $.toast("请输入合理的预约时间！");
+      return false;
     } else if(isNullOrEmpty(detail.customer.name)){
       $.toast("请输入玩家姓名！");
       return false;
@@ -312,14 +315,12 @@
 
   // init
   $(function(){
-    $.init();
 
     $("#btn_refresh").click(function(){ refresh(); });
     $("#btn_create").click(function(){ showDetail(); });
     $("#btn_back").click(function(){ $.router.back("#page_list"); });
     $("#btn_save").click(function(){ saveDetail(); });
     $("#btn_more").click(function(){ loadMore(); });
-    refresh();
 
     loadBusinesses();
 
@@ -328,12 +329,18 @@
       refresh(true);
     });
 
-    $("#item_datetime").datetimePicker({
-      toolbarTemplate: '<header class="bar bar-nav">\
-      <button class="button button-link pull-right close-picker">确定</button>\
-      <h1 class="title">选择日期和时间</h1>\
-      </header>'
+    $(document).on("pageInit", function() {
+      $("#item_datetime").datetimePicker({
+        toolbarTemplate: '<header class="bar bar-nav">\
+        <button class="button button-link pull-right close-picker">确定</button>\
+        <h1 class="title">选择日期和时间</h1>\
+        </header>'
+      });
     });
+
+    $.init();
+    
+    refresh();
   });
 
 })(jQuery);

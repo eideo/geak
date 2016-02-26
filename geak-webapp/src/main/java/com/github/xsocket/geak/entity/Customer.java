@@ -13,6 +13,8 @@ public class Customer extends AbstractEntity {
   private static final String SEX_MALE = "M";
   /** 性别码 - 女性 */
   private final String SEX_FEMALE = "F";
+  /** 性别码 - 同学 */
+  private final String SEX_STUDENT = "S";
 
   /** 电话 */
   protected String telephone;
@@ -32,7 +34,8 @@ public class Customer extends AbstractEntity {
   }
 
   public void setSex(String sex) {
-    this.sex = SEX_FEMALE.equalsIgnoreCase(sex) ? SEX_FEMALE : SEX_MALE;
+    this.sex = SEX_MALE.equalsIgnoreCase(sex) ? SEX_MALE : 
+        (SEX_FEMALE.equalsIgnoreCase(sex) ? SEX_FEMALE : SEX_STUDENT );
   }
 
 }

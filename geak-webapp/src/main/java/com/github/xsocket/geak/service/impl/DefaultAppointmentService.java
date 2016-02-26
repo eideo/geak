@@ -220,6 +220,10 @@ public class DefaultAppointmentService implements AppointmentService {
       for(Customer temp : customers) {
         if(temp.getName().equals(customer.getName())) {
           // 记录客户信息包含:电话+名字
+          if(!temp.getSex().equalsIgnoreCase(customer.getSex())) {
+            temp.setSex(customer.getSex());
+            customerDao.update(temp);
+          }
           return temp;
         }
       }

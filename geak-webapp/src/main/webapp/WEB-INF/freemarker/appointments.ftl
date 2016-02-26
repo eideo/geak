@@ -94,6 +94,7 @@
                     <select id="item_customer_sex">
                       <option value="M">先生</option>
                       <option value="F">女士</option>
+                      <option value="S">同学</option>
                     </select>
                   </div>
                 </div>
@@ -202,7 +203,7 @@
           <div class="card-content-inner row">
             <div class="col-80 item-name">
               {%= o.customer.name %}  
-              {% if (o.customer.sex == 'M')print('先生'); else print('女士'); %}
+              {% if (o.customer.sex == 'M')print('先生'); else if(o.customer.sex == 'F') print('女士'); else print('同学'); %}
               ({%= o.customer.telephone %}) 
             </div>
             <div class="col-20" style="text-align:right;"><b>{%= o.customerCount %}</b> 人</div>
