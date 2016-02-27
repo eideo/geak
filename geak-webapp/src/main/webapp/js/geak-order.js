@@ -1,6 +1,8 @@
 (function($){
   var SOURCES = ["老玩家","团购","连续场","地推","朋友介绍","搜索","各店互推","其他","合作商"];
   var CUSTOMER_TYPES = ["小学生", "中学生", "大学生", "青年人", "中年人", "老年人"];
+  var COMPANIES = [{"id":1, "name":"大南门店" },{"id":2, "name":"体育路店" },{"id":3, "name":"食品街店" },
+                   {"id":4, "name":"柳巷店" },{"id":5, "name":"长风店" },{"id":6, "name":"千峰店" }];
   var LOADING = false;
 
   // 获取预约的起始时间
@@ -168,13 +170,19 @@
   function _parsePromotion() {
     var promotions = [];
     $("#list_promotion input").each(function(){ 
-      if($(this).attr("id") != "item_promotion_note") {  // 忽略其他优惠
+      if($(this).attr("id") != "item_promotion_note" // 忽略其他优惠
+          && $(this).attr("id") != "_p_6") {  // 打车劵另行处理
         var count = parseInt($(this).val());
         if(count > 0) {
-          promotions.push({ "count":count, "plan":{"id":$(this).data("id")} });
+          promotions.push({ "count":count, "plan":{"id":$(this).data("id")}, "note":"" });
         }
       }
     });
+    // 处理打车券
+    var price = parseInt($("#_p_6").val());
+    if(price > 0) {
+      promotions.push({ "count":price, "plan":{"id":6}, "note":$("#_p_6_note option:selected").val() });
+    }
     return promotions;
   }
 
@@ -299,8 +307,14 @@
   }
   function _bindPromotions(promotions) {
     $("#list_promotion input").val("");
+    $("#_p_6_note option").removeAttr("selected");
     $.each(promotions, function(i,item) {
-       $("#_p_"+item.plan.id).val(item.count);
+        var id = "#_p_"+item.plan.id;
+        $(id).val(item.count);
+        // 特殊处理打车劵
+        if(id=="#_p_6") {
+          $("#_p_6_note option[value='"+item.note+"']").attr("selected", "selected");
+        }
     });
   }
 
@@ -470,6 +484,7 @@
   }
   function loadPromotions() {
     $.get("/promotions", function(list){
+      list.splice(5,1); // 打车劵特殊处理
       $("#list_promotion").prepend(tmpl("tmpl_promotion", list));
     });
   }
@@ -493,9 +508,24 @@
     }
   }
 
+  function initPage() {
+    // 打车劵来源信息初始化
+    var list = [1,2,3,4,5,6];
+    if(COMPANY.id == "2"||COMPANY.id == "5"||COMPANY.id == "6") {
+      list.splice(COMPANY.id - 1, 1);
+    } else {
+      list = [2,5,6];
+    }
+    $.each(list, function(i,v){
+      var cname = COMPANIES[v-1].name;
+      $("#_p_6_note").append('<option value="'+cname+'">'+cname+'</option>');
+    });
+  }
+
   // init
   $(function(){
     $.init();
+    initPage();
 
     $("#btn_refresh").click(function(){ refresh(); });
     $("#btn_create").click(function(){ showDetail(); });

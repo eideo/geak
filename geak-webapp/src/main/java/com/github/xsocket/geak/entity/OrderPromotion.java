@@ -7,12 +7,14 @@ package com.github.xsocket.geak.entity;
  */
 public class OrderPromotion extends AbstractEntity {
 
-  private static final long serialVersionUID = 7572331794400778620L;
+  private static final long serialVersionUID = -1500996608289146674L;
   
   /** 促销数量 */
   protected Integer count;
   /** 促销计划 */
   protected PromotionPlan plan;
+  /** 备注 */
+  protected String note;
   
   public OrderPromotion() {
     plan = new PromotionPlan();
@@ -37,6 +39,14 @@ public class OrderPromotion extends AbstractEntity {
 
   public void setPlan(PromotionPlan plan) {
     this.plan = plan;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 
 }

@@ -212,6 +212,7 @@ CREATE TABLE geak_order_payment (
   order_id   int NOT NULL COMMENT '订单标识',
   payment_id int NOT NULL COMMENT '支付渠道标识',
   amount     int NOT NULL COMMENT '消费金额(分)',
+  note  varchar(255) NULL COMMENT '备注信息',
   PRIMARY KEY (order_id,payment_id),
   CONSTRAINT fk_order_payment1 FOREIGN KEY (order_id) REFERENCES geak_order (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_order_payment2 FOREIGN KEY (payment_id) REFERENCES geak_payment_mode (id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -224,6 +225,7 @@ CREATE TABLE geak_order_promotion (
   order_id     int NOT NULL COMMENT '订单标识',
   promotion_id int NOT NULL COMMENT '促销活动标识',
   count        int NOT NULL COMMENT '促销量',
+  note    varchar(255) NULL COMMENT '备注信息',
   PRIMARY KEY (order_id,promotion_id),
   CONSTRAINT pk_order_promotion1 FOREIGN KEY (order_id) REFERENCES geak_order (id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT pk_order_promotion2 FOREIGN KEY (promotion_id) REFERENCES geak_promotion_plan (id) ON DELETE CASCADE ON UPDATE CASCADE

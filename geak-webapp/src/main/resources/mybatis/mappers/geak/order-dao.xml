@@ -140,24 +140,26 @@
   <!-- 插入订单的支付信息 -->
   <insert id="insertPayments">
     INSERT INTO geak_order_payment
-      (order_id, payment_id, amount) 
+      (order_id, payment_id, amount, note) 
     VALUES 
       <foreach collection="payments" item="para" separator="," >  
         ( #{order.id,     jdbcType=Integer, jdbcType=INTEGER}, 
           #{para.mode.id, jdbcType=Integer, jdbcType=INTEGER}, 
-          #{para.amount,  jdbcType=Integer, jdbcType=INTEGER} )
+          #{para.amount,  jdbcType=Integer, jdbcType=INTEGER},
+          #{para.note,    jdbcType=VARCHAR, javaType=String} )
       </foreach> 
   </insert>
   
   <!-- 插入订单的促销信息 -->
   <insert id="insertPromotions">
     INSERT INTO geak_order_promotion
-      (order_id, promotion_id, count) 
+      (order_id, promotion_id, count, note) 
     VALUES 
       <foreach collection="promotions" item="para" separator="," >  
         ( #{order.id,     jdbcType=Integer, jdbcType=INTEGER}, 
           #{para.plan.id, jdbcType=Integer, jdbcType=INTEGER}, 
-          #{para.count,   jdbcType=Integer, jdbcType=INTEGER} )
+          #{para.count,   jdbcType=Integer, jdbcType=INTEGER},
+          #{para.note,    jdbcType=VARCHAR, javaType=String} )
       </foreach> 
   </insert>
 

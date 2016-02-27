@@ -196,6 +196,31 @@
         <div class="content-block-title color-success">优惠信息</div>
         <div class="list-block">
           <ul id="list_promotion">
+            <li class="row">
+              <div class="col-50"> 
+                <div class="item-content">
+                  <div class="item-inner">
+                    <label class="item-title label">打车劵</label>
+                    <label class="item-input">
+                      <input id="_p_6" type="text" value="" data-id="6" style="text-align:right">
+                    </label>
+                    <label class="item-after">元</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-50"> 
+                <div class="item-content">
+                  <div class="item-inner">
+                    <label class="item-title label">来源</label>
+                    <div class="item-input">
+                      <select id="_p_6_note">
+                        <option value="" selected="selected">无</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
             <li>
               <div class="item-content">
                 <div class="item-inner">

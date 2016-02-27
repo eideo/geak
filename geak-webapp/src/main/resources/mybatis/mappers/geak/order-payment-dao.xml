@@ -8,11 +8,12 @@
     <result property="amount"    column="amount"       javaType="Integer" jdbcType="INTEGER" />
     <result property="mode.id"   column="payment_id"   javaType="Integer" jdbcType="INTEGER" />
     <result property="mode.name" column="payment_name" javaType="String"  jdbcType="VARCHAR" />
+    <result property="note"      column="note"         javaType="String"  jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- 查询订单关联支付信息 -->
   <select id="selectOrderPayments" resultMap="com.github.xsocket.geak.dao.OrderPaymentDao.result">
-    SELECT op.amount, op.payment_id, pm.name as payment_name
+    SELECT op.amount, op.payment_id, pm.name as payment_name, op.note
     FROM geak_order_payment op
     JOIN geak_payment_mode pm ON op.payment_id = pm.id
     WHERE op.order_id = #{id,javaType=Integer,jdbcType=INTEGER}

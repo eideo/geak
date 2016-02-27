@@ -7,12 +7,14 @@ package com.github.xsocket.geak.entity;
  */
 public class OrderPayment extends AbstractEntity{
 
-  private static final long serialVersionUID = -6050684889691146502L;
+  private static final long serialVersionUID = 6726903621108495760L;
   
   /** 支付方式 */
   protected PaymentMode mode;
   /** 支付金额(分) */
   protected Integer amount;
+  /** 备注 */
+  protected String note;
   
   public OrderPayment() {
     this.mode = new PaymentMode();
@@ -37,5 +39,13 @@ public class OrderPayment extends AbstractEntity{
 
   public void setAmount(Integer amount) {
     this.amount = amount;
+  }
+
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 }

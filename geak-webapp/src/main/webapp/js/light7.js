@@ -5226,7 +5226,6 @@ Device/OS Detection
   }
 
   Router.prototype.onpopstate = function(d) {
-    console.log("popstate");
     var state = d.state;
     if(!state) {
       return true;
