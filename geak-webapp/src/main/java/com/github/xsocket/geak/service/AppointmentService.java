@@ -2,11 +2,13 @@ package com.github.xsocket.geak.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.xsocket.geak.entity.Appointment;
 import com.github.xsocket.geak.entity.Order;
+import com.github.xsocket.util.Pair;
 
 /**
  * 预约相关的业务服务。
@@ -25,6 +27,8 @@ public interface AppointmentService {
    * @return
    */
   List<Appointment> query(Integer companyId, Date start, Date end, String business, Integer page);
+  
+  List<Appointment> query(Integer companyId, Date start, Date end, Set<Pair<String, String>> timespan, String business);
   
   Appointment query(Integer id);
   

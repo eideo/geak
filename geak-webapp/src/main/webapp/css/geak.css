@@ -7,3 +7,10 @@
 
 #list_payment input { text-align: right; }
 #item_total_price { border:none; background-color: transparent; }
+
+.bar-header-secondary .icon-down { font-size: .5rem; }
+
+#search_time .row .col-33 { width: 32.333333333333332%; margin-left: 1%; padding: 0 .5rem;}
+.popover .list-block { font-family: "iconfont-sm" !important; font-size: 0.8rem; }
+.popover .list-button.active{ color: #f6383a; }
+.popover .list-button.active:before { position: absolute;top: -.5rem;font-size: 1.2rem; content: "\e608"; }

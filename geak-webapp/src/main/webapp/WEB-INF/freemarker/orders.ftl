@@ -21,7 +21,7 @@
     <!-- page 容器 -->
     <div id="page_list" class="page page-current">
       <!-- 标题栏 -->
-      <header class="bar bar-nav">
+      <header class="bar bar-nav bar-standard">
         <button id="btn_refresh" class="button button-link button-nav pull-left">
           <span class="icon icon-refresh"></span> 刷新
         </button>
@@ -30,6 +30,19 @@
         </button>
         <h1 class="title">近期接待</h1>
       </header>
+      <nav class="bar bar-header-secondary">
+        <div class="buttons-row">
+          <button id="btn_search_date" class="button open-popover" data-popover=".popover-search-date">
+            <span id="txt_search_date">今天</span> <span class="icon icon-down"></span>
+          </button>
+          <button id="btn_search_time" class="button open-popover" data-popover=".popover-search-time">
+            <span id="txt_search_time">所有时间</span> <span class="icon icon-down"></span>
+          </button>
+          <button id="btn_search_business" class="button open-popover" data-popover=".popover-search-business">
+            <span id="txt_search_business">所有主题</span> <span class="icon icon-down"></span>
+          </button>
+        </div>
+      </nav>
 
       <!-- 工具栏 -->
       <nav class="bar bar-tab">
@@ -243,6 +256,40 @@
         </div><!-- /.list-block -->
       </div><!-- /.content-block -->
     </div><!-- /.page page-detail -->
+
+    <div class="popover popover-search-time">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul id="search_time">
+            <li class="row">
+              <a href="#" class="col-33 list-button item-link time-cancel close-popover">取消</a>
+              <a href="#" class="col-33 list-button item-link time-all active">所有时间</a>
+              <a href="#" class="col-33 list-button item-link time-ok">确定</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="popover popover-search-business">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul id="search_business">
+            <li><a href="#" class="list-button item-link business-all active">所有主题</a></li>
+            <li><a href="#" class="list-button item-link business-ok">确定</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="popover popover-search-date">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul id="search_date"></ul>
+        </div>
+      </div>
+    </div>
     
     <script type="text/x-tmpl" id="tmpl_card">
       {% for (var i=0; i<o.length; i++) { %}
@@ -407,6 +454,27 @@
       {% } %}
         </li>
     </script>
+    <script type="text/x-tmpl" id="tmpl_search_time">
+      {% for (var i=0; i<o.length; i++) { %}
+        {% if (i%3 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <a href="#" class="col-33 list-button item-link time-span">{%= o[i] %}</a>
+      {% } %}
+        </li>
+    </script>
+    <script type="text/x-tmpl" id="tmpl_search_business">
+      {% for (var i=0; i<o.length; i++) { %}
+        <li><a href="#" class="list-button item-link business-item" data-id="{%= o[i].id %}">{%= o[i].alias %}</a></li>
+      {% } %}
+    </script>
+    <script type="text/x-tmpl" id="tmpl_search_date">
+      {% for (var i=0; i<o.length; i++) { %}
+        <li><a href="#" class="list-button item-link date-item" data-index="{%=i%}">{%= o[i].name %}</a></li>
+      {% } %}
+    </script>
 
     <!-- 你的html代码 -->
     <script type='text/javascript' src='js/jquery.min.js'></script>
@@ -414,6 +482,7 @@
     <script type='text/javascript' src='js/moment.min.js'></script>
     <script type='text/javascript' src='js/tmpl.min.js'></script>
     <script type='text/javascript' src='js/json2.min.js'></script>
+    <script type='text/javascript' src='js/geak.js'></script>
     <script type='text/javascript' src='js/geak-order.js'></script>
   </body>
 </html>

@@ -59,7 +59,7 @@
         t.id as customer_id, t.name as customer_name, t.sex as customer_sex, t.telephone,
         c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias,
         b.id AS business_id, b.name AS business_name, b.alias AS business_alias,
-        a.id AS appointment_id, a.appointment_date, a.confirmed_date
+        a.id AS appointment_id, o.created_date, a.confirmed_date
     FROM geak_order o
           JOIN geak_customer    t ON o.customer_id    = t.id
           JOIN geak_company     c ON o.company_id     = c.id
@@ -86,6 +86,38 @@
       </if>
       <if test="end != null">
           AND o.created_date <![CDATA[<]]> #{end,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+    ORDER BY o.id
+  </select>
+  
+  <!-- 按日期、时间、主题查询订单 -->
+  <select id="selectByQuery" resultMap="com.github.xsocket.geak.dao.OrderDao.result" 
+    flushCache="false" useCache="true">
+    SELECT  <include refid="_select_order" />
+    <where>
+      <if test="companyId != null">
+        o.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="start != null">
+        AND TO_DAYS(o.created_date) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
+      </if>
+      <if test="end != null">
+        AND TO_DAYS(o.created_date) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+      </if>
+      <if test="timespan != null">
+        AND (
+          <foreach collection="timespan" item="pair" separator="OR" >  
+            TIME_TO_SEC(o.created_date) 
+                BETWEEN
+            TIME_TO_SEC(#{pair.left,jdbcType=VARCHAR,javaType=String})
+                AND
+            TIME_TO_SEC(#{pair.right,jdbcType=VARCHAR,javaType=String})
+          </foreach>
+        )
+      </if>
+      <if test="business != null">
+        AND o.business_id IN ( ${business} )
       </if>
     </where>
     ORDER BY o.id

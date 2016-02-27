@@ -26,6 +26,8 @@ public class Appointment extends AbstractEntity {
   protected String state;
   /** 预约备注 */
   protected String note;
+  /** 预约来源，搜索、老玩家、朋友介绍... */
+  protected String source;
   /** 预约所属公司(门店) */
   protected Company company;
   /** 预约的业务列表 */
@@ -93,6 +95,14 @@ public class Appointment extends AbstractEntity {
 
   public void setBusinesses(List<Business> businesses) {
     this.businesses = businesses;
+  }
+
+  public String getSource() {
+    return source;
+  }
+
+  public void setSource(String source) {
+    this.source = source;
   }
 
   public String getNote() {

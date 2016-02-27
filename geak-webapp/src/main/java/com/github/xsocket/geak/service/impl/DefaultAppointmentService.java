@@ -52,6 +52,11 @@ public class DefaultAppointmentService implements AppointmentService {
   
   @Autowired
   protected ActionLogDao logDao;
+  
+  @Override
+  public List<Appointment> query(Integer companyId, Date start, Date end, Set<Pair<String, String>> timespan, String business) {
+    return appointmentDao.selectByQuery(companyId, start, end, timespan, business);
+  }
 
   @Override
   public List<Appointment> query(Integer companyId, Date start, Date end, String business, Integer page) {
@@ -113,6 +118,7 @@ public class DefaultAppointmentService implements AppointmentService {
       order.setCustomer(appointment.getCustomer());
       order.setCustomerCount(appointment.getCustomerCount());
       order.setCompany(appointment.getCompany());
+      order.setSource(appointment.getSource());
       order.setState(STATE_NEW);
       order.setCreatedDatetime(date);
       updated = orderDao.insert(order);

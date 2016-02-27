@@ -15,6 +15,7 @@
     <result property="customerCount"     column="customer_count"   javaType="Integer" jdbcType="INTEGER" />
     <result property="state"             column="state"            javaType="String"  jdbcType="VARCHAR" />
     <result property="note"              column="note"             javaType="String"  jdbcType="VARCHAR" />
+    <result property="source"            column="source"           javaType="String"  jdbcType="VARCHAR" />
     <!-- 关联客户数据 -->
     <association property="customer" javaType="com.github.xsocket.geak.entity.Customer">
       <id     property="id"        column="customer_id"   javaType="Integer" jdbcType="INTEGER" />
@@ -74,8 +75,42 @@
     ORDER BY a.appointment_date
   </select>
   
+  <!-- 按日期、时间、主题查询预约 -->
+  <select id="selectByQuery" resultMap="com.github.xsocket.geak.dao.AppointmentDao.result" 
+    flushCache="false" useCache="true">
+    SELECT  <include refid="_select_appointment" />
+      LEFT JOIN geak_appointment_business ab ON a.id = ab.appointment_id
+      LEFT JOIN geak_business b ON b.id = ab.business_id
+    <where>
+      <if test="companyId != null">
+        a.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="start != null">
+        AND TO_DAYS(a.appointment_date) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
+      </if>
+      <if test="end != null">
+        AND TO_DAYS(a.appointment_date) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+      </if>
+      <if test="timespan != null">
+        AND (
+          <foreach collection="timespan" item="pair" separator="OR" >  
+            TIME_TO_SEC(a.appointment_date) 
+                BETWEEN
+            TIME_TO_SEC(#{pair.left,jdbcType=VARCHAR,javaType=String})
+                AND
+            TIME_TO_SEC(#{pair.right,jdbcType=VARCHAR,javaType=String})
+          </foreach>
+        )
+      </if>
+      <if test="business != null">
+        AND ab.business_id IN ( ${business} )
+      </if>
+    </where>
+    ORDER BY a.appointment_date
+  </select>
+  
   <sql id="_select_appointment">
-      a.id, a.appointment_date, a.confirmed_date, a.cancelled_date, a.customer_count, a.state, a.note,
+      a.id, a.appointment_date, a.confirmed_date, a.cancelled_date, a.customer_count, a.state, a.note, a.source,
         customer.id as customer_id, customer.name as customer_name, customer.sex as customer_sex, customer.telephone,
         c.id AS company_id, c.name AS company_name, c.alias AS company_alias, c.address AS company_address
     FROM geak_appointment a
@@ -92,7 +127,7 @@
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_appointment 
-      (appointment_date, confirmed_date, cancelled_date, customer_count, customer_id, company_id, state, note) 
+      (appointment_date, confirmed_date, cancelled_date, customer_count, customer_id, company_id, state, note, source) 
     VALUES 
       ( #{datetime,jdbcType=TIMESTAMP}, 
         #{confirmedDatetime,jdbcType=TIMESTAMP}, 
@@ -101,7 +136,8 @@
         #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{state,jdbcType=VARCHAR}, 
-        #{note,jdbcType=VARCHAR} )
+        #{note,jdbcType=VARCHAR}, 
+        #{source,jdbcType=VARCHAR} )
   </insert>
   
   <update id="update" flushCache="true">
@@ -114,6 +150,7 @@
       <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
       <if test="note != null">note = #{note,jdbcType=VARCHAR},</if>
+      <if test="source != null">source = #{source,jdbcType=VARCHAR},</if>
     </set>
     WHERE 
       id = #{id,jdbcType=Integer,jdbcType=INTEGER}

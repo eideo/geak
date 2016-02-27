@@ -51,6 +51,14 @@ public class AppointmentDaoTestCase extends AbstractTestCase {
     customerDao.delete(customer);
   }
   
+  public void testQuery() {
+    Set<Pair<String, String>> pairs = Sets.newHashSet();
+    pairs.add(DefaultPair.newPair("09:00", "10:00"));
+    pairs.add(DefaultPair.newPair("13:00", "15:00"));
+    pairs.add(DefaultPair.newPair("23:00", "24:00"));
+    dao.selectByQuery(1, new Date(), new Date(), pairs, "1,2,3");
+  }
+  
   @Test
   public void testBasicDao() {
     

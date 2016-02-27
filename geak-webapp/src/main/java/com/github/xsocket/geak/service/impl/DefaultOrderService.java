@@ -2,6 +2,7 @@ package com.github.xsocket.geak.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import com.github.xsocket.geak.entity.ActionLog;
 import com.github.xsocket.geak.entity.Customer;
 import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.service.OrderService;
+import com.github.xsocket.util.Pair;
 
 /**
  * 默认订单服务实现类。
@@ -41,6 +43,11 @@ public class DefaultOrderService implements OrderService {
   
   @Autowired
   protected ActionLogDao logDao;
+  
+  @Override
+  public List<Order> query(Integer companyId, Date start, Date end, Set<Pair<String, String>> timespan, String business) {
+    return orderDao.selectByQuery(companyId, start, end, timespan, business);
+  }
 
   @Override
   public List<Order> query(Integer companyId, Date start, Date end, Integer page) {

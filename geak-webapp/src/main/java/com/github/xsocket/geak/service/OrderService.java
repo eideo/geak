@@ -2,10 +2,12 @@ package com.github.xsocket.geak.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.xsocket.geak.entity.Order;
+import com.github.xsocket.util.Pair;
 
 public interface OrderService {
   
@@ -18,6 +20,8 @@ public interface OrderService {
    * @return
    */
   List<Order> query(Integer companyId, Date start, Date end, Integer page);
+  
+  List<Order> query(Integer companyId, Date start, Date end, Set<Pair<String, String>> timespan, String business);
   
   Order query(Integer id);
   

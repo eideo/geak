@@ -25,12 +25,19 @@
     }
   }
 
+  window.QUERY_LIST = function(){
+    refresh();
+  }
+
   //刷新接待
   function refresh(ispull) {
     if(!ispull) {
-	  $.showIndicator();
+      $.showIndicator();
     }
-    apiGetOrders(TODAY, null, 1, function(list){
+
+    // 在geak.js中定义
+    var param = window.QUERY_PARAM;
+    apiGetOrders(param.start, param.end, param.timespan, param.business, function(list){
       // 先清空列表
       $("#list_new,#list_payed,#list_entranced,#list_exited,#list_cancelled").empty();
       if(list.length > 0) {
@@ -432,16 +439,18 @@
     $("div.modal-inner input.modal-text-input").val(now.format("YYYY-MM-DD HH:mm"));
   }
 
-  /* 加载预约列表 */
-  function apiGetOrders(datetime, business, page, callback) {
+  /* 加载订单列表 */
+  function apiGetOrders(start, end, timespan, business, callback)  {
     if(LOADING) return;
     LOADING = true;
     $.ajax({
       url:"/orders",
       data:{
         "company" : COMPANY.id,
-        "page" : page,
-        "datetime" : datetime
+        "start" : start,
+        "end" : end,
+        "timespan" : (timespan && timespan.length > 0) ? timespan.join(",") : null,
+        "business" : (business && business.length > 0) ? business.join(",") : null
       },
       dataType:"json", 
       success:function(list){

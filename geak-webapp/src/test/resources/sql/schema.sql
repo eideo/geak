@@ -163,6 +163,7 @@ CREATE TABLE geak_appointment (
   customer_count   int         NOT NULL                COMMENT '预约客户的数量',
   customer_id      int         NOT NULL                COMMENT '预约客户标识',
   state            varchar(16) NOT NULL                COMMENT '预约状态',
+  source           varchar(64)     NULL                COMMENT '客户来源渠道',
   note             varchar(255)    NULL                COMMENT '备注信息',
   company_id       int         NOT NULL                COMMENT '预约所属公司(门店)标识',
   PRIMARY KEY (id),

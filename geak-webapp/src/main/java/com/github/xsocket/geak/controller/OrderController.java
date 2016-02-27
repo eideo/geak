@@ -2,6 +2,7 @@ package com.github.xsocket.geak.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.service.OrderService;
+import com.github.xsocket.util.DefaultPair;
+import com.github.xsocket.util.Pair;
+import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 /**
  * 订单相关业务的控制器。
@@ -23,25 +28,38 @@ import com.github.xsocket.geak.service.OrderService;
 @Controller
 public class OrderController {
   
+  private static final String SEPRATOR_TIME_SPANS = ",";
+  private static final String SEPRATOR_TIMES = "~";
+  
   @Autowired
   protected OrderService service;
 
-  /**
-   * 根据相应的参数过滤预约数据
-   * @param companyId 对应门店的标准(必填)
-   * @param datetime 过滤预约数据的预约时间，默认显示其前后一小时的预约
-   * @param business 所预约的业务
-   * @param page 查询数据页码，默认为1
-   * @return
-   */
   @ResponseBody
   @RequestMapping(value = "/orders", method = RequestMethod.GET, produces="application/json")
   public List<Order> list(
       @RequestParam(value="company", required=true) Integer companyId,
-      @RequestParam(value="datetime", required=true) Long datetime,
-      @RequestParam(value="page", required=true) Integer page) {
+      @RequestParam(value="start", required=true) Long start,
+      @RequestParam(value="end", required=true) Long end,
+      @RequestParam(value="timespan", required=false) String timespan,
+      @RequestParam(value="business", required=false) String business) {
     
-    return service.query(companyId, new Date(datetime), null, page);
+    // 处理时间片段参数
+    Set<Pair<String, String>> pairs = Sets.newHashSet();
+    if(!Strings.isNullOrEmpty(timespan)) {
+      String[] timespanArray = timespan.split(SEPRATOR_TIME_SPANS);
+      for(String times : timespanArray) {
+        if(!Strings.isNullOrEmpty(times)) {
+          String[] timeArray = times.split(SEPRATOR_TIMES);
+          if(timeArray != null && timeArray.length == 2) {
+            pairs.add(DefaultPair.newPair(timeArray[0], timeArray[1]));
+          }
+        }
+      }
+    } 
+    
+    return service.query(companyId, new Date(start), new Date(end), 
+        pairs.isEmpty() ? null : pairs, 
+        Strings.isNullOrEmpty(business) ? null : business);
   }
   
   @ResponseBody

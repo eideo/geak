@@ -21,7 +21,7 @@
     <!-- page 容器 -->
     <div id="page_list" class="page page-current">
       <!-- 标题栏 -->
-      <header class="bar bar-nav">
+      <header class="bar bar-nav bar-standard">
         <button id="btn_refresh" class="button button-link button-nav pull-left">
           <span class="icon icon-refresh"></span> 刷新
         </button>
@@ -30,6 +30,19 @@
         </button>
         <h1 class="title">近期预约</h1>
       </header>
+      <nav class="bar bar-header-secondary">
+        <div class="buttons-row">
+          <button id="btn_search_date" class="button open-popover" data-popover=".popover-search-date">
+            <span id="txt_search_date">今天</span> <span class="icon icon-down"></span>
+          </button>
+          <button id="btn_search_time" class="button open-popover" data-popover=".popover-search-time">
+            <span id="txt_search_time">所有时间</span> <span class="icon icon-down"></span>
+          </button>
+          <button id="btn_search_business" class="button open-popover" data-popover=".popover-search-business">
+            <span id="txt_search_business">所有主题</span> <span class="icon icon-down"></span>
+          </button>
+        </div>
+      </nav>
 
       <!-- 工具栏 -->
       <nav class="bar bar-tab">
@@ -136,9 +149,19 @@
             <li>
               <div class="item-content">
                 <div class="item-inner">
+                  <div class="item-title label">预约日期</div>
+                  <div class="item-input">
+                    <input id="item_date" type="text" data-toggle="date" readonly="readonly" />
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
                   <div class="item-title label">预约时间</div>
                   <div class="item-input">
-                    <input id="item_datetime" type="text" />
+                    <input id="item_time" type="text" readonly="readonly" />
                   </div>
                 </div>
               </div>
@@ -176,9 +199,47 @@
             </li>
           </ul>
         </div><!-- /.list-block -->
+        <div class="content-block-title color-primary">来源渠道</div>
+        <div class="list-block">
+          <ul id="list_source"></ul>
+        </div><!-- /.list-block -->
       </div><!-- /.content-block -->
     </div><!-- /.page page-detail -->
-    
+
+    <div class="popover popover-search-time">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul id="search_time">
+            <li class="row">
+              <a href="#" class="col-33 list-button item-link time-cancel close-popover">取消</a>
+              <a href="#" class="col-33 list-button item-link time-all active">所有时间</a>
+              <a href="#" class="col-33 list-button item-link time-ok">确定</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="popover popover-search-business">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul id="search_business">
+            <li><a href="#" class="list-button item-link business-all active">所有主题</a></li>
+            <li><a href="#" class="list-button item-link business-ok">确定</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="popover popover-search-date">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul id="search_date"></ul>
+        </div>
+      </div>
+    </div>
+
     <script type="text/x-tmpl" id="tmpl_card">
       {% for (var i=0; i<o.length; i++) { %}
         {% include('tmpl_card_item', o[i]); %}
@@ -187,7 +248,7 @@
     <script type="text/x-tmpl" id="tmpl_card_item">
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
         <div class="card-header">
-          <label class="item-title">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") %}</label>
+          <label class="item-title">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") + moment(new Date(o.datetime)).add(1,'hours').format("~HH:mm") %}</label>
           <label class="item-after item-business">
             {% if(o.businesses && o.businesses.length > 0) { %}
               {%= o.businesses[0].alias %}
@@ -264,9 +325,9 @@
           <li class="item-content">
             <div class="item-inner">
               <div class="item-title">
-                <b class="color-primary">{%= moment(new Date(o[i].datetime)).format("HH:mm") %}</b>
+                <b class="color-primary">{%= moment(new Date(o[i].datetime)).format("HH:mm")+moment(new Date(o[i].datetime)).add(1,'hours').format("~HH:mm")%}</b>
                 <span>{%= o[i].customer.name %} 
-                  {% if (o[i].customer.sex == 'M')print('先生'); else print('女士'); %}
+                  {% if (o[i].customer.sex == 'M')print('先生'); else if(o[i].customer.sex == 'F') print('女士'); else print('同学'); %}
                 </span>
               </div>
               <div class="item-after">{%= o[i].businesses[0].alias %}
@@ -279,6 +340,48 @@
         {% } %}
       {% } %}
     </script>
+    <script type="text/x-tmpl" id="tmpl_source">
+      {% for (var i=0; i<o.length; i++) { %}
+        {% if (i%2 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <div class="col-50"> 
+            <div class="item-content">
+              <div class="item-inner">
+                <label class="item-title">{%= o[i] %}</label>
+                <label class="item-after label-switch">                    
+                  <input id="_s_{%= i %}" type="checkbox" value="{%= o[i] %}" />
+                  <div class="checkbox"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+      {% } %}
+        </li>
+    </script>
+    <script type="text/x-tmpl" id="tmpl_search_time">
+      {% for (var i=0; i<o.length; i++) { %}
+        {% if (i%3 == 0) { %}
+          {% if (i > 0) { %}
+        </li>{% } %} 
+        <li class="row">
+        {% } %}
+          <a href="#" class="col-33 list-button item-link time-span">{%= o[i] %}</a>
+      {% } %}
+        </li>
+    </script>
+    <script type="text/x-tmpl" id="tmpl_search_business">
+      {% for (var i=0; i<o.length; i++) { %}
+        <li><a href="#" class="list-button item-link business-item" data-id="{%= o[i].id %}">{%= o[i].alias %}</a></li>
+      {% } %}
+    </script>
+    <script type="text/x-tmpl" id="tmpl_search_date">
+      {% for (var i=0; i<o.length; i++) { %}
+        <li><a href="#" class="list-button item-link date-item" data-index="{%=i%}">{%= o[i].name %}</a></li>
+      {% } %}
+    </script>
 
     <!-- 你的html代码 -->
     <script type='text/javascript' src='js/jquery.min.js'></script>
@@ -287,6 +390,7 @@
     <script type='text/javascript' src='js/tmpl.min.js'></script>
     <script type='text/javascript' src='js/json2.min.js'></script>
     <script type='text/javascript' src='js/geak.js'></script>
+    <script type='text/javascript' src='js/geak-appointment.js'></script>
   </body>
 </html>
 
