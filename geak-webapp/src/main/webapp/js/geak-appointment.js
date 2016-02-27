@@ -1,7 +1,6 @@
 (function($){
   var SOURCES = ["老玩家","团购","连续场","地推","朋友介绍","搜索","各店互推","其他","合作商"];
   var LOADING = false;
-  var SPLIT = "~";
 
   function showDetail(id) {
     bindDetail();
@@ -177,12 +176,12 @@
     var hour = dt.format("HH");
     $("#item_time").val(window.TIMES[0]);
     $.each(window.TIMES, function(i,span){
-      if(span.startsWith(hour)) {
+      if(span.indexOf(hour) == 0) {
         $("#item_time").val(span);
+        return false;
       }
     });
-
-
+ 
     $("#btn_save").hide();
     _bindSource(a.source);
     if(a.state == "NEW") {
@@ -200,10 +199,10 @@
     }
   }
 
-  function _bindSource(source) {
-    var array = source ? source.split(",") : [];
+  function _bindSource(sourceStr) {
+    var sourceArray = sourceStr ? sourceStr.split(",") : [];
     $("#list_source input[type='checkbox']").prop("checked",false);
-    $.each(array, function(i,name) {
+    $.each(sourceArray, function(i,name) {
       $("#list_source input[value='"+name+"']").prop("checked",true);
     });
   }
