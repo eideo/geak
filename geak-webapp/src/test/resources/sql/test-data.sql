@@ -100,5 +100,29 @@ INSERT INTO `aa_user` VALUES ('2015121801', '2015121801', '王金湖', '', 'NORM
 INSERT INTO `geak_user` VALUES ('2015122002', 6);
 INSERT INTO `aa_user` VALUES ('2015122002', '2015122002', '梁起常', '', 'NORMAL');
 
+
+-- 用户可访问其他门店的记录
+INSERT INTO `geak_user_company` VALUES ('2016012301', 1);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 2);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 3);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 4);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 5);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 6);  -- 麻文强
+
+INSERT INTO `geak_user_company` VALUES ('2014010101', 1);  -- 郝挺
+INSERT INTO `geak_user_company` VALUES ('2014010101', 2);  -- 郝挺
+INSERT INTO `geak_user_company` VALUES ('2014010101', 3);  -- 郝挺
+INSERT INTO `geak_user_company` VALUES ('2014010101', 4);  -- 郝挺
+INSERT INTO `geak_user_company` VALUES ('2014010101', 5);  -- 郝挺
+INSERT INTO `geak_user_company` VALUES ('2014010101', 6);  -- 郝挺
+
+
+INSERT INTO `geak_user_company` VALUES ('2014070101', 1);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 2);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 3);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 4);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 5);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 6);  -- 张小喵
+
 COMMIT;
 

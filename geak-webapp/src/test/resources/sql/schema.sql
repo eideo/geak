@@ -116,10 +116,20 @@ CREATE TABLE geak_business (
 -- 用户表
 -- ----------------------------
 CREATE TABLE geak_user (
-  id         varchar(64) NOT NULL  COMMENT '用户标识',
-  company_id int         NOT NULL  COMMENT '业务所属门店',
+  id          varchar(64) NOT NULL  COMMENT '用户标识',
+  company_id  int         NOT NULL  COMMENT '用户所属门店',
   PRIMARY KEY (id),
   CONSTRAINT fk_user_company FOREIGN KEY (company_id) REFERENCES geak_company (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+-- ----------------------------
+-- 用户所属门店列表
+-- ----------------------------
+CREATE TABLE geak_user_company (
+  user_id    varchar(64) NOT NULL COMMENT '用户标识',
+  company_id int         NOT NULL COMMENT '门店主键标识(自增)',
+  PRIMARY KEY (user_id,company_id),
+  CONSTRAINT fk_user_company1 FOREIGN KEY (user_id) REFERENCES geak_user (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_user_company2 FOREIGN KEY (company_id) REFERENCES geak_company (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- ----------------------------

@@ -15,6 +15,12 @@
     <script type="text/javascript">
       var USER = {"id":"${user.id}", "name":"${user.name}" };
       var COMPANY = {"id":"${user.company.id}", "name":"${user.company.name}" };
+      var COMPANIES = [];
+      <#if user.companies?? && user.companies?size &gt; 0>
+        <#list user.companies as company>
+        COMPANIES.push({"id":"${company.id}", "name":"${company.name}" });
+        </#list>
+      </#if>
     </script>
   </head>
   <body>
@@ -24,6 +30,10 @@
       <header class="bar bar-nav bar-standard">
         <button id="btn_refresh" class="button button-link button-nav pull-left">
           <span class="icon icon-refresh"></span> 刷新
+        </button>
+        <button id="btn_change" class="button button-link button-nav pull-left open-popover" 
+            data-popover=".popover-change-company" style="display:none">
+          <span class="icon icon-menu"></span> ${user.company.name}
         </button>
         <button id="btn_create" class="button button-link button-nav pull-right">
           新建 <span class="icon icon-right"></span>
@@ -206,6 +216,20 @@
       </div><!-- /.content-block -->
     </div><!-- /.page page-detail -->
 
+    <div class="popover popover-change-company">
+      <div class="popover-angle"></div>
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul>
+          <#if user.companies?? && user.companies?size &gt; 0>
+            <#list user.companies as company>
+            <li><a href="appointments.html?company=${company.id}" class="list-button item-link external">${company.name}</a></li>
+            </#list>
+          </#if>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="popover popover-search-time">
       <div class="popover-angle"></div>
       <div class="popover-inner">

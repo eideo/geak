@@ -90,6 +90,15 @@ window.TIMES = [
 
   // begin init
   $(function(){
+    if(COMPANIES.length == 0) {
+      $("#btn_refresh").show();
+      $("#btn_change").hide();
+    } else {
+      $("#btn_refresh").hide();
+      $("#btn_change").show();
+    }
+	  
+	  
     // 初始化时间选择器
     $("#search_time").prepend(tmpl("tmpl_search_time", TIMES));
     $("#search_time .time-span").click(function(){

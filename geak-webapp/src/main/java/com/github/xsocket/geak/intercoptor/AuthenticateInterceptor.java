@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.util.WebUtils;
 
+import com.github.xsocket.geak.dao.CompanyDao;
 import com.github.xsocket.geak.dao.GeakUserDao;
 import com.github.xsocket.geak.entity.GeakUser;
 import com.google.common.base.Strings;
@@ -25,6 +26,9 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   
   @Autowired
   private GeakUserDao service;  
+  
+  @Autowired
+  private CompanyDao companyDao;  
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -46,6 +50,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
         response.sendRedirect("/error.html");
         return false;
       } else {
+        user.setCompanies(companyDao.selectByUserId(userId));
         // @see WebContextUtils.getAuthenticatedUser(request);
         request.setAttribute(GeakUser.class.getName(), user);
         // 设置cookie

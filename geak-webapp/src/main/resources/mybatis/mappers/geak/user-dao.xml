@@ -18,6 +18,10 @@
       <result property="alias"   column="company_alias"   javaType="String"  jdbcType="VARCHAR" />
       <result property="address" column="company_address" javaType="String"  jdbcType="VARCHAR" />
     </association>
+    <!-- 有问题 
+    <collection property="companies" column="id" ofType="com.github.xsocket.geak.entity.Company" 
+        select="com.github.xsocket.geak.dao.CompanyDao.selectByUserId" />
+        -->
   </resultMap>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.GeakUserDao.result">

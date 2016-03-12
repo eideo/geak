@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.util.WebUtils;
 
+import com.github.xsocket.geak.dao.CompanyDao;
 import com.github.xsocket.geak.dao.GeakUserDao;
 import com.github.xsocket.geak.entity.GeakUser;
 import com.github.xsocket.geak.util.GeakUtils;
@@ -24,6 +25,9 @@ public class CurrentUserInterceptor extends HandlerInterceptorAdapter {
   
   @Autowired
   private GeakUserDao service;  
+  
+  @Autowired
+  private CompanyDao companyDao;  
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -35,6 +39,7 @@ public class CurrentUserInterceptor extends HandlerInterceptorAdapter {
         String userId = token.getValue();
         GeakUser user = service.selectById(userId);
         if(user != null) {
+          user.setCompanies(companyDao.selectByUserId(userId));
           LOGGER.debug("记录当前访问用户 - {}:{}", user.getName(), user.getId());
           request.setAttribute(GeakUser.class.getName(), user);
           // 设置cookie

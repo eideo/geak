@@ -12,6 +12,14 @@
     <result property="alias"   column="alias"   javaType="String"  jdbcType="VARCHAR" />
     <result property="address" column="address" javaType="String"  jdbcType="VARCHAR" />
   </resultMap>
+  
+  <select id="selectByUserId" resultMap="com.github.xsocket.geak.dao.CompanyDao.result" 
+    flushCache="false" useCache="true">
+    SELECT c.id, c.name, c.alias, c.address
+    FROM geak_company c
+    JOIN geak_user_company u on u.company_id = c.id
+    WHERE u.user_id = #{id,javaType=String,jdbcType=VARCHAR}
+  </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.CompanyDao.result" 
     flushCache="false" useCache="true">

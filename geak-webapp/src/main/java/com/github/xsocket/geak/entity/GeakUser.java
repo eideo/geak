@@ -1,5 +1,7 @@
 package com.github.xsocket.geak.entity;
 
+import java.util.List;
+
 import com.github.xsocket.aa.entity.User;
 
 public class GeakUser extends User {
@@ -8,6 +10,8 @@ public class GeakUser extends User {
   
   /** 当前极客用户所在公司 */
   protected Company company;
+  /** 极客用户所供职公司的列表 */
+  protected List<Company> companies;
 
   public Company getCompany() {
     return company;
@@ -15,6 +19,14 @@ public class GeakUser extends User {
 
   public void setCompany(Company company) {
     this.company = company;
+  }
+
+  public List<Company> getCompanies() {
+    return companies;
+  }
+
+  public void setCompanies(List<Company> companies) {
+    this.companies = companies;
   }
   
 }

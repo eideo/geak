@@ -1,6 +1,7 @@
 package com.github.xsocket.geak.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.github.xsocket.geak.dao.GeakUserDao;
+import com.github.xsocket.geak.entity.Company;
 import com.github.xsocket.geak.entity.GeakUser;
 import com.github.xsocket.geak.intercoptor.AuthenticateInterceptor;
+import com.github.xsocket.geak.util.GeakUtils;
 import com.github.xsocket.geak.util.WeixinUtils;
 
 @Controller
@@ -56,8 +59,25 @@ public class IndexController {
   }
   
   @RequestMapping(value = "/{page}.html", method = RequestMethod.GET)
-  public ModelAndView html(@PathVariable("page") String page) {
+  public ModelAndView html(@PathVariable("page") String page, 
+      // Integer 切换门店
+      @RequestParam(value="company", required=false) Integer companyId) {
     // 在 AuthenticateInterceptor 中设置了 user 参数
+    if(companyId != null) {
+      GeakUser user = GeakUtils.getCurrentUser();
+      List<Company> companies = user.getCompanies();
+      if(companies != null && !companies.isEmpty()) {
+        for(Company company : companies) {
+          if(company.getId().equals(companyId)) {
+            user.setCompany(company);
+            // 更新所在门店
+            service.update(user);
+            break;
+          }
+        }
+      }
+    }
+    
     return new ModelAndView(page);
   }
 }
