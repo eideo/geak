@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.github.xsocket.geak.dao.CompanyDao;
 import com.github.xsocket.geak.dao.GeakUserDao;
 import com.github.xsocket.geak.entity.Company;
 import com.github.xsocket.geak.entity.GeakUser;
@@ -32,6 +33,9 @@ public class IndexController {
   @Autowired
   protected GeakUserDao service;
 
+  @Autowired
+  private CompanyDao companyDao; 
+  
   @RequestMapping(value = "/", method = RequestMethod.GET)
   public ModelAndView index(@RequestParam("code") String code, @RequestParam("state") String page,
       HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,6 +48,7 @@ public class IndexController {
       LOGGER.debug("UserId为'{}'的用户不存在。", userId);
       response.sendRedirect("/error.html");
     } else {
+      user.setCompanies(companyDao.selectByUserId(userId));
       // @see WebContextUtils.getAuthenticatedUser(request);
       request.setAttribute(GeakUser.class.getName(), user);
       // 设置cookie
