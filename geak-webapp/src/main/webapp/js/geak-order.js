@@ -261,7 +261,7 @@
       $("#state_name").text("已支付");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-warning");
     } else if(item.state == "ENTRANCED") {
-      $("#btn_save").hide();
+      $("#btn_save").show();
       $("#btn_extrnace").hide();
       $("#btn_exit").show();
       $("#btn_cancel").hide();
