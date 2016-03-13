@@ -272,7 +272,13 @@
     <script type="text/x-tmpl" id="tmpl_card_item">
       <li id="card_{%= o.id %}" class="card" data-id="{%= o.id %}" data-datetime="{%= o.datetime %}">
         <div class="card-header">
-          <label class="item-title">{%= moment(new Date(o.datetime)).format("MM月DD日 HH:mm") + moment(new Date(o.datetime)).add(1,'hours').format("~HH:mm") %}</label>
+          <label class="item-title">{%= moment(new Date(o.datetime)).format("MM月DD日") %}
+          {%if(moment(new Date(o.datetime)).format("HH:mm")=="23:00") { %}
+              23:00~之后
+          {% } else { %}
+              {%= moment(new Date(o.datetime)).format("HH:mm") + moment(new Date(o.datetime)).add(1,'hours').format("~HH:mm")%}
+          {% } %}
+          </label>
           <label class="item-after item-business">
             {% if(o.businesses && o.businesses.length > 0) { %}
               {%= o.businesses[0].alias %}
@@ -349,7 +355,13 @@
           <li class="item-content">
             <div class="item-inner">
               <div class="item-title">
-                <b class="color-primary">{%= moment(new Date(o[i].datetime)).format("HH:mm")+moment(new Date(o[i].datetime)).add(1,'hours').format("~HH:mm")%}</b>
+                <b class="color-primary">
+                {%if(moment(new Date(o[i].datetime)).format("HH:mm")=="23:00") { %}
+                    23:00~之后
+                {% } else { %}
+                    {%= moment(new Date(o[i].datetime)).format("HH:mm") + moment(new Date(o[i].datetime)).add(1,'hours').format("~HH:mm")%}
+                {% } %}
+                </b>
                 <span>{%= o[i].customer.name %} 
                   {% if (o[i].customer.sex == 'M')print('先生'); else if(o[i].customer.sex == 'F') print('女士'); else print('同学'); %}
                 </span>
@@ -413,8 +425,8 @@
     <script type='text/javascript' src='js/moment.min.js'></script>
     <script type='text/javascript' src='js/tmpl.min.js'></script>
     <script type='text/javascript' src='js/json2.min.js'></script>
-    <script type='text/javascript' src='js/geak.js'></script>
-    <script type='text/javascript' src='js/geak-appointment.js'></script>
+    <script type='text/javascript' src='js/geak.js?v=201603131045'></script>
+    <script type='text/javascript' src='js/geak-appointment.js?v=201603131045'></script>
   </body>
 </html>
 
