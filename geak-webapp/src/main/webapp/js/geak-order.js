@@ -1,7 +1,7 @@
 (function($){
   var SOURCES = ["老玩家","团购","连续场","地推","朋友介绍","搜索","各店互推","其他","合作商"];
   var CUSTOMER_TYPES = ["小学生", "中学生", "大学生", "青年人", "中年人", "老年人"];
-  var COMPANIES = [{"id":1, "name":"大南门店" },{"id":2, "name":"体育路店" },{"id":3, "name":"食品街店" },
+  var COMPANIES_SOURCE = [{"id":1, "name":"大南门店" },{"id":2, "name":"体育路店" },{"id":3, "name":"食品街店" },
                    {"id":4, "name":"柳巷店" },{"id":5, "name":"长风店" },{"id":6, "name":"千峰店" }];
   var LOADING = false;
 
@@ -122,6 +122,7 @@
         "name": $("#item_customer_name").val(), 
         "telephone": $("#item_customer_tele").val() 
       },
+      "createdDatetime": moment($("#item_datetime").val()).valueOf(),
       "customerCount": parseInt($("#item_customer_count").val()),
       "id": $("#item_id").val(),
       "state": $("#item_state").val(),      
@@ -138,6 +139,13 @@
       detail.business = {"id":$(this).val(), "alias":$(this).data("alias")};
     });
 
+  if(!detail.createdDatetime){
+    $.toast("请输入正确的接待时间！");
+    return false;
+  } else if(detail.createdDatetime < (new Date().getTime()-2*60*60*1000) ){
+    $.toast("请输入合理的接待时间！");
+    return false;
+  }
     if(!detail.business) {
       $.toast("请选择接待的主题！");
       return false;
@@ -531,7 +539,7 @@
       list = [2,5,6];
     }
     $.each(list, function(i,v){
-      var cname = COMPANIES[v-1].name;
+      var cname = COMPANIES_SOURCE[v-1].name;
       $("#_p_6_note").append('<option value="'+cname+'">'+cname+'</option>');
     });
   }
@@ -555,6 +563,13 @@
     loadSources();
     loadPayments();
     loadPromotions();
+    
+    $("#item_datetime").datetimePicker({
+      toolbarTemplate: '<header class="bar bar-nav">\
+      <button class="button button-link pull-right close-picker">确定</button>\
+      <h1 class="title">选择日期和时间</h1>\
+      </header>'
+    });
 
     // 下拉刷新
     $(document).on('refresh', '.pull-to-refresh-content',function(e) {
