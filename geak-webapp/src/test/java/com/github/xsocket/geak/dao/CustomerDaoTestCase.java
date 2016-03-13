@@ -28,7 +28,7 @@ public class CustomerDaoTestCase extends AbstractTestCase {
     customer.setSex("F");
     Assert.assertEquals(1, dao.update(customer));
     temp = dao.selectById(customer.getId());
-    customer.setTelephone("13812345678");
+    customer.setTelephone("未填写");
     assertEquals(customer, temp);
     
     // 测试删除
