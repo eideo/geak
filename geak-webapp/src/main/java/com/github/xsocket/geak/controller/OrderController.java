@@ -51,7 +51,8 @@ public class OrderController {
         if(!Strings.isNullOrEmpty(times)) {
           String[] timeArray = times.split(SEPRATOR_TIMES);
           if(timeArray != null && timeArray.length == 2) {
-            pairs.add(DefaultPair.newPair(timeArray[0], timeArray[1]));
+            String t2 = "之后".equals(timeArray[1]) ? "24:00" : timeArray[1];
+            pairs.add(DefaultPair.newPair(timeArray[0], t2));
           }
         }
       }
