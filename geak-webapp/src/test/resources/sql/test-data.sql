@@ -116,6 +116,13 @@ INSERT INTO `geak_user_company` VALUES ('2014010101', 4);  -- 郝挺
 INSERT INTO `geak_user_company` VALUES ('2014010101', 5);  -- 郝挺
 INSERT INTO `geak_user_company` VALUES ('2014010101', 6);  -- 郝挺
 
+INSERT INTO `geak_user_company` VALUES ('2014022201', 1);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 2);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 3);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 4);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 5);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 6);  -- 何金
+
 
 INSERT INTO `geak_user_company` VALUES ('2014070101', 1);  -- 张小喵
 INSERT INTO `geak_user_company` VALUES ('2014070101', 2);  -- 张小喵
