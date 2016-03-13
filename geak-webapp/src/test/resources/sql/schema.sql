@@ -205,6 +205,7 @@ CREATE TABLE geak_order (
   customer_count int         NOT NULL                COMMENT '参与的用户总数',
   customer_type  varchar(64)     NULL                COMMENT '参与的主体用户群类型',
   promotion_note varchar(255)    NULL                COMMENT '其他促销活动说明',
+  free_note      varchar(255)    NULL                COMMENT '其他促免费活动说明',
   source         varchar(64)     NULL                COMMENT '客户来源渠道',
   business_id    int             NULL                COMMENT '订单对应的业务标识',
   company_id     int         NOT NULL                COMMENT '订单所属公司(门店)标识',

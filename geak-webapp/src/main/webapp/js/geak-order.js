@@ -126,6 +126,7 @@
       "id": $("#item_id").val(),
       "state": $("#item_state").val(),      
       "promotionNote": $("#item_promotion_note").val(),
+      "freeNote": $("#item_free_note").val(),
       "totalPrice": parseInt(price),
       "source": _parseCheckboxData("#list_source input:checked"),
       "customerType": _parseCheckboxData("#list_customer_type input:checked"),
@@ -149,10 +150,12 @@
     } else if(!(detail.customerCount>0)){
       $.toast("请输入玩家人数！");
       return false;
-    } else if(isNullOrEmpty(detail.customer.telephone)){
+    } 
+    /* 接待玩家不需要留电话
+     else if(isNullOrEmpty(detail.customer.telephone)){
       $.toast("请输入联系方式！");
       return false;
-    }
+    }*/
 
     return detail;
   }
@@ -177,7 +180,8 @@
   function _parsePromotion() {
     var promotions = [];
     $("#list_promotion input").each(function(){ 
-      if($(this).attr("id") != "item_promotion_note" // 忽略其他优惠
+      if($(this).attr("id") != "item_promotion_note"// 忽略其他优惠
+    	  && $(this).attr("id") != "item_free_note"// 忽略其他免费
           && $(this).attr("id") != "_p_6") {  // 打车劵另行处理
         var count = parseInt($(this).val());
         if(count > 0) {
@@ -223,6 +227,7 @@
     _bindPayments(item.payments);
     _bindPromotions(item.promotions);
     $("#item_promotion_note").val(item.promotionNote);
+    $("#item_free_note").val(item.freeNote);
     $("#item_total_price").val(item.totalPrice);
     // 绑定时间信息
     var datetime = item.appointments ? item.appointments.confirmedDatetime : item.createdDatetime;

@@ -36,6 +36,8 @@ public class Order extends AbstractEntity {
   protected Company company;
   /** 其他促销说明 */
   protected String promotionNote;
+  /** 其他免费说明 */
+  protected String freeNote;
   /** 该订单参与的活动 */
   protected List<OrderPromotion> promotions;
   /** 该订单的支付记录 */
@@ -171,6 +173,14 @@ public class Order extends AbstractEntity {
 
   public void setCancelledDatetime(Date cancelledDatetime) {
     this.cancelledDatetime = cancelledDatetime;
+  }
+
+  public String getFreeNote() {
+    return freeNote;
+  }
+
+  public void setFreeNote(String freeNote) {
+    this.freeNote = freeNote;
   }
 
 }

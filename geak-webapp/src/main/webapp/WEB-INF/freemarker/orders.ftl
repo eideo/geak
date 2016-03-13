@@ -254,6 +254,16 @@
                 </div>
               </div>
             </li>
+            <li>
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title label">其他免费</div>
+                  <div class="item-input">
+                    <input id="item_free_note" type="text" />
+                  </div>
+                </div>
+              </div>
+            </li>
           </ul>
         </div><!-- /.list-block -->
         <div class="content-block-title color-success">玩家身份</div>

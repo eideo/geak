@@ -15,6 +15,7 @@
     <result property="customerCount"    column="customer_count" javaType="Integer" jdbcType="INTEGER" />
     <result property="customerType"     column="customer_type"  javaType="String"  jdbcType="VARCHAR" />
     <result property="promotionNote"    column="promotion_note" javaType="String"  jdbcType="VARCHAR" />
+    <result property="freeNote"         column="free_note"      javaType="String"  jdbcType="VARCHAR" />
     <result property="source"           column="source"         javaType="String"  jdbcType="VARCHAR" />
     <result property="state"            column="state"          javaType="String"  jdbcType="VARCHAR" />
     <result property="cancelledDatetime" column="cancelled_date" javaType="Date"    jdbcType="TIMESTAMP" />
@@ -55,7 +56,7 @@
   
   <sql id="_select_order">
       o.id, o.total_price, o.entrance_date, o.exit_date, o.customer_type, 
-      o.customer_count, o.source, o.state, o.created_date, o.promotion_note, o.cancelled_date,
+      o.customer_count, o.source, o.state, o.created_date, o.promotion_note, o.free_note, o.cancelled_date,
         t.id as customer_id, t.name as customer_name, t.sex as customer_sex, t.telephone,
         c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias,
         b.id AS business_id, b.name AS business_name, b.alias AS business_alias,
@@ -125,8 +126,8 @@
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_order 
-      (total_price, entrance_date, exit_date, customer_count, customer_type, source, state, created_date, promotion_note,
-       customer_id, company_id, business_id, appointment_id, cancelled_date) 
+      (total_price, entrance_date, exit_date, customer_count, customer_type, source, state, created_date, 
+       promotion_note, free_note, customer_id, company_id, business_id, appointment_id, cancelled_date) 
     VALUES 
       ( #{totalPrice,jdbcType=Integer,jdbcType=INTEGER}, 
         #{entranceDatetime,jdbcType=TIMESTAMP}, 
@@ -137,6 +138,7 @@
         #{state,jdbcType=VARCHAR},
         #{createdDatetime,jdbcType=TIMESTAMP}, 
         #{promotionNote,jdbcType=VARCHAR}, 
+        #{freeNote,jdbcType=VARCHAR}, 
         #{customer.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{company.id,jdbcType=Integer,jdbcType=INTEGER}, 
         #{business.id,jdbcType=Integer,jdbcType=INTEGER},
@@ -156,6 +158,7 @@
       <if test="customerCount != null">customer_count = #{customerCount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
       <if test="promotionNote != null">promotion_note = #{promotionNote,jdbcType=VARCHAR},</if>
+      <if test="freeNote != null">free_note = #{freeNote,jdbcType=VARCHAR},</if>
       <if test="customer != null and customer.id != null">customer_id = #{customer.id,jdbcType=Integer,jdbcType=INTEGER},</if>
       <if test="business != null and business.id != null">business_id = #{business.id,jdbcType=Integer,jdbcType=INTEGER},</if>
     </set>
