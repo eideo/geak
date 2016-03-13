@@ -92,7 +92,7 @@
     ORDER BY o.id
   </select>
   
-  <!-- 按日期、时间、主题查询订单 -->
+  <!-- 按日期、时间、主题查询订单，每日凌晨5点结算， -->
   <select id="selectByQuery" resultMap="com.github.xsocket.geak.dao.OrderDao.result" 
     flushCache="false" useCache="true">
     SELECT  <include refid="_select_order" />
@@ -101,10 +101,10 @@
         o.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
       </if>
       <if test="start != null">
-        AND TO_DAYS(o.created_date) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
       </if>
       <if test="end != null">
-        AND TO_DAYS(o.created_date) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
       </if>
       <if test="timespan != null">
         AND (

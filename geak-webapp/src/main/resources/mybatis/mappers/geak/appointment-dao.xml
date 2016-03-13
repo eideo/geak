@@ -86,10 +86,10 @@
         a.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
       </if>
       <if test="start != null">
-        AND TO_DAYS(a.appointment_date) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(a.appointment_date,INTERVAL 5 HOUR)) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
       </if>
       <if test="end != null">
-        AND TO_DAYS(a.appointment_date) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(a.appointment_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
       </if>
       <if test="timespan != null">
         AND (
