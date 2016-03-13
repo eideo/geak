@@ -1,5 +1,7 @@
 package com.github.xsocket.geak.entity;
 
+import com.google.common.base.Strings;
+
 /**
  * 极客的客户实体。
  * 
@@ -22,7 +24,7 @@ public class Customer extends AbstractEntity {
   protected String sex = SEX_MALE;
 
   public String getTelephone() {
-    return telephone;
+    return Strings.isNullOrEmpty(telephone) ? "未填写" : telephone;
   }
 
   public void setTelephone(String telephone) {
