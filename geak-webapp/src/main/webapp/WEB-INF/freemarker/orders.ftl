@@ -449,7 +449,19 @@
         </li>
     </script>
     <script type="text/x-tmpl" id="tmpl_payment">
-      {% for (var i=0; i<o.length; i++) { %}
+        <#-- o[0]是现金，特殊处理 -->
+        <li>
+          <div class="item-content">
+            <div class="item-inner">
+              <label class="item-title label">现金</label>
+              <label class="item-input">
+                <input id="_m_0" type="text" data-price="1" data-id="1" placeholder="元" />
+              </label>
+            </div>
+          </div>
+        </li>
+        <#-- 美团大众合并为新美大:用美团表示新美大,忽略大众，忽略现金因为已特殊处理 -->
+      {% o.splice(0,2); for (var i=0; i<o.length; i++) { %}
         {% if (i%2 == 0) { %}
           {% if (i > 0) { %}
         </li>{% } %} 
@@ -460,9 +472,12 @@
               <div class="item-inner">
                 <label class="item-title label">{%= o[i].name %}</label>
                 <label class="item-input">                    
-                  <input id="_m_{%= o[i].id %}" type="text" data-price="{%= o[i].price %}" data-id="{%= o[i].id %}" />
+                  <input id="_m_{%= o[i].id %}" type="text" 
+                    <#-- 美团大众合并为新美大,新美大和糯米的团购价格:大南门和长风是48,其他店是68 -->
+                    data-price='{% if(o[i].price > 1 && (COMPANY.id=="1" || COMPANY.id=="5")) print("48"); else print(o[i].price); %}'
+                    data-id="{%= o[i].id %}" 
+                    placeholder="{% if(o[i].price == 1) print("元"); else print("张"); %}" />
                 </label>
-                <label class="item-after">{% if(o[i].price == 1) print("元"); else print("张"); %}</label>
               </div>
             </div>
           </div>
