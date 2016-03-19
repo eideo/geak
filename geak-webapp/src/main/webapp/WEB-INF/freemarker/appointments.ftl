@@ -64,6 +64,12 @@
           <span class="icon icon-emoji"></span>
           <span class="tab-label">接待</span>
         </a>
+        <#if user.companies?? && user.companies?size == 6>
+        <a class="external tab-item" href="#">
+          <span class="icon icon-app"></span>
+          <span class="tab-label">统计</span>
+        </a>
+        </#if>
       </nav>
 
       <!-- 这里是页面内容区 -->

@@ -3,6 +3,7 @@
 .content-block-title { margin: 0.75rem 0.5rem; }
 .list-block { margin: 0.5rem 0;}
 
+.card .col-33 b { padding:0 0.3rem; border-radius: 0.5rem; }
 .card-header label { margin-right: 0.5rem; }
 
 #list_payment input { text-align: right; }
