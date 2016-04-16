@@ -461,7 +461,7 @@
             <div class="item-inner">
               <label class="item-title label">现金</label>
               <label class="item-input">
-                <input id="_m_0" type="text" data-price="1" data-id="1" placeholder="元" />
+                <input id="_m_1" type="text" data-price="1" data-id="1" placeholder="元" />
               </label>
             </div>
           </div>
