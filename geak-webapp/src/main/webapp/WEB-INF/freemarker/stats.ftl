@@ -51,6 +51,7 @@
         <div class="buttons-tab">
           <a href="#tab1" class="tab-link active button">实时统计</a>
           <a href="#tab2" class="tab-link button">历史统计</a>
+          <a href="#tab3" class="tab-link button">人员管理</a>
         </div>
         <div class="tabs">
           <div id="tab1" class="tab active">
@@ -79,6 +80,11 @@
             </div> <!-- /.searchbar -->      
             <div id="card_revenue"></div> 
           </div><!-- /.tab2 -->
+          <div id="tab3" class="tab">
+            <div class="list-block">
+              <ul id="user_list"></ul>
+            </div>
+          </div><!-- /.tab3 -->
         </div><!-- /.tabs -->
       </div><!-- /.content -->
     </div><!-- /.page -->
@@ -124,6 +130,28 @@
             </div>
           </div>
         </div>
+      {% } %}
+    </script>
+    <script type="text/x-tmpl" id="tmpl_user">
+      {% for (var i=0; i<o.length; i++) { %}
+        <li class="item-content">
+          <div class="item-inner">
+            <div class="item-title">
+              <small class="bg-primary">{%= o[i].id %}</small>
+              {%= o[i].name %}
+            </div>
+            <div class="item-after"> 
+              <select id="c_{%= o[i].id %}" data-userId="{%= o[i].id %}" style="height:1rem">
+                <option value="1" {% if(o[i].company.id==1) print('selected="selected"'); %}>大南门店</option>
+                <option value="2" {% if(o[i].company.id==2) print('selected="selected"'); %}>体育路店</option>
+                <option value="3" {% if(o[i].company.id==3) print('selected="selected"'); %}>食品街店</option>
+                <option value="4" {% if(o[i].company.id==4) print('selected="selected"'); %}>柳巷店</option>
+                <option value="5" {% if(o[i].company.id==5) print('selected="selected"'); %}>长风店</option>
+                <option value="6" {% if(o[i].company.id==6) print('selected="selected"'); %}>千峰店</option>
+              </select>
+            </div>
+          </div>
+        </li>
       {% } %}
     </script>
 

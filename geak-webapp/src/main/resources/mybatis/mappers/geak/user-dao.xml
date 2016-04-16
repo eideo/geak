@@ -23,6 +23,15 @@
         select="com.github.xsocket.geak.dao.CompanyDao.selectByUserId" />
         -->
   </resultMap>
+  
+  <select id="selectAll" resultMap="com.github.xsocket.geak.dao.GeakUserDao.result">
+    SELECT a.id, a.account, a.name, a.password, a.state,
+      c.id as company_id, c.name as company_name, c.alias as company_alias, c.address as company_address
+    FROM aa_user a
+      JOIN geak_user g ON a.id = g.id
+      JOIN geak_company c ON g.company_id = c.id 
+    ORDER BY g.company_id, a.name
+  </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.GeakUserDao.result">
     SELECT a.id, a.account, a.name, a.password, a.state,

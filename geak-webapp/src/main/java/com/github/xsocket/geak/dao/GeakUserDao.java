@@ -1,5 +1,7 @@
 package com.github.xsocket.geak.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.github.xsocket.dao.BasicDao;
@@ -13,4 +15,9 @@ import com.github.xsocket.geak.entity.GeakUser;
 @Repository
 public interface GeakUserDao extends BasicDao<GeakUser, String> {
 
+  /**
+   * 获取所有用户的信息。
+   * @return
+   */
+  List<GeakUser> selectAll();
 }

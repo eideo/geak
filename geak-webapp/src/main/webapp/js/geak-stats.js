@@ -62,6 +62,27 @@
     });
   }
   
+  function loadUsers() {
+	  $.showIndicator();
+    $.get("/users", function(list){
+      $("#user_list").html(tmpl("tmpl_user", list));
+      // bindevent
+      $("#user_list select").change(function(e){
+        var userId = $(this).data("userId");
+        var companyId = $("option:selected", this).val();
+        $.ajax({
+          type : "POST",
+          url:"/users/" + userId + "/transfer",
+          data:{"companyId" : companyId},
+          success : function(detail){
+            $.toast("员工门店调整成功");
+          }
+        });
+      });
+      $.hideIndicator();
+    });
+  }
+  
   
   $(function(){
 	  var now = moment().format("YYYY-MM-DD"); 
@@ -74,6 +95,9 @@
     // 利润统计
     loadRevenue();
     $("#btn_search2").click(function(){ loadRevenue(); });
+    
+    // 加载人员信息
+    loadUsers();
 
 	  $.init();
   });
