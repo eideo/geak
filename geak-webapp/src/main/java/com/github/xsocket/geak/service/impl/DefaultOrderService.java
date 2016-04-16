@@ -162,14 +162,16 @@ public class DefaultOrderService implements OrderService {
     Integer id = order.getId();
     if(id != null && id.intValue() > 0) {
       // 只有入场前的订单才可以修改
-      if(!STATE_NEW.equals(order.getState()) && !STATE_PAYED.equals(order.getState())) {
+      if(!STATE_NEW.equals(order.getState()) 
+          && !STATE_PAYED.equals(order.getState())
+          && !STATE_EXITED.equals(order.getState())) {
         LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，不能进行更新！", id, order.getState());
         return orderDao.selectById(order.getId());
       }
 
       if(order.getPayments() == null || order.getPayments().isEmpty()) {
         order.setState(STATE_NEW);
-      } else {
+      } else if(!STATE_EXITED.equals(order.getState())) {
         order.setState(STATE_PAYED);
       }
       updated = orderDao.update(order);

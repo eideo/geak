@@ -142,7 +142,7 @@
   if(!detail.createdDatetime){
     $.toast("请输入正确的接待时间！");
     return false;
-  } else if(detail.createdDatetime < (new Date().getTime()-2*60*60*1000) ){
+  } else if(detail.state != 'EXITED' && detail.createdDatetime < (new Date().getTime()-2*60*60*1000) ){
     $.toast("请输入合理的接待时间！");
     return false;
   }
@@ -280,7 +280,7 @@
       $("#state_name").text("已入场");
       $("#page_detail .content-block-title").attr("class", "content-block-title color-primary");
     } else if(item.state == "EXITED") {
-      $("#btn_save").hide();
+      $("#btn_save").show();
       $("#btn_extrnace").hide();
       $("#btn_exit").hide();
       $("#btn_cancel").hide();
