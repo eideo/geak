@@ -18,6 +18,7 @@ import com.github.xsocket.geak.entity.Customer;
 import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.service.OrderService;
 import com.github.xsocket.util.Pair;
+import com.google.common.base.Strings;
 
 /**
  * 默认订单服务实现类。
@@ -161,17 +162,15 @@ public class DefaultOrderService implements OrderService {
     int updated = 0;
     Integer id = order.getId();
     if(id != null && id.intValue() > 0) {
-      // 只有入场前的订单才可以修改
-      if(!STATE_NEW.equals(order.getState()) 
-          && !STATE_PAYED.equals(order.getState())
-          && !STATE_EXITED.equals(order.getState())) {
+      // 未取消的订单都可以修改
+      if(STATE_CANCELLED.equals(order.getState())) {
         LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，不能进行更新！", id, order.getState());
         return orderDao.selectById(order.getId());
       }
 
       if(order.getPayments() == null || order.getPayments().isEmpty()) {
         order.setState(STATE_NEW);
-      } else if(!STATE_EXITED.equals(order.getState())) {
+      } else if(Strings.isNullOrEmpty(order.getState())) {
         order.setState(STATE_PAYED);
       }
       updated = orderDao.update(order);
