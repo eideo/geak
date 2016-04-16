@@ -14,16 +14,20 @@
         status["companyId"] = status["id"];
         status["companyName"] = status["name"];
         status["totalIncome"] = status["count1"] = status["count2"] = status["count3"] = 0;
+        status["customer1"] = status["customer2"] = status["customer3"] = 0;
       });
 
       $.each(list, function(i,item){
         var index = item["companyId"] - 1;
         if(item.state == "EXITED") {
           result[index].count1 += item.totalCount;
+          result[index].customer1 += item.totalCustomer;
         } else if(item.state == "APPOINTMENT") {
           result[index].count3 += item.totalCount;
+          result[index].customer3 += item.totalCustomer;
         } else {
           result[index].count2 += item.totalCount;
+          result[index].customer2 += item.totalCustomer;
         }
         result[index].totalIncome += item.totalIncome;
       });

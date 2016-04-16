@@ -22,6 +22,7 @@
     <result property="state"          column="state"          javaType="String" jdbcType="VARCHAR" />
     <result property="totalCount"     column="total_count"    javaType="Integer"  jdbcType="INTEGER" />
     <result property="totalIncome"    column="total_income"   javaType="Integer" jdbcType="INTEGER" />
+    <result property="totalCustomer"  column="total_customer" javaType="Integer"  jdbcType="INTEGER" />
   </resultMap>
   
   
@@ -53,7 +54,8 @@
         max(c.name) AS company_name,
         state,
         count(*) as total_count,
-        sum(total_price) as total_income
+        sum(total_price) as total_income,
+        sum(customer_count) as total_customer
     FROM geak_order o JOIN geak_company c ON o.company_id = c.id
     WHERE o.state <![CDATA[<>]]> 'CANCELLED'
       <if test="start != null">
@@ -71,7 +73,8 @@
       max(c.name) AS company_name,
       'APPOINTMENT' as state,
       count(*) as total_count,
-      0 as total_income
+      0 as total_income,
+      sum(customer_count) as total_customer
     FROM geak_appointment o JOIN geak_company c ON o.company_id = c.id
     where state = 'NEW'
       <if test="start != null">

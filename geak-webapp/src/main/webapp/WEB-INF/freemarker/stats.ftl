@@ -92,14 +92,17 @@
             {%= o[i].companyId %}.&nbsp;{%= o[i].companyName %}
           </a>
           <label class="item-after">收入：￥{%= o[i].totalIncome %}</label></div>
-          <div class="card-content">
-            <div class="card-content-inner">
-              <div class="row no-gutter">
-                <div class="col-33"><span class="color-success">已接待：</span><b class="bg-success">{%= o[i].count1 %}</b></div>
-                <div class="col-33"><span class="color-primary">正接待：</span><b class="bg-primary">{%= o[i].count2 %}</b></div>
-                <div class="col-33"><span class="color-warning">已预约：</span><b class="bg-warning">{%= o[i].count3 %}</b></div>
-              </div>
-            </div>
+          <div class="card-footer">
+            <a href="#" class="link">人数统计</a>
+            <a href="#" class="link color-success">已接待：{%= o[i].customer1 %}</a>
+            <a href="#" class="link color-danger" >正接待：{%= o[i].customer2 %}</a>
+            <a href="#" class="link color-warning">已预约：{%= o[i].customer3 %}</a>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="link">场次统计</a>
+            <a href="#" class="link color-success">已接待：{%= o[i].count1 %}</a>
+            <a href="#" class="link color-danger" >正接待：{%= o[i].count2 %}</a>
+            <a href="#" class="link color-warning">已预约：{%= o[i].count3 %}</a>
           </div>
         </div>
       {% } %}
