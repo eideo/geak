@@ -41,7 +41,7 @@
         AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
       </if>
       <if test="end != null">
-        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<]]> TO_DAYS(DATE_ADD(#{end,jdbcType=TIMESTAMP}, INTERVAL 1 DAY))
       </if>
     GROUP BY company_id
   </select>
@@ -62,7 +62,7 @@
         AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
       </if>
       <if test="end != null">
-        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<]]> TO_DAYS(DATE_ADD(#{end,jdbcType=TIMESTAMP}, INTERVAL 1 DAY))
       </if>
     GROUP BY company_id, state
 
@@ -81,7 +81,7 @@
         AND TO_DAYS(DATE_SUB(o.appointment_date,INTERVAL 5 HOUR)) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
       </if>
       <if test="end != null">
-        AND TO_DAYS(DATE_SUB(o.appointment_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+        AND TO_DAYS(DATE_SUB(o.appointment_date,INTERVAL 5 HOUR)) <![CDATA[<]]> TO_DAYS(DATE_ADD(#{end,jdbcType=TIMESTAMP}, INTERVAL 1 DAY))
       </if>
     GROUP BY company_id
   </select>
