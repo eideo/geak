@@ -7,6 +7,12 @@ BEGIN;
 INSERT INTO `geak_user` VALUES ('2016012301', 2);
 INSERT INTO `aa_user` VALUES ('2016012301', '2016012301', '麻文强', '', 'NORMAL');
 
+INSERT INTO `geak_user` VALUES ('2016043001', 2);
+INSERT INTO `aa_user` VALUES ('2016043001', '2016043001', '季何', '', 'NORMAL');
+
+INSERT INTO `geak_user` VALUES ('2016043002', 2);
+INSERT INTO `aa_user` VALUES ('2016043002', '2016043002', '杨牧之', '', 'NORMAL');
+
 INSERT INTO `geak_user` VALUES ('2014010101', 2);
 INSERT INTO `aa_user` VALUES ('2014010101', '2014010101', '郝挺', '', 'NORMAL');
 
@@ -141,6 +147,20 @@ INSERT INTO `geak_user_company` VALUES ('2014070101', 3);  -- 张小喵
 INSERT INTO `geak_user_company` VALUES ('2014070101', 4);  -- 张小喵
 INSERT INTO `geak_user_company` VALUES ('2014070101', 5);  -- 张小喵
 INSERT INTO `geak_user_company` VALUES ('2014070101', 6);  -- 张小喵
+
+INSERT INTO `geak_user_company` VALUES ('2016043001', 1);  -- 季何
+INSERT INTO `geak_user_company` VALUES ('2016043001', 2);  -- 季何
+INSERT INTO `geak_user_company` VALUES ('2016043001', 3);  -- 季何
+INSERT INTO `geak_user_company` VALUES ('2016043001', 4);  -- 季何
+INSERT INTO `geak_user_company` VALUES ('2016043001', 5);  -- 季何
+INSERT INTO `geak_user_company` VALUES ('2016043001', 6);  -- 季何
+
+INSERT INTO `geak_user_company` VALUES ('2016043002', 1);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 2);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 3);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 4);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 5);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 6);  -- 杨牧之
 
 COMMIT;
 
