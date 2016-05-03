@@ -131,8 +131,8 @@ public class DefaultOrderService implements OrderService {
       LOGGER.warn("标识为 {} 的订单不存在，无法取消订单！", id);
       return null;
     }
-    if(!STATE_NEW.equals(order.getState())) {
-      LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，只有新建订单才可以取消！", id, order.getState());
+    if(!STATE_NEW.equals(order.getState()) || !STATE_PAYED.equals(order.getState())) {
+      LOGGER.warn("订单\"{}\"的当前状态为\"{}\"，只有新建或已支付订单才可以取消！", id, order.getState());
       //throw new IllegalArgumentException("预约状态不对，无法确认到场！");
       return order;
     }

@@ -367,7 +367,8 @@
                 确认支付</button>
           {% } %}
           {% if (o.state == 'PAYED') { %}
-              <label class="item-title color-warning">等待入场</label>
+              <button class="cancel button button-danger button-fill item-title" data-id="{%= o.id %}">
+                取消接待</button>
               <button class="entrance item-after button button-warning button-fill" data-id="{%= o.id %}">
                 确认入场</button>
           {% } %}
@@ -538,8 +539,8 @@
     <script type='text/javascript' src='js/moment.min.js'></script>
     <script type='text/javascript' src='js/tmpl.min.js'></script>
     <script type='text/javascript' src='js/json2.min.js'></script>
-    <script type='text/javascript' src='js/geak.js?v=201603131045'></script>
-    <script type='text/javascript' src='js/geak-order.js?v=201603131045'></script>
+    <script type='text/javascript' src='js/geak.js?v=20160501'></script>
+    <script type='text/javascript' src='js/geak-order.js?v=20160501'></script>
   </body>
 </html>
 

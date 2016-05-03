@@ -431,8 +431,8 @@
     <script type='text/javascript' src='js/moment.min.js'></script>
     <script type='text/javascript' src='js/tmpl.min.js'></script>
     <script type='text/javascript' src='js/json2.min.js'></script>
-    <script type='text/javascript' src='js/geak.js?v=201603131045'></script>
-    <script type='text/javascript' src='js/geak-appointment.js?v=201603131045'></script>
+    <script type='text/javascript' src='js/geak.js?v=20160501'></script>
+    <script type='text/javascript' src='js/geak-appointment.js?v=20160501'></script>
   </body>
 </html>
 

@@ -27,8 +27,7 @@
   
   
   <!-- 每日凌晨5点结算， -->
-  <select id="selectRevenue" resultMap="com.github.xsocket.geak.dao.StatsDao.resultRevenue"
-    flushCache="false" useCache="true">
+  <select id="selectRevenue" resultMap="com.github.xsocket.geak.dao.StatsDao.resultRevenue">
     SELECT
         c.id AS company_id,
         max(c.name) AS company_name,
@@ -47,8 +46,7 @@
   </select>
   
   
-  <select id="selectStatus" resultMap="com.github.xsocket.geak.dao.StatsDao.resultStatus"
-    flushCache="false" useCache="true">
+  <select id="selectStatus" resultMap="com.github.xsocket.geak.dao.StatsDao.resultStatus">
     SELECT
         c.id AS company_id,
         max(c.name) AS company_name,
