@@ -1,0 +1,21 @@
+.hide{display:none !important;}
+.card-footer, .card-header{padding:.2rem .3rem;min-height:2rem;}
+.list-block{margin:0;}
+.list-block .item-content{padding-left:.5rem;}
+.list-block .item-inner{padding-right:.5rem;}
+.list-block .item-media+.item-inner{margin-left:.5rem;}
+.list-block.media-list .item-media img{width:2rem;}
+.list-block.media-list .item-title{font-size:.75rem;}
+.bar-tab .tab-button-primary {background-color: #0894ec; color: white;}
+.bar-tab .color-primary {color: #0894ec;}
+.geak-order-amount{}
+
+.geak-products .card {float:left;width:48%;margin:1%;}
+.geak-products .vux-number-input{width:1.5rem;}
+.weui_cells_title, vux-divider{clear:both;}
+.vux-number-input, .vux-number-selector {height:30px;}
+
+
+/* 确定保留 */
+.list-block textarea {height:3rem;padding:.3rem;}
+.list-block select, .list-block input {height:1.2rem;}

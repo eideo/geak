@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.7</java.version>
+    <java.version>1.8</java.version>
 
     <!-- logging -->
     <slf4j.version>1.7.7</slf4j.version>
@@ -38,8 +38,7 @@
     <quartz.version>2.2.1</quartz.version>
     <mybatis.version>3.3.0</mybatis.version>
     <mybatis.spring.version>1.2.3</mybatis.spring.version>
-    <jetty.version>8.1.16.v20140903</jetty.version>
-    <!-- <jetty.version>9.3.4.v20151007</jetty.version> -->
+    <jetty.version>9.2.15.v20160210</jetty.version>
     
     <!-- xml&json&serialization -->
     <xstream.version>1.4.8</xstream.version>
@@ -89,11 +88,6 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -421,52 +415,19 @@
           <!-- <skipTests>true</skipTests> -->
         </configuration>
       </plugin>
-      
-      <!-- sonar -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>sonar-maven-plugin</artifactId>
-        <version>2.6</version>
-      </plugin>
 
       <!-- jetty -->
       <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <!-- <groupId>org.eclipse.jetty</groupId> -->
+        <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
           <webApp>
             <!-- 修改useFileMappedBuffer参数，解决锁定静态资源的问题 -->
-            <defaultsDescriptor>${project.basedir}/../webdefault.xml</defaultsDescriptor>
-            <contextPath>/</contextPath>
+            <defaultsDescriptor>../webdefault.xml</defaultsDescriptor>
+            <contextPath>/</contextPath>            
           </webApp>
-          <classesDirectory>${basedir}/target/classes</classesDirectory>
-          <webAppSourceDirectory>${basedir}/../geak-webapp/src/main/webapp</webAppSourceDirectory>
-          
-          <requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
-            <filename>target/access-yyyy_mm_dd.log</filename>
-            <filenameDateFormat>yyyy_MM_dd</filenameDateFormat>
-            <logDateFormat>yyyy-MM-dd HH:mm:ss</logDateFormat>
-            <logTimeZone>GMT+8:00</logTimeZone>
-            <append>true</append>
-            <logServer>true</logServer>
-            <retainDays>120</retainDays>
-            <logCookies>true</logCookies>
-          </requestLog>
-          
-          <stopKey>shutdown</stopKey>
-          <stopPort>9072</stopPort>
-          <dumpOnStart>false</dumpOnStart>
         </configuration>
-        <!-- 调试阶段开启相关依赖 -->
-        <dependencies>
-          <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -474,5 +435,6 @@
   <modules>
     <module>geak-core</module>
     <module>geak-webapp</module>
+    <module>geak-erp-webapp</module>
   </modules>
 </project>
