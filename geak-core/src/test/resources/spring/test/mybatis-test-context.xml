@@ -11,8 +11,7 @@
 
   <jdbc:embedded-database id="dataSource" type="H2">
     <jdbc:script location="classpath:sql/schema.sql" />
-    <jdbc:script location="classpath:sql/init-data.sql" />
-    <!-- <jdbc:script location="classpath:sql/test-data.sql" /> -->
+    <jdbc:script location="classpath:sql/test-data.sql" />
   </jdbc:embedded-database>
 
   <!-- 自动扫描业务包 -->

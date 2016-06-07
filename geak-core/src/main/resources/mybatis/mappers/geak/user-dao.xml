@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.UserDao">
+
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.User">
+    <id property="id"           column="id"       javaType="String" jdbcType="VARCHAR" />
+    <result property="account"  column="account"  javaType="String" jdbcType="VARCHAR" />
+    <result property="name"     column="name"     javaType="String" jdbcType="VARCHAR" />
+    <result property="password" column="password" javaType="String" jdbcType="VARCHAR" />
+    <result property="state"    column="state"    javaType="String" jdbcType="VARCHAR" />
+    <!-- 关联公司(门店) -->
+    <association property="company" javaType="com.github.xsocket.geak.entity.Company">
+      <id     property="id"      column="company_id"      javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"    column="company_name"    javaType="String"  jdbcType="VARCHAR" />
+      <result property="alias"   column="company_alias"   javaType="String"  jdbcType="VARCHAR" />
+      <result property="address" column="company_address" javaType="String"  jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+  <select id="selectAll" resultMap="com.github.xsocket.geak.dao.UserDao.result">
+    SELECT u.id, u.account, u.name, u.password, u.state,
+      c.id as company_id, c.name as company_name, c.alias as company_alias, c.address as company_address
+    FROM geak_user u
+      JOIN geak_company c ON u.company_id = c.id 
+    ORDER BY u.company_id, u.name
+  </select>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.UserDao.result">
+    SELECT u.id, u.account, u.name, u.password, u.state,
+      c.id as company_id, c.name as company_name, c.alias as company_alias, c.address as company_address
+    FROM geak_user u
+      JOIN geak_company c ON u.company_id = c.id 
+    WHERE u.id = #{id,javaType=String,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert">
+    INSERT INTO geak_user (id, account, name, password, state, company_id) 
+    VALUES (
+      #{id,javaType=String,jdbcType=VARCHAR}, 
+      #{account,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, 
+      #{company.id,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <update id="update">
+    UPDATE geak_user
+    <set>
+      <if test="account != null">account = #{account,jdbcType=VARCHAR},</if>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="password != null">password = #{password,jdbcType=VARCHAR},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="company != null and company.id != null">company_id = #{company.id,jdbcType=INTEGER},</if>      
+    </set>
+    WHERE id = #{id,javaType=String,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

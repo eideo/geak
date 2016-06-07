@@ -1,9 +1,8 @@
 -- ----------------------------
---  Records of `geak_company`
+--  Test Records of geak_company
 -- ----------------------------
 BEGIN;
-INSERT INTO geak_company 
-VALUES 
+INSERT INTO geak_company VALUES 
 ('1', '大南门店', '大南门', '大南门'), 
 ('2', '体育路店', '体育路', '体育路'), 
 ('3', '食品街店', '食品街', '食品街'), 
@@ -12,4 +11,12 @@ VALUES
 ('6', '千峰店', '千峰', '千峰路'),
 ('7', '极客工厂', '工厂', '极客工厂')
 ;
+COMMIT;
+
+
+-- ----------------------------
+--  Test Records of geak_user
+-- ----------------------------
+BEGIN;
+INSERT INTO geak_user VALUES ('1', '1', '麻文强', '', 'NORMAL', 1);
 COMMIT;
