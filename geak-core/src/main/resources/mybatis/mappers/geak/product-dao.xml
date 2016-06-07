@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.ProductDao">
+
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.Product">
+    <id property="id"           column="id"       javaType="Integer" jdbcType="INTEGER" />
+    <result property="name"     column="name"     javaType="String"  jdbcType="VARCHAR" />
+    <result property="alias"    column="alias"    javaType="String"  jdbcType="VARCHAR" />
+    <result property="type"     column="type"     javaType="String"  jdbcType="VARCHAR" />
+    <result property="state"    column="state"    javaType="String"  jdbcType="VARCHAR" />
+    <result property="price"    column="price"    javaType="Integer" jdbcType="INTEGER" />
+    <result property="price0"   column="price0"   javaType="Integer" jdbcType="INTEGER" />
+    <!-- 关联公司(门店) -->
+    <association property="company" javaType="com.github.xsocket.geak.entity.Company">
+      <id     property="id"      column="company_id"      javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"    column="company_name"    javaType="String"  jdbcType="VARCHAR" />
+      <result property="alias"   column="company_alias"   javaType="String"  jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+  <select id="selectByCompanyId" resultMap="com.github.xsocket.geak.dao.ProductDao.result">
+    SELECT p.id, p.name, p.alias, p.type, p.state, p.price, p.price0,
+      c.id as company_id, c.name as company_name, c.alias as company_alias
+    FROM geak_product p
+      JOIN geak_company c ON p.company_id = c.id
+    WHERE p.company_id = #{id,jdbcType=INTEGER}
+    ORDER BY p.type
+  </select>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.ProductDao.result">
+    SELECT p.id, p.name, p.alias, p.type, p.state, p.price, p.price0,
+      c.id as company_id, c.name as company_name, c.alias as company_alias
+    FROM geak_product p
+      JOIN geak_company c ON p.company_id = c.id
+    WHERE p.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert">
+    INSERT INTO geak_product (id, name, alias, type, state, price, price0, company_id) 
+    VALUES (
+      #{id,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, 
+      #{alias,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR},
+      #{price,jdbcType=INTEGER},
+      #{price0,jdbcType=INTEGER}, 
+      #{company.id,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <update id="update">
+    UPDATE geak_product
+    <set>
+      <if test="alias != null">alias = #{alias,jdbcType=VARCHAR},</if>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="type != null">type = #{type,jdbcType=VARCHAR},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="price != null">price = #{price,jdbcType=INTEGER},</if> 
+      <if test="price0 != null">price0 = #{price0,jdbcType=INTEGER},</if> 
+      <if test="company != null and company.id != null">company_id = #{company.id,jdbcType=INTEGER},</if>      
+    </set>
+    WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

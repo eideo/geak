@@ -16,13 +16,12 @@
       <id     property="id"      column="company_id"      javaType="Integer" jdbcType="INTEGER" />
       <result property="name"    column="company_name"    javaType="String"  jdbcType="VARCHAR" />
       <result property="alias"   column="company_alias"   javaType="String"  jdbcType="VARCHAR" />
-      <result property="address" column="company_address" javaType="String"  jdbcType="VARCHAR" />
     </association>
   </resultMap>
   
   <select id="selectAll" resultMap="com.github.xsocket.geak.dao.UserDao.result">
     SELECT u.id, u.account, u.name, u.password, u.state,
-      c.id as company_id, c.name as company_name, c.alias as company_alias, c.address as company_address
+      c.id as company_id, c.name as company_name, c.alias as company_alias
     FROM geak_user u
       JOIN geak_company c ON u.company_id = c.id 
     ORDER BY u.company_id, u.name
@@ -30,7 +29,7 @@
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.UserDao.result">
     SELECT u.id, u.account, u.name, u.password, u.state,
-      c.id as company_id, c.name as company_name, c.alias as company_alias, c.address as company_address
+      c.id as company_id, c.name as company_name, c.alias as company_alias
     FROM geak_user u
       JOIN geak_company c ON u.company_id = c.id 
     WHERE u.id = #{id,javaType=String,jdbcType=VARCHAR}

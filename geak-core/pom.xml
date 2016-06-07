@@ -40,6 +40,12 @@
       <artifactId>mybatis-spring</artifactId>
     </dependency>
     
+    <!-- xml&json -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+    </dependency>
+    
     <!-- test -->
     <dependency>
       <groupId>com.h2database</groupId>
