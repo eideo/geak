@@ -30,4 +30,13 @@ INSERT INTO geak_product VALUES
 ;
 COMMIT;
 
+-- ----------------------------
+--  Test Records of geak_member
+-- ----------------------------
+BEGIN;
+INSERT INTO geak_member VALUES 
+(1, '麻文强', '15001276389', 'M', 'SUBSCRIBED', 'openid', 'unionid', 'head', '2016-06-01', '2016-06-01 00:00:00', 0, 0)
+;
+COMMIT;
+
 

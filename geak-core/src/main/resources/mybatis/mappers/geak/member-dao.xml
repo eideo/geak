@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.MemberDao">
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.Member">
+    <id property="id"                column="id"             javaType="Integer" jdbcType="INTEGER" />
+    <!-- <result property="account"  column="account"        javaType="String" jdbcType="VARCHAR" /> -->
+    <result property="name"          column="name"           javaType="String" jdbcType="VARCHAR" />
+    <result property="phone"         column="phone"          javaType="String" jdbcType="VARCHAR" />
+    <result property="state"         column="state"          javaType="String" jdbcType="VARCHAR" />
+    <result property="sex"           column="sex"            javaType="String" jdbcType="CHAR" />
+    
+    <result property="openId"        column="openid"         javaType="String" jdbcType="VARCHAR" />
+    <result property="unionId"       column="unionid"        javaType="String" jdbcType="VARCHAR" />
+    <result property="headUrl"       column="head"           javaType="String" jdbcType="VARCHAR" />
+    
+    <result property="createdDate"   column="created_date"   javaType="Date"   jdbcType="TIMESTAMP" />
+    <result property="subscribeDate" column="subscribe_date" javaType="Date"   jdbcType="TIMESTAMP" />
+    
+    <result property="balance"       column="balance"        javaType="Integer" jdbcType="INTEGER" />
+    <result property="score"         column="score"          javaType="Integer" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="_select_member">
+    select 
+      id, name, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score
+    from geak_member
+  </sql>
+  
+  <select id="selectByOpenId" resultMap="com.github.xsocket.geak.dao.MemberDao.result">
+    <include refid="_select_member"/>
+    WHERE openid = #{openId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.MemberDao.result">
+    <include refid="_select_member"/>
+    WHERE id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert">
+    INSERT INTO geak_member 
+      (id, name, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score) 
+    VALUES (
+      #{id,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, 
+      #{state,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, 
+      #{openId,jdbcType=VARCHAR}, 
+      #{unionId,jdbcType=VARCHAR}, 
+      #{headUrl,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, 
+      #{subscribeDate,jdbcType=TIMESTAMP}, 
+      #{balance,jdbcType=INTEGER}, 
+      #{score,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <update id="update">
+    UPDATE geak_member
+    <set>
+      <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
+      <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="sex != null">sex = #{sex,jdbcType=VARCHAR},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="openId != null">openid = #{openId,jdbcType=VARCHAR},</if>
+      <if test="unionId != null">unionid = #{unionId,jdbcType=VARCHAR},</if>
+      <if test="headUrl != null">head = #{headUrl,jdbcType=VARCHAR},</if>
+      <if test="subscribeDate != null">subscribe_date = #{subscribeDate,jdbcType=VARCHAR},</if>
+      <if test="balance != null">balance = #{balance,jdbcType=INTEGER},</if>
+      <if test="score != null">score = #{score,jdbcType=INTEGER},</if>   
+    </set>
+    WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

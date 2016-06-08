@@ -9,11 +9,27 @@ DROP TABLE IF EXISTS geak_order;
 DROP TABLE IF EXISTS geak_customer;
 DROP TABLE IF EXISTS geak_business;
 
+DROP TABLE IF EXISTS geak_member;
 DROP TABLE IF EXISTS geak_product;
 DROP TABLE IF EXISTS geak_user_company;
 DROP TABLE IF EXISTS geak_user;
 DROP TABLE IF EXISTS geak_company;
 DROP TABLE IF EXISTS geak_action_log;
+
+-- ----------------------------
+-- 重要操作日志表
+-- ----------------------------
+CREATE TABLE geak_action_log (
+  id           int          NOT NULL AUTO_INCREMENT COMMENT '操作标识(自增)',
+  user_id      varchar(36)  NOT NULL COMMENT '操作人标识',
+  action       varchar(32)  NOT NULL COMMENT '操作名称',
+  name         varchar(255) NOT NULL COMMENT '操作对象',
+  content      text         NOT NULL COMMENT '操作内容',
+  created_date datetime     NOT NULL COMMENT '操作时间',
+  PRIMARY KEY (id)
+) COMMENT = '操作日志表'
+;
+
 
 -- ----------------------------
 -- 公司表(门店)
@@ -26,6 +42,7 @@ CREATE TABLE geak_company (
   PRIMARY KEY (id)
 ) COMMENT = '公司表'
 ;
+
 
 -- ----------------------------
 -- 极客用户表
@@ -53,6 +70,7 @@ CREATE TABLE geak_user_company (
   CONSTRAINT fk_guc_c FOREIGN KEY (company_id) REFERENCES geak_company (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
 -- ----------------------------
 -- 产品列表
 -- ----------------------------
@@ -72,15 +90,30 @@ CREATE TABLE geak_product (
 
 
 -- ----------------------------
--- 重要操作日志表
+-- 会员表
 -- ----------------------------
-CREATE TABLE geak_action_log (
-  id           int          NOT NULL AUTO_INCREMENT COMMENT '操作标识(自增)',
-  user_id      varchar(36)  NOT NULL COMMENT '操作人标识',
-  action       varchar(32)  NOT NULL COMMENT '操作名称',
-  name         varchar(255) NOT NULL COMMENT '操作对象',
-  content      text         NOT NULL COMMENT '操作内容',
-  created_date datetime     NOT NULL COMMENT '操作时间',
-  PRIMARY KEY (id)
-) COMMENT = '操作日志表'
+CREATE TABLE geak_member (
+  id      INT         NOT NULL AUTO_INCREMENT COMMENT '会员主键标识(自增)',
+--  account VARCHAR(64) NOT NULL                COMMENT '会员账号-唯一',
+  name    VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '会员名称',
+  phone   VARCHAR(16) NOT NULL DEFAULT ''     COMMENT '会员名称',
+  sex     CHAR(1)     NOT NULL DEFAULT 'S'    COMMENT '会员性别(M|F|S:student)',
+  state   VARCHAR(16) NOT NULL                COMMENT '当前状态',
+  
+  openid  VARCHAR(32) NOT NULL DEFAULT ''     COMMENT '微信openid',
+  unionid VARCHAR(32) NOT NULL DEFAULT ''     COMMENT '微信unionid',
+  head   VARCHAR(256) NOT NULL DEFAULT ''     COMMENT '会有头像url',
+  
+  subscribe_date DATETIME     NULL 		  	  COMMENT '关注时间',
+  created_date   DATETIME NOT NULL 		      COMMENT '创建时间',
+  
+  balance INT     	  NOT NULL                COMMENT '账户余额',
+  score	  INT         NOT NULL DEFAULT 0      COMMENT '会员积分',
+  PRIMARY KEY (id),
+  CONSTRAINT uk_gm_u UNIQUE (openid)
+) COMMENT = '会员表'
 ;
+
+
+
+
