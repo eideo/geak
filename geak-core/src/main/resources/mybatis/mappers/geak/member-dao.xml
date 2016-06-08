@@ -8,6 +8,7 @@
     <id property="id"                column="id"             javaType="Integer" jdbcType="INTEGER" />
     <!-- <result property="account"  column="account"        javaType="String" jdbcType="VARCHAR" /> -->
     <result property="name"          column="name"           javaType="String" jdbcType="VARCHAR" />
+    <result property="nickname"      column="nickname"       javaType="String" jdbcType="VARCHAR" />
     <result property="phone"         column="phone"          javaType="String" jdbcType="VARCHAR" />
     <result property="state"         column="state"          javaType="String" jdbcType="VARCHAR" />
     <result property="sex"           column="sex"            javaType="String" jdbcType="CHAR" />
@@ -25,7 +26,7 @@
   
   <sql id="_select_member">
     select 
-      id, name, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score
+      id, name, nickname, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score
     from geak_member
   </sql>
   
@@ -41,10 +42,11 @@
 
   <insert id="insert">
     INSERT INTO geak_member 
-      (id, name, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score) 
+      (id, name, nickname, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score) 
     VALUES (
       #{id,jdbcType=INTEGER}, 
-      #{name,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR},
+      #{nickname,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, 
       #{state,jdbcType=VARCHAR}, 
       #{sex,jdbcType=VARCHAR}, 
@@ -63,6 +65,7 @@
     <set>
       <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
       <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="nickname != null">nickname = #{nickname,jdbcType=VARCHAR},</if>
       <if test="sex != null">sex = #{sex,jdbcType=VARCHAR},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
       <if test="openId != null">openid = #{openId,jdbcType=VARCHAR},</if>

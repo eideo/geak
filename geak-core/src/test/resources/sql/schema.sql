@@ -96,6 +96,7 @@ CREATE TABLE geak_member (
   id      INT         NOT NULL AUTO_INCREMENT COMMENT '会员主键标识(自增)',
 --  account VARCHAR(64) NOT NULL                COMMENT '会员账号-唯一',
   name    VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '会员名称',
+ nickname VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '会员昵称',
   phone   VARCHAR(16) NOT NULL DEFAULT ''     COMMENT '会员名称',
   sex     CHAR(1)     NOT NULL DEFAULT 'S'    COMMENT '会员性别(M|F|S:student)',
   state   VARCHAR(16) NOT NULL                COMMENT '当前状态',

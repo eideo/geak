@@ -15,6 +15,7 @@ public class Member implements Serializable {
   protected Integer id;
   protected String account;
   protected String name;
+  protected String nickname;
   protected String phone;
 
   protected String openId;
@@ -54,6 +55,14 @@ public class Member implements Serializable {
     this.name = name;
   }
 
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String name) {
+    this.nickname = name;
+  }
+  
   public String getPhone() {
     return phone;
   }
