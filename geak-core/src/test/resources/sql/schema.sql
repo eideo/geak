@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS geak_order;
 DROP TABLE IF EXISTS geak_customer;
 DROP TABLE IF EXISTS geak_business;
 
+DROP TABLE IF EXISTS geak_member_deposit;
 DROP TABLE IF EXISTS geak_member;
 DROP TABLE IF EXISTS geak_product;
 DROP TABLE IF EXISTS geak_user_company;
@@ -115,6 +116,27 @@ CREATE TABLE geak_member (
 ) COMMENT = '会员表'
 ;
 
+-- ----------------------------
+-- 会员充值记录表
+-- ----------------------------
+CREATE TABLE geak_member_deposit (
+  id            INT         NOT NULL AUTO_INCREMENT COMMENT '充值记录主键标识(自增)',
+  amount        INT     	NOT NULL                COMMENT '充值金额',
+  state         VARCHAR(16) NOT NULL                COMMENT '当前状态',
+  trade_no      VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '订单号',   
+  trade_content VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '支付内容',
+  trade_type    VARCHAR(16) NOT NULL DEFAULT ''     COMMENT '支付类型',
+  ip            VARCHAR(16) NOT NULL DEFAULT ''     COMMENT 'ip',
+  sign          VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '签名',
+  
+  begin_date    DATETIME    NOT NULL 		      	COMMENT '交易开始时间',
+  over_date     DATETIME    NOT NULL 		  	  	COMMENT '交易结束时间',
+  
+  member_id     INT         NOT NULL                COMMENT '支付会员编号',
+  openid        VARCHAR(32) NOT NULL DEFAULT ''     COMMENT '支付会员openid',
+  PRIMARY KEY (id)
+) COMMENT = '会员充值记录表'
+;
 
 
 

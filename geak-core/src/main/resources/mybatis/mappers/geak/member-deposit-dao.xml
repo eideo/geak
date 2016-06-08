@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.MemberDepositDao">
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.MemberDeposit">
+    <id property="id"               column="id"            javaType="Integer" jdbcType="INTEGER" />
+    <result property="amount"       column="amount"        javaType="Integer" jdbcType="INTEGER" />
+    <result property="state"        column="state"         javaType="String" jdbcType="VARCHAR" />
+    <result property="tradeNo"      column="trade_no"      javaType="String" jdbcType="VARCHAR" />
+    <result property="tradeContent" column="trade_content" javaType="String" jdbcType="VARCHAR" />
+    <result property="tradeType"    column="trade_type"    javaType="String" jdbcType="VARCHAR" />
+    <result property="ip"           column="ip"            javaType="String" jdbcType="VARCHAR" />
+    <result property="sign"         column="sign"          javaType="String" jdbcType="VARCHAR" />
+    <result property="beginDate"    column="begin_date"    javaType="Date"   jdbcType="TIMESTAMP" />
+    <result property="overDate"     column="over_date"     javaType="Date"   jdbcType="TIMESTAMP" />
+    <!-- 关联会员 -->
+    <association property="member" javaType="com.github.xsocket.geak.entity.Member">
+      <id property="id"           column="member_id"       javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"     column="member_name"     javaType="String" jdbcType="VARCHAR" />
+      <result property="phone"    column="member_phone"    javaType="String" jdbcType="VARCHAR" />
+      <result property="openId"   column="member_openid"   javaType="String" jdbcType="VARCHAR" />
+      <result property="balance"  column="member_balance"  javaType="Integer" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  
+  <sql id="_select_member_deposit">
+    SELECT 
+      d.id, d.amount, d.state, d.trade_no, d.trade_content, d.trade_type, d.ip, d.sign, d.begin_date, d.over_date,
+      m.id as member_id, m.name as member_name, m.phone as member_phone, m.openid as member_openid, m.balance as member_balance
+    FROM geak_member_deposit d
+      JOIN geak_member m ON d.member_id = m.id
+  </sql>
+  
+  <select id="selectedByMember" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
+    <include refid="_select_member_deposit"/>
+    WHERE member_id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
+    <include refid="_select_member_deposit"/>
+    WHERE d.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert">
+    INSERT INTO geak_member_deposit 
+      (id, amount, state, trade_no, trade_content, trade_type, ip, sign, begin_date, over_date, member_id, openid) 
+    VALUES (
+      #{id,jdbcType=INTEGER}, 
+      #{amount,jdbcType=INTEGER},
+      #{state,jdbcType=VARCHAR}, 
+      #{tradeNo,jdbcType=VARCHAR}, 
+      #{tradeContent,jdbcType=VARCHAR}, 
+      #{tradeType,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR}, 
+      #{sign,jdbcType=VARCHAR}, 
+      #{beginDate,jdbcType=TIMESTAMP}, 
+      #{overDate,jdbcType=TIMESTAMP}, 
+      #{member.id,jdbcType=INTEGER}, 
+      #{member.openId,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <update id="update">
+    UPDATE geak_member_deposit
+    <set>
+      <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      <if test="tradeNo != null">trade_no = #{tradeNo,jdbcType=VARCHAR},</if>
+      <if test="tradeContent != null">trade_content = #{tradeContent,jdbcType=VARCHAR},</if>
+      <if test="tradeType != null">trade_type = #{tradeType,jdbcType=VARCHAR},</if>
+      <if test="ip != null">ip = #{ip,jdbcType=VARCHAR},</if>
+      <if test="sign != null">sign = #{sign,jdbcType=VARCHAR},</if>
+      <if test="overDate != null">over_date = #{overDate,jdbcType=TIMESTAMP},</if>
+      <if test="member != null and member.id != null">member_id = #{member.id,jdbcType=INTEGER},</if>
+      <if test="member != null and member.openId != null">openid = #{member.openId,jdbcType=VARCHAR},</if>
+    </set>
+    WHERE id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

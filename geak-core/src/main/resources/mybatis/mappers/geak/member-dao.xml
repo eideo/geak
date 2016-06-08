@@ -25,9 +25,9 @@
   </resultMap>
   
   <sql id="_select_member">
-    select 
+    SELECT 
       id, name, nickname, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score
-    from geak_member
+    FROM geak_member
   </sql>
   
   <select id="selectByOpenId" resultMap="com.github.xsocket.geak.dao.MemberDao.result">
@@ -71,7 +71,7 @@
       <if test="openId != null">openid = #{openId,jdbcType=VARCHAR},</if>
       <if test="unionId != null">unionid = #{unionId,jdbcType=VARCHAR},</if>
       <if test="headUrl != null">head = #{headUrl,jdbcType=VARCHAR},</if>
-      <if test="subscribeDate != null">subscribe_date = #{subscribeDate,jdbcType=VARCHAR},</if>
+      <if test="subscribeDate != null">subscribe_date = #{subscribeDate,jdbcType=TIMESTAMP},</if>
       <if test="balance != null">balance = #{balance,jdbcType=INTEGER},</if>
       <if test="score != null">score = #{score,jdbcType=INTEGER},</if>   
     </set>

@@ -40,3 +40,13 @@ INSERT INTO geak_member VALUES
 COMMIT;
 
 
+-- ----------------------------
+--  Test Records of geak_member_deposit
+-- ----------------------------
+BEGIN;
+INSERT INTO geak_member_deposit VALUES 
+(1, 100, 'OK', '201606010001', '充值100元', 'JSAPI', '192.168.1.1', 'sign', '2016-06-01 00:00:00', '2016-06-01 00:00:00', 1, 'openid')
+;
+COMMIT;
+
+
