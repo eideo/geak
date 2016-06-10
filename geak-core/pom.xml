@@ -40,6 +40,16 @@
       <artifactId>mybatis-spring</artifactId>
     </dependency>
     
+    <!-- http-client -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>fluent-hc</artifactId>
+    </dependency>
+    
     <!-- xml&json -->
     <dependency>
       <groupId>com.alibaba</groupId>
