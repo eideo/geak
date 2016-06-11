@@ -26,6 +26,16 @@
       <version>${project.version}</version>
     </dependency>
     
+    <!-- jdbc -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+    </dependency>
+    
     <!-- spec -->
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
