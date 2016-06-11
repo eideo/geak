@@ -14,9 +14,7 @@
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <link rel="stylesheet" href="/css/app.css">
   <script type="text/javascript">
-  	window.MEMBER = {
-  	  "id": ${member.id}
-  	}
+  	window.MEMBER = {"id": ${member.id}}
   </script>
 </head>
 <body>

@@ -40,11 +40,10 @@
     WHERE id = #{id,jdbcType=INTEGER}
   </select>
 
-  <insert id="insert">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_member 
-      (id, name, nickname, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score) 
+      (name, nickname, phone, state, sex, openid, unionid, head, created_date, subscribe_date, balance, score) 
     VALUES (
-      #{id,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR},
       #{nickname,jdbcType=VARCHAR}, 
       #{phone,jdbcType=VARCHAR}, 

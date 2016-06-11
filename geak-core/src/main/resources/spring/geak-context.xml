@@ -29,5 +29,11 @@
     <!-- 映射文件路径配置 -->
     <property name="mapperLocations" value="classpath*:mybatis/mappers/**/*.xml" />
   </bean>
+    
+  <!-- mybatis mapper -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+    <property name="basePackage" value="com.github.xsocket.geak.dao" /> 
+    <property name="addToConfig" value="true" />
+  </bean>
 
 </beans>

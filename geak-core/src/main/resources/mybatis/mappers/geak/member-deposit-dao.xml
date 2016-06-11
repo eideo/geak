@@ -43,11 +43,10 @@
     WHERE d.id = #{id,jdbcType=INTEGER}
   </select>
 
-  <insert id="insert">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_member_deposit 
-      (id, amount, state, trade_no, trade_content, trade_type, ip, sign, begin_date, over_date, member_id, openid) 
+      (amount, state, trade_no, trade_content, trade_type, ip, sign, begin_date, over_date, member_id, openid) 
     VALUES (
-      #{id,jdbcType=INTEGER}, 
       #{amount,jdbcType=INTEGER},
       #{state,jdbcType=VARCHAR}, 
       #{tradeNo,jdbcType=VARCHAR}, 

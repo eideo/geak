@@ -24,7 +24,7 @@
     WHERE id = #{id,javaType=Integer,jdbcType=INTEGER}
   </select>
 
-  <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_company 
       (name, alias, address) 
     VALUES 

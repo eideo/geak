@@ -38,10 +38,9 @@
     WHERE p.id = #{id,jdbcType=INTEGER}
   </select>
 
-  <insert id="insert">
-    INSERT INTO geak_product (id, name, alias, type, state, price, price0, company_id) 
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO geak_product (name, alias, type, state, price, price0, company_id) 
     VALUES (
-      #{id,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, 
       #{alias,jdbcType=VARCHAR}, 
       #{type,jdbcType=VARCHAR}, 

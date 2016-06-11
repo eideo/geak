@@ -22,7 +22,7 @@ public class DefaultMemberService implements MemberService {
 
   @Override
   public Member loadMemberByOpenId(String openId) {
-    Member member = dao.selectedByOpenId(openId);
+    Member member = dao.selectByOpenId(openId);
     if(member == null) {
       JSONObject json = service.getUserInfo(openId);
       member = new Member();

@@ -1,6 +1,7 @@
 package com.github.xsocket.geak.service.impl;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.apache.http.client.fluent.Request;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import com.github.xsocket.geak.service.WechatMpService;
 public class DefaultWechatMpService implements WechatMpService {
   
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultWechatMpService.class);  
+  
+  private static Charset CHARSET_WECHAT = Charset.forName("UTF-8");
   
   @Value("${wechat.appid}")
   private String appId;
@@ -63,7 +66,7 @@ public class DefaultWechatMpService implements WechatMpService {
     LOGGER.debug("Start calling Wechat API - GetUserInfo: {}", url);
     
     try {
-      String content = Request.Get(url).execute().returnContent().asString();
+      String content = Request.Get(url).execute().returnContent().asString(CHARSET_WECHAT);
       JSONObject json = JSON.parseObject(content);
       checkApiResult(json);
       
@@ -88,7 +91,7 @@ public class DefaultWechatMpService implements WechatMpService {
     LOGGER.debug("Start calling Wechat API - GetUserList: {}", url);
     
     try {
-      String content = Request.Get(url).execute().returnContent().asString();
+      String content = Request.Get(url).execute().returnContent().asString(CHARSET_WECHAT);
       JSONObject json = JSON.parseObject(content);
       checkApiResult(json);
       

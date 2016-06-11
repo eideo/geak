@@ -16,7 +16,7 @@ public interface MemberDao {
    * 通过openid获取会员信息。
    * @return
    */
-  Member selectedByOpenId(String openId);
+  Member selectByOpenId(String openId);
   
   /**
    * 根据实体标识获取实体数据。

@@ -11,7 +11,7 @@ import com.github.xsocket.geak.entity.Member;
  */
 public interface MemberService {
 
-  @Transactional(readOnly=true)
+  @Transactional
   Member loadMemberByOpenId(String openId);
   
 }
