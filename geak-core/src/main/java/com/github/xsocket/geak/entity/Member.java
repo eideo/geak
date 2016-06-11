@@ -46,7 +46,7 @@ public class Member implements Serializable {
   }
 
   public String getAccount() {
-    return FORMAT.format(subscribeDate) + String.format("%6d", id);
+    return FORMAT.format(subscribeDate) + String.format("%06d", id);
   }
 
   public void setAccount(String account) {

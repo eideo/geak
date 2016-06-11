@@ -50,7 +50,7 @@ public class HtmlController {
     
     ModelAndView mv = new ModelAndView("index");
     mv.addObject("member", member);
-    mv.addObject("config", wechatService.getJsConfig(String.format("http://%s", host)));
+    mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/?code=%s&state=", host, code)));
     return mv;
   }
   

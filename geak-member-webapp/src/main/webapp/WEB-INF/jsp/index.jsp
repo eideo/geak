@@ -74,6 +74,13 @@
         
         <div class="content-block">
 	      <p><button class="button button-big button-round" onclick="wx.scanQRCode();">扫一扫</button></p>
+	      
+	    </div><!-- /.content-block 扫码 -->
+	    <div class="content-block">
+	      <div class="row">
+	        <div class="col-50"><button class="button button-big button-fill button-primary" onclick="wx.scanQRCode();">扫码支付</button></div>
+	        <div class="col-50"><a href="#" class="button button-big button-fill button-success">微信充值</a></div>
+	      </div>
 	    </div><!-- /.content-block 扫码 -->
       </div>
     </div><!-- /#page_index -->
