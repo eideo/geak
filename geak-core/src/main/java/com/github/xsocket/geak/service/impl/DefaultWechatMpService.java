@@ -2,6 +2,8 @@ package com.github.xsocket.geak.service.impl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.UUID;
 
 import org.apache.http.client.fluent.Request;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.xsocket.geak.WechatException;
 import com.github.xsocket.geak.service.WechatMpService;
+import com.github.xsocket.geak.util.EncoderHandler;
 
 @Service
 public class DefaultWechatMpService implements WechatMpService {
@@ -29,6 +32,9 @@ public class DefaultWechatMpService implements WechatMpService {
 
   private String accessToken;
   private long expiredTimeMillis = 0L;
+  
+  private String jsapiTicket;
+  private long ticketExpiredTimeMillis = 0L;
 
   @Override
   public synchronized String getAccessToken() {
@@ -55,6 +61,53 @@ public class DefaultWechatMpService implements WechatMpService {
     }
     
     return accessToken;
+  }
+  
+  @Override
+  public synchronized String getJsapiTicket() {
+    if(System.currentTimeMillis() > ticketExpiredTimeMillis) {
+      String accessToken = getAccessToken();
+      final String url = String.format(
+          "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=%s",
+          accessToken);
+      
+      // 通过微信API获取新的accessToken
+      LOGGER.debug("Start calling Wechat API - GetJsapiTicket: {}", url);
+      try {
+        String content = Request.Get(url).execute().returnContent().asString();
+        JSONObject json = JSON.parseObject(content);
+        
+        checkApiResult(json);
+        
+        jsapiTicket = json.getString("ticket");
+        // 失效时间前后预留5秒
+        ticketExpiredTimeMillis = (json.getLongValue("expires_in") - 5L) * 1000L + System.currentTimeMillis();
+        
+      } catch (IOException e) {
+        throw new RuntimeException("Fail to fetch Wechat JsapiTicket", e);
+      }
+    }
+    
+    return jsapiTicket;
+  }
+  
+  @Override
+  public JSONObject getJsConfig(String url) {
+    String ticket = this.getJsapiTicket();
+    long timestamp = new Date().getTime() / 1000L;
+    String nonceStr = UUID.randomUUID().toString();
+    String signBefore = String.format("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", 
+        ticket, nonceStr, timestamp, url);
+    
+    String sign = EncoderHandler.encode("SHA1", signBefore);
+
+    JSONObject configJson = new JSONObject();
+    configJson.put("appId", appId);
+    configJson.put("timestamp", timestamp);
+    configJson.put("nonceStr", nonceStr);
+    configJson.put("signature", sign);
+
+    return configJson;
   }
   
   @Override

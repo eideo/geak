@@ -11,6 +11,18 @@ public interface WechatMpService {
   String getAccessToken();
   
   /**
+   * 获取jsapi_ticket
+   * @return
+   */
+  String getJsapiTicket();
+  
+  /**
+   * 获取JS接口调用的配置信息
+   * @return
+   */
+  JSONObject getJsConfig(String url);
+  
+  /**
    * 通过 oauth2 获取用户的 openid信息
    * @param code
    * @return

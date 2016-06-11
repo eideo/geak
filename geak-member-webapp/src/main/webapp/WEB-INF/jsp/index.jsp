@@ -13,9 +13,6 @@
   <link rel="stylesheet" href="/css/vux.css">
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <link rel="stylesheet" href="/css/app.css">
-  <script type="text/javascript">
-  	window.MEMBER = ${member.toJsonString()};
-  </script>
 </head>
 <body>
   <div class="page-group" id="app">
@@ -39,7 +36,7 @@
           <ul>
             <li class="item-content item-link">
               <span class="item-media">
-                <img src="http://gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i3/TB10LfcHFXXXXXKXpXXXXXXXXXX_!!0-item_pic.jpg_250x250q60.jpg" style='width: 2.2rem;'>
+                <img :src="member.headSmall" style="width:2.5rem;">
               </span>
               <span class="item-inner">
                 <span class="item-title-row">
@@ -74,6 +71,10 @@
             </li>
           </ul>
         </div><!-- /.list-block 账户-->
+        
+        <div class="content-block">
+	      <p><button class="button button-big button-round" onclick="wx.scanQRCode();">扫一扫</button></p>
+	    </div><!-- /.content-block 扫码 -->
       </div>
     </div><!-- /#page_index -->
 
@@ -82,6 +83,18 @@
   <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
   <script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
   <script type="text/javascript" src="//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js"></script>
+  <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
   <script type="text/javascript" src="/js/index.js"></script>
+  <script type="text/javascript">
+  	window.MEMBER = ${member.toJsonString()};
+  	wx.config({
+      debug: true,
+      appId: '${config.appId}',
+      timestamp: '${config.timestamp}',
+      nonceStr: '${config.nonceStr}',
+      signature: '${config.signature}',
+      jsApiList: ['scanQRCode','onMenuShareTimeline', 'onMenuShareAppMessage', 'hideAllNonBaseMenuItem', 'showMenuItems']
+  	});
+  </script>
 </body>
 </html>

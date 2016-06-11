@@ -28,7 +28,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
       
   @Autowired
   private MemberService service;
-  @Value("${wechat.host.callback}")
+  @Value("${webapp.host}")
   private String host;
   @Value("${wechat.appid}")
   private String appId;

@@ -1,6 +1,8 @@
 package com.github.xsocket.geak.entity;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
@@ -13,6 +15,8 @@ import com.alibaba.fastjson.JSON;
 public class Member implements Serializable {
 
   private static final long serialVersionUID = -3676023515453857307L;
+  
+  private static final DateFormat FORMAT = new SimpleDateFormat("yyyyMMdd");
   
   protected Integer id;
   protected String account;
@@ -42,7 +46,7 @@ public class Member implements Serializable {
   }
 
   public String getAccount() {
-    return account;
+    return FORMAT.format(subscribeDate) + String.format("%6d", id);
   }
 
   public void setAccount(String account) {

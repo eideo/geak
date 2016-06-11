@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +29,9 @@ public class HtmlController {
   @Autowired
   private MemberService memberService;
   
+  @Value("${webapp.host}")
+  private String host;
+  
   // 微信回调
   @RequestMapping(value = "/", method = RequestMethod.GET)
   public ModelAndView index(@RequestParam("code") String code,
@@ -46,11 +50,14 @@ public class HtmlController {
     
     ModelAndView mv = new ModelAndView("index");
     mv.addObject("member", member);
+    mv.addObject("config", wechatService.getJsConfig(String.format("http://%s", host)));
     return mv;
   }
   
   @RequestMapping(value = "/index.html", method = RequestMethod.GET)
   public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
-    return new ModelAndView("index");
+    ModelAndView mv = new ModelAndView("index");
+    mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/index.html", host)));
+    return mv;
   }
 }
