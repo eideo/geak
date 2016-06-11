@@ -13,6 +13,10 @@
   <link rel="stylesheet" href="/css/vux.css">
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <link rel="stylesheet" href="/css/app.css">
+  <style>
+  	.bar-tab .tab-button-primary {background-color:#0894ec;color: white;}
+    .bar-tab .tab-button-success {background-color:#4cd964;color: white;}
+  </style>
 </head>
 <body>
   <div class="page-group" id="app">
@@ -51,41 +55,53 @@
         <div class="list-block">
           <ul>
             <li class="item-content item-link">
-              <span class="item-media"><i class="weui_icon_waiting"></i></span>
+              <span class="item-media"><i class="icon icon-card"></i></span>
               <span class="item-inner">
                 <span class="item-title">账户余额</span>
                 <span class="item-after">{{member.balance | currency '￥'}}</span>
               </span>
             </li>
             <li class="item-content item-link">
-              <span class="item-media"><i class="weui_icon_waiting"></i></span>
-              <span class="item-inner">
-                <span class="item-title">微信充值</span>
-              </span>
-            </li>
-            <li class="item-content item-link">
-              <span class="item-media"><i class="weui_icon_waiting"></i></span>
+              <span class="item-media"><i class="icon icon-menu"></i></span>
               <span class="item-inner">
                 <span class="item-title">消费记录</span>
               </span>
             </li>
           </ul>
         </div><!-- /.list-block 账户-->
-        
-        <div class="content-block">
-	      <p><button class="button button-big button-round" onclick="wx.scanQRCode();">扫一扫</button></p>
-	      
-	    </div><!-- /.content-block 扫码 -->
 	    <div class="content-block">
 	      <div class="row">
-	        <div class="col-50"><button class="button button-big button-fill button-primary" onclick="wx.scanQRCode();">扫码支付</button></div>
-	        <div class="col-50"><a href="#" class="button button-big button-fill button-success">微信充值</a></div>
+	        <div class="col-50"><button class="button button-big button-fill button-primary" onclick="wx.scanQRCode();">
+	        	<i class="icon icon-code"></i> 扫码支付</button></div>
+	        <div class="col-50"><a href="#page_charge" class="button button-big button-fill button-success">
+	        	<i class="icon icon-gift"></i> 微信充值</a></div>
 	      </div>
 	    </div><!-- /.content-block 扫码 -->
       </div>
     </div><!-- /#page_index -->
-
+    
+	<div class="page" id="page_charge">
+	  <header class="bar bar-nav">
+	  	<a class="icon icon-left pull-left back"></a>
+        <h1 class='title'>微信充值</h1>
+      </header>
+      <nav class="bar bar-footer bar-tab">
+        <a class="tab-item tab-button-primary">支付记录</a>
+        <a href="#" class="tab-item tab-button-success back">返回</a>
+      </nav>
+      <div class="content">
+	    <div class="content-block">
+		  <p><a href="#" class="button button-big button-fill">充值【￥100.00】元</a></p>
+		  <p><a href="#" class="button button-big button-fill">充值【￥200.00】元</a></p>
+		  <p><a href="#" class="button button-big button-fill">充值【￥300.00】元</a></p>
+		  <p><a href="#" class="button button-big button-fill">充值【<b style="font-size:1.5">￥400.00</b>】元</a></p>
+		</div>
+      </div>
+	</div><!-- /#page_money -->
   </div> <!-- /#app -->
+  
+  
+  
   <script type="text/javascript" src="/js/vconsole.min.js"></script>
   <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
   <script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
@@ -100,7 +116,7 @@
       timestamp: '${config.timestamp}',
       nonceStr: '${config.nonceStr}',
       signature: '${config.signature}',
-      jsApiList: ['scanQRCode','onMenuShareTimeline', 'onMenuShareAppMessage', 'hideAllNonBaseMenuItem', 'showMenuItems']
+      jsApiList: ['scanQRCode']
   	});
   </script>
 </body>
