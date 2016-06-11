@@ -3,6 +3,8 @@ package com.github.xsocket.geak.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 极客会员实体类。
  * 
@@ -94,6 +96,14 @@ public class Member implements Serializable {
   public void setSex(String sex) {
     this.sex = sex;
   }
+  
+  public String getHeadSmall() {
+    if(this.headUrl != null && this.headUrl.endsWith("0")){
+      int length = this.headUrl.length();
+      return this.headUrl.substring(0, length - 1) + "64";
+    }
+    return this.headUrl;
+  }
 
   public String getHeadUrl() {
     return headUrl;
@@ -141,6 +151,10 @@ public class Member implements Serializable {
 
   public void setScore(Integer score) {
     this.score = score;
+  }
+  
+  public String toJsonString() {
+    return JSON.toJSONString(this);
   }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.util.WebUtils;
 
 import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.service.MemberService;
@@ -36,8 +37,8 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
     // 测试环境
-    Cookie token = new Cookie(COOKIE_MEMBER_OPENID, "oAWv4jnVwh1lunG6i9gng9z19zlg");
-    //Cookie token = WebUtils.getCookie(request, COOKIE_MEMBER_OPENID);
+    //Cookie token = new Cookie(COOKIE_MEMBER_OPENID, "oAWv4jnVwh1lunG6i9gng9z19zlg");
+    Cookie token = WebUtils.getCookie(request, COOKIE_MEMBER_OPENID);
     if(token == null) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("Could not found member openId, need oauth2 check first.");

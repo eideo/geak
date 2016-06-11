@@ -11,6 +11,13 @@ public interface WechatMpService {
   String getAccessToken();
   
   /**
+   * 通过 oauth2 获取用户的 openid信息
+   * @param code
+   * @return
+   */
+  String getUserOpenIdFromOAuth(String code);
+  
+  /**
    * 获取用户基本信息
    * @param openId
    * @return

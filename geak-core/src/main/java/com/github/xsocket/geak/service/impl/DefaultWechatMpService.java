@@ -56,6 +56,25 @@ public class DefaultWechatMpService implements WechatMpService {
     
     return accessToken;
   }
+  
+  @Override
+  public String getUserOpenIdFromOAuth(String code) {
+    final String url = String.format(
+        "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", 
+        appId, appSecret, code);
+    
+    LOGGER.debug("Start calling Wechat API - GetUserOpenIdFromOAuth: {}", url);
+    
+    try {
+      String content = Request.Get(url).execute().returnContent().asString(CHARSET_WECHAT);
+      JSONObject json = JSON.parseObject(content);
+      checkApiResult(json);
+      
+      return json.getString("openid");
+    } catch (IOException e) {
+      throw new RuntimeException("Fail to fetch Wechat UserOpenIdFromOAuth", e);
+    }
+  }
 
   @Override
   public JSONObject getUserInfo(String openId) {

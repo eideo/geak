@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <link rel="stylesheet" href="/css/app.css">
   <script type="text/javascript">
-  	window.MEMBER = {"id": ${member.id}}
+  	window.MEMBER = ${member.toJsonString()};
   </script>
 </head>
 <body>
@@ -43,9 +43,9 @@
               </span>
               <span class="item-inner">
                 <span class="item-title-row">
-                  <span class="item-title">麻文强</span>
+                  <span class="item-title">{{member.nickname}}</span>
                 </span>
-                <span class="item-subtitle">极客账号：1234567890</span>
+                <span class="item-subtitle">极客账号：{{member.account}}</span>
               </span>
             </li>
           </ul>
@@ -57,7 +57,7 @@
               <span class="item-media"><i class="weui_icon_waiting"></i></span>
               <span class="item-inner">
                 <span class="item-title">账户余额</span>
-                <span class="item-after">￥123.00</span>
+                <span class="item-after">{{member.balance | currency '￥'}}</span>
               </span>
             </li>
             <li class="item-content item-link">
@@ -82,5 +82,6 @@
   <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
   <script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
   <script type="text/javascript" src="//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js"></script>
+  <script type="text/javascript" src="/js/index.js"></script>
 </body>
 </html>
