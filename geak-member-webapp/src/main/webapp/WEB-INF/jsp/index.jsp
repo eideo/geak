@@ -71,10 +71,10 @@
         </div><!-- /.list-block 账户-->
 	    <div class="content-block">
 	      <div class="row">
-	        <div class="col-50"><button class="button button-big button-fill button-primary" onclick="wx.scanQRCode();">
-	        	<i class="icon icon-code"></i> 扫码支付</button></div>
-	        <div class="col-50"><a href="#page_charge" class="button button-big button-fill button-success">
-	        	<i class="icon icon-gift"></i> 微信充值</a></div>
+	        <button class="col-50 button button-big button-fill button-primary" onclick="wx.scanQRCode();">
+	        	<i class="icon icon-code"></i> 扫码支付</button>
+	        <a class="col-50 button button-big button-fill button-success" href="#page_charge">
+	        	<i class="icon icon-gift"></i> 账户充值</a>
 	      </div>
 	    </div><!-- /.content-block 扫码 -->
       </div>
@@ -86,15 +86,16 @@
         <h1 class='title'>微信充值</h1>
       </header>
       <nav class="bar bar-footer bar-tab">
-        <a class="tab-item tab-button-primary">支付记录</a>
+        <a class="tab-item tab-button-primary">充值记录</a>
         <a href="#" class="tab-item tab-button-success back">返回</a>
       </nav>
       <div class="content">
 	    <div class="content-block">
-		  <p><a href="#" class="button button-big button-fill">充值【￥100.00】元</a></p>
-		  <p><a href="#" class="button button-big button-fill">充值【￥200.00】元</a></p>
-		  <p><a href="#" class="button button-big button-fill">充值【￥300.00】元</a></p>
-		  <p><a href="#" class="button button-big button-fill">充值【<b style="font-size:1.5">￥400.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-success">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-success">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-warning">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-danger">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
 		</div>
       </div>
 	</div><!-- /#page_money -->
