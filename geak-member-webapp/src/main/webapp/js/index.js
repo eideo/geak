@@ -20,18 +20,25 @@ $(function(){
         $.showIndicator();
         $.post("/member/deposit?amount=" + amount, function(config){
           console.log(config);
-          wx.chooseWXPay({
+          var param = {
             timestamp: config.timeStamp,
-		    nonceStr: config.nonceStr,
-		    package: config.package,
-		    signType: config.signType,
-		    paySign: config.paySign,
+            nonceStr: config.nonceStr,
+            package: config.package,
+            signType: config.signType,
+            paySign: config.paySign,
             success: function (res) {
+              console.log(res);
               $.toast("充值成功");
+            },
+            cancel: function(res) {
+              console.log(res);
+              $.toast("取消支付");
             }
-          });
-          $.hideIndicator();
-          $.router.back();
+          };
+          console.log(param);
+          wx.chooseWXPay(param);
+            $.hideIndicator();
+            $.router.back();
         });
       }
     }

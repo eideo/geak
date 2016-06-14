@@ -162,7 +162,7 @@ public class DefaultWechatMpService implements WechatMpService {
   @Override
   public JSONObject getWechatPayConfig(String prepayId) {
       TreeMap<String, String> map = new TreeMap<String, String>();
-      map.put("appid", appId);
+      map.put("appId", appId);
       map.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
       map.put("nonceStr", UUID.randomUUID().toString().replaceAll("-", ""));
       map.put("package", "prepay_id=" + prepayId);
@@ -170,9 +170,10 @@ public class DefaultWechatMpService implements WechatMpService {
       map.put("paySign", genWechatPaySign(map));
       
       JSONObject payJson = new JSONObject();
-      for (String key : map.keySet()) {
-          payJson.put(key, map.get(key));
+      for (Entry<String, String> entry : map.entrySet()) {
+          payJson.put(entry.getKey(), entry.getValue());
       }
+      payJson.put("timeStamp", new Integer(map.get("timeStamp")));
       return payJson;
   }
   
