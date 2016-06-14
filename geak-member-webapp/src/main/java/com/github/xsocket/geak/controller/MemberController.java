@@ -43,7 +43,7 @@ public class MemberController {
   }
   
   @ResponseBody
-  @RequestMapping(value = "/member/deposit", method = RequestMethod.POST)
+  @RequestMapping(value = "/member/deposit", method = RequestMethod.POST, produces="application/json")
   public JSONObject createDeposit(@RequestParam("amount") int amount,
       HttpServletRequest request, HttpServletResponse response) {
     return service.createMemberDeposit(GeakUtils.getCurrentMember(), amount, request.getRemoteHost());
