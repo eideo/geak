@@ -46,6 +46,9 @@ public class Member implements Serializable {
   }
 
   public String getAccount() {
+    if(subscribeDate == null) {
+      return null;
+    }
     return FORMAT.format(subscribeDate) + String.format("%06d", id);
   }
 

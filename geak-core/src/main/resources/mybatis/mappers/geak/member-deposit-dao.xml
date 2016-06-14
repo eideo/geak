@@ -34,18 +34,13 @@
   
   <select id="selectedByMember" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
     <include refid="_select_member_deposit"/>
-    WHERE member_id = #{id,jdbcType=INTEGER}
+    WHERE member_id = #{id,jdbcType=INTEGER} AND state != 'CANCELLED'
     ORDER BY beginDate DESC
   </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
     <include refid="_select_member_deposit"/>
     WHERE d.id = #{id,jdbcType=INTEGER}
-  </select>
-
-  <select id="selectByTradeNo" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
-    <include refid="_select_member_deposit"/>
-    WHERE d.trade_no = #{tradeNo,jdbcType=VARCHAR}
   </select>
   
   <insert id="insert" useGeneratedKeys="true" keyProperty="id">

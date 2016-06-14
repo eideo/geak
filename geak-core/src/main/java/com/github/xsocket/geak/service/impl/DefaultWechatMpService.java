@@ -178,37 +178,7 @@ public class DefaultWechatMpService implements WechatMpService {
   }
   
   public static final void main(String[] args) {
-    TreeMap<String, String> map = new TreeMap<String, String>();
-    map.put("appid", "123");
-    map.put("mch_id", "123");
-    map.put("nonce_str", "123");
-    map.put("body", "123");
-    map.put("out_trade_no", "123");
-    map.put("total_fee", "123");
-    map.put("spbill_create_ip", "123");
-    map.put("notify_url", "123");
-    map.put("trade_type", "JSAPI");
-    map.put("openid", "123");
-    StringBuilder sb = new StringBuilder();
-    for (Entry<String, String> entry: map.entrySet()) {
-      sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
-    }
-    String signBefore = sb.append("key=").append("Jike8236mishi2016taotuo0101zhifu").toString();
-    System.out.println(signBefore);
-    String signAfter = EncoderHandler.encodeByMD5(signBefore).toUpperCase();
-    System.out.println(signAfter);
-    map.put("sign", signAfter);
-    
-    
-    sb = new StringBuilder();
-    sb.append("<xml>");
-    for(Entry<String, String> entry : map.entrySet()) {
-      sb.append("<").append(entry.getKey()).append(">");
-      sb.append(String.valueOf(entry.getValue()));
-      sb.append("</").append(entry.getKey()).append(">");
-    }
-    sb.append("</xml>");
-    System.out.println(sb.toString());
+    System.out.println(Integer.parseInt("000012345"));
   }
   
   /**

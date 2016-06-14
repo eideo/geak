@@ -24,6 +24,9 @@ public interface MemberService {
   @Transactional
   MemberDeposit completeMemberDeposit(String tradeNo);
   
+  @Transactional
+  MemberDeposit cancelMemberDeposit(Integer id);
+  
   @Transactional(readOnly = true)
   List<MemberDeposit> listDeposit(Member member);
   

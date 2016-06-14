@@ -19,12 +19,14 @@ import com.github.xsocket.geak.service.WechatMpService;
 @Service
 public class DefaultMemberService implements MemberService {
   
-  private static final DateFormat FORMAT = new SimpleDateFormat("yyyyMMdd");
+  private static final String FORMAT_PATTERN = "yyyyMMdd";
+  private static final DateFormat FORMAT = new SimpleDateFormat(FORMAT_PATTERN);
   
   private static final String STATE_NEW = "NEW";
   private static final String STATE_UNPAYED = "UNPAYED";
   private static final String STATE_PAYED = "PAYED";
   private static final String STATE_EXPIRED = "EXPIRED";
+  private static final String STATE_CANCELLED = "CANCELLED";
   
   @Autowired
   private MemberDao memberDao;
@@ -60,6 +62,7 @@ public class DefaultMemberService implements MemberService {
           String.format("Fail to CreateMemberDeposit, member:%s, amount:%d.", member.getOpenId(), amount));
     }
     
+    // 生成内部订单号
     String recordNo = FORMAT.format(deposit.getBeginDate()) + String.format("%08d", deposit.getId());
     // 微信交易以'分'为单位
     String tradeNo = service.prepayOrder(amount * 100, recordNo, tradeContent, member.getOpenId(), ip);
@@ -70,14 +73,31 @@ public class DefaultMemberService implements MemberService {
     deposit.setState(STATE_UNPAYED);
     depositDao.update(deposit);
     
-    return service.getWechatPayConfig(tradeNo);
+    JSONObject config = service.getWechatPayConfig(tradeNo);
+    // 订单主键
+    config.put("id", deposit.getId());
+    return config;
   }
   
   //完成订单
-  public MemberDeposit completeMemberDeposit(String tradeNo) {
-    MemberDeposit deposit = depositDao.selectByTradeNo(tradeNo);
+  @Override
+  public MemberDeposit completeMemberDeposit(String recordNo) {
+    Integer id = Integer.parseInt(recordNo.substring(FORMAT_PATTERN.length()));
+    MemberDeposit deposit = depositDao.selectById(id);
     
     deposit.setState(STATE_PAYED);
+    deposit.setOverDate(new Date());
+    depositDao.update(deposit);
+    
+    return deposit;
+  }
+  
+  //取消订单
+  @Override
+  public MemberDeposit cancelMemberDeposit(Integer id) {
+    MemberDeposit deposit = depositDao.selectById(id);
+    
+    deposit.setState(STATE_CANCELLED);
     deposit.setOverDate(new Date());
     depositDao.update(deposit);
     

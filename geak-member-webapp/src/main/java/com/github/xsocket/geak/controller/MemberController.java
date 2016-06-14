@@ -46,7 +46,16 @@ public class MemberController {
   @RequestMapping(value = "/member/deposit", method = RequestMethod.POST, produces="application/json")
   public JSONObject createDeposit(@RequestParam("amount") int amount,
       HttpServletRequest request, HttpServletResponse response) {
-    return service.createMemberDeposit(GeakUtils.getCurrentMember(), amount, request.getRemoteHost());
+    return service.createMemberDeposit(
+        GeakUtils.getCurrentMember(), 
+        amount, 
+        GeakUtils.getRequestIPAddress(request));
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/member/deposit/cancel", method = RequestMethod.POST, produces="application/json")
+  public MemberDeposit createDeposit(@RequestParam("id") Integer id) {
+    return service.cancelMemberDeposit(id);
   }
   
   @ResponseBody

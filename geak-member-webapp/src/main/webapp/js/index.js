@@ -19,26 +19,22 @@ $(function(){
       prepay: function (amount) {
         $.showIndicator();
         $.post("/member/deposit?amount=" + amount, function(config){
-          console.log(config);
-          var param = {
-            timestamp: config.timeStamp,
+          var _id = config.id;
+          wx.chooseWXPay({
+        	  timestamp: config.timeStamp,
             nonceStr: config.nonceStr,
             package: config.package,
             signType: config.signType,
             paySign: config.paySign,
             success: function (res) {
               console.log(res);
-              $.toast("充值成功");
+              $.toast("充值成功！");
             },
             cancel: function(res) {
-              console.log(res);
-              $.toast("取消支付");
+              $.post("/member/deposit/cancel?id=" + _id);
             }
-          };
-          console.log(param);
-          wx.chooseWXPay(param);
-            $.hideIndicator();
-            $.router.back();
+          });
+          $.hideIndicator();
         });
       }
     }
