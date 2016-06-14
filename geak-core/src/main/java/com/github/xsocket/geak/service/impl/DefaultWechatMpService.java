@@ -1,15 +1,25 @@
 package com.github.xsocket.geak.service.impl;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -28,6 +38,12 @@ public class DefaultWechatMpService implements WechatMpService {
   private String appId;
   @Value("${wechat.appsecret}")
   private String appSecret;
+  @Value("${wechat.mchid}")
+  private String mchId;
+  @Value("${wechat.pay.notifyurl}")
+  private String notifyUrl;
+  @Value("${wechat.pay.secret}")
+  private String paySecret;
   
 
   private String accessToken;
@@ -61,6 +77,112 @@ public class DefaultWechatMpService implements WechatMpService {
     }
     
     return accessToken;
+  }
+
+  @Override
+  public String prepayOrder(int amount, String orderNo, String description, String openId, String ip) {
+    TreeMap<String, String> map = new TreeMap<String, String>();
+    map.put("appid", appId);
+    map.put("body", description);
+    map.put("mch_id", mchId);
+    map.put("nonce_str", UUID.randomUUID().toString().replaceAll("-", ""));
+    map.put("notify_url", notifyUrl);
+    map.put("openid", openId);
+    map.put("out_trade_no", orderNo);
+    map.put("spbill_create_ip", ip);
+    map.put("total_fee", String.valueOf(amount));
+    map.put("trade_type", "JSAPI");
+    map.put("sign", genWechatPaySign(map));
+    /*
+    <xml>
+      <appid>wx2421b1c4370ec43b</appid>
+      <body>JSAPI支付测试</body>
+      <mch_id>10000100</mch_id>
+      <nonce_str>1add1a30ac87aa2db72f57a2375d8fec</nonce_str>
+      <notify_url>http://wxpay.weixin.qq.com/pub_v2/pay/notify.v2.php</notify_url>
+      <openid>oUpF8uMuAJO_M2pxb1Q9zNjWeS6o</openid>
+      <out_trade_no>1415659990</out_trade_no>
+      <spbill_create_ip>14.23.150.211</spbill_create_ip>
+      <total_fee>1</total_fee>
+      <trade_type>JSAPI</trade_type>
+      <sign>0CB01533B8C1EF103065174F50BCA001</sign>
+   </xml>
+   */
+    StringBuilder sb = new StringBuilder();
+    sb.append("<xml>");
+    for(Entry<String, String> entry : map.entrySet()) {
+      sb.append("<").append(entry.getKey()).append(">");
+      sb.append(String.valueOf(entry.getValue()));
+      sb.append("</").append(entry.getKey()).append(">");
+    }
+    sb.append("</xml>");
+    
+    LOGGER.debug("Start calling Wechat API - PrepayOrder: {}", orderNo);
+    try {
+      String xml = Request.Post("https://api.mch.weixin.qq.com/pay/unifiedorder")
+          .bodyString(sb.toString(), ContentType.TEXT_XML).execute().returnContent().asString();
+      LOGGER.debug("Wechat PrepayOrder Return: " + xml);
+      /*
+      <xml>
+        <return_code><![CDATA[SUCCESS]]></return_code>
+        <return_msg><![CDATA[OK]]></return_msg>
+        <appid><![CDATA[wx2421b1c4370ec43b]]></appid>
+        <mch_id><![CDATA[10000100]]></mch_id>
+        <nonce_str><![CDATA[IITRi8Iabbblz1Jc]]></nonce_str>
+        <sign><![CDATA[7921E432F65EB8ED0CE9755F0E86D72F]]></sign>
+        <result_code><![CDATA[SUCCESS]]></result_code>
+        <prepay_id><![CDATA[wx201411101639507cbf6ffd8b0779950874]]></prepay_id>
+        <trade_type><![CDATA[JSAPI]]></trade_type>
+      </xml>
+      */
+      
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      StringReader sr = new StringReader(xml);
+      InputSource is = new InputSource(sr);
+      Document document = db.parse(is);
+      
+      Element root = document.getDocumentElement();
+      String returnCode = root.getElementsByTagName("return_code").item(0).getTextContent();
+      if("SUCCESS".equals(returnCode)) {
+        String resuleCode = root.getElementsByTagName("result_code").item(0).getTextContent();
+        if("SUCCESS".equals(resuleCode)) {
+          return root.getElementsByTagName("prepay_id").item(0).getTextContent();
+        }
+      }
+      throw new WechatException(-1, root.getElementsByTagName("return_msg").item(0).getTextContent());
+    } catch (Exception e) {
+      throw new RuntimeException("Fail to call Wechat PrepayOrder", e);
+    }
+  }
+  
+  @Override
+  public JSONObject getWechatPayConfig(String prepayId) {
+      TreeMap<String, String> map = new TreeMap<String, String>();
+      map.put("appId", appId);
+      map.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
+      map.put("nonceStr", UUID.randomUUID().toString().replaceAll("-", ""));
+      map.put("package", "prepay_id=" + prepayId);
+      map.put("signType", "MD5");
+      map.put("paySign", genWechatPaySign(map));
+      
+      JSONObject payJson = new JSONObject();
+      for (String key : map.keySet()) {
+          payJson.put(key, map.get(key));
+      }
+      return payJson;
+  }
+  
+  /**
+   * 微信加密算法
+   */
+  private String genWechatPaySign(TreeMap<String, String> map) {
+      StringBuilder sb = new StringBuilder();
+      for (Entry<String, String> entry : map.entrySet()) {
+          sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+      }
+      String signBefore = sb.append("key=").append(paySecret).toString();
+      return EncoderHandler.encodeByMD5(signBefore).toUpperCase();
   }
   
   @Override

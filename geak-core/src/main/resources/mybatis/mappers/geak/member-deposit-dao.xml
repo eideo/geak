@@ -12,7 +12,6 @@
     <result property="tradeContent" column="trade_content" javaType="String" jdbcType="VARCHAR" />
     <result property="tradeType"    column="trade_type"    javaType="String" jdbcType="VARCHAR" />
     <result property="ip"           column="ip"            javaType="String" jdbcType="VARCHAR" />
-    <result property="sign"         column="sign"          javaType="String" jdbcType="VARCHAR" />
     <result property="beginDate"    column="begin_date"    javaType="Date"   jdbcType="TIMESTAMP" />
     <result property="overDate"     column="over_date"     javaType="Date"   jdbcType="TIMESTAMP" />
     <!-- 关联会员 -->
@@ -27,7 +26,7 @@
   
   <sql id="_select_member_deposit">
     SELECT 
-      d.id, d.amount, d.state, d.trade_no, d.trade_content, d.trade_type, d.ip, d.sign, d.begin_date, d.over_date,
+      d.id, d.amount, d.state, d.trade_no, d.trade_content, d.trade_type, d.ip, d.begin_date, d.over_date,
       m.id as member_id, m.name as member_name, m.phone as member_phone, m.openid as member_openid, m.balance as member_balance
     FROM geak_member_deposit d
       JOIN geak_member m ON d.member_id = m.id
@@ -43,9 +42,14 @@
     WHERE d.id = #{id,jdbcType=INTEGER}
   </select>
 
+  <select id="selectByTradeNo" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
+    <include refid="_select_member_deposit"/>
+    WHERE d.trade_no = #{tradeNo,jdbcType=VARCHAR}
+  </select>
+  
   <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_member_deposit 
-      (amount, state, trade_no, trade_content, trade_type, ip, sign, begin_date, over_date, member_id, openid) 
+      (amount, state, trade_no, trade_content, trade_type, ip, begin_date, over_date, member_id, openid) 
     VALUES (
       #{amount,jdbcType=INTEGER},
       #{state,jdbcType=VARCHAR}, 
@@ -53,7 +57,6 @@
       #{tradeContent,jdbcType=VARCHAR}, 
       #{tradeType,jdbcType=VARCHAR}, 
       #{ip,jdbcType=VARCHAR}, 
-      #{sign,jdbcType=VARCHAR}, 
       #{beginDate,jdbcType=TIMESTAMP}, 
       #{overDate,jdbcType=TIMESTAMP}, 
       #{member.id,jdbcType=INTEGER}, 
@@ -70,7 +73,6 @@
       <if test="tradeContent != null">trade_content = #{tradeContent,jdbcType=VARCHAR},</if>
       <if test="tradeType != null">trade_type = #{tradeType,jdbcType=VARCHAR},</if>
       <if test="ip != null">ip = #{ip,jdbcType=VARCHAR},</if>
-      <if test="sign != null">sign = #{sign,jdbcType=VARCHAR},</if>
       <if test="overDate != null">over_date = #{overDate,jdbcType=TIMESTAMP},</if>
       <if test="member != null and member.id != null">member_id = #{member.id,jdbcType=INTEGER},</if>
       <if test="member != null and member.openId != null">openid = #{member.openId,jdbcType=VARCHAR},</if>

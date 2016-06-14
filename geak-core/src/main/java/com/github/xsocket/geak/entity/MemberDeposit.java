@@ -15,7 +15,6 @@ public class MemberDeposit implements Serializable {
   protected String tradeContent;
   protected String tradeType;
   protected String ip;
-  protected String sign;
   protected Date beginDate;
   protected Date overDate;
   protected Member member;
@@ -82,14 +81,6 @@ public class MemberDeposit implements Serializable {
 
   public void setIp(String ip) {
     this.ip = ip;
-  }
-
-  public String getSign() {
-    return sign;
-  }
-
-  public void setSign(String sign) {
-    this.sign = sign;
   }
 
   public Date getBeginDate() {

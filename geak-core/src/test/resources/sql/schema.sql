@@ -116,6 +116,8 @@ CREATE TABLE geak_member (
 ) COMMENT = '会员表'
 ;
 
+CREATE INDEX i_member_openid ON geak_member(openid);
+
 -- ----------------------------
 -- 会员充值记录表
 -- ----------------------------
@@ -127,7 +129,6 @@ CREATE TABLE geak_member_deposit (
   trade_content VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '支付内容',
   trade_type    VARCHAR(16) NOT NULL DEFAULT ''     COMMENT '支付类型',
   ip            VARCHAR(16) NOT NULL DEFAULT ''     COMMENT 'ip',
-  sign          VARCHAR(64) NOT NULL DEFAULT ''     COMMENT '签名',
   
   begin_date    DATETIME    NOT NULL 		      	COMMENT '交易开始时间',
   over_date     DATETIME    NOT NULL 		  	  	COMMENT '交易结束时间',
@@ -137,6 +138,8 @@ CREATE TABLE geak_member_deposit (
   PRIMARY KEY (id)
 ) COMMENT = '会员充值记录表'
 ;
+
+CREATE INDEX i_md_trade ON geak_member_deposit(trade_no);
 
 
 

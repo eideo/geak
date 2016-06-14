@@ -11,6 +11,19 @@ public interface WechatMpService {
   String getAccessToken();
   
   /**
+   * 支付接口：统一下单
+   * @return
+   */
+  String prepayOrder(int amount, String orderNo, String description, String openId, String ip);
+  
+  /**
+   * 生成微信付款需要的配置参数
+   * @param prepayId
+   * @return
+   */
+  JSONObject getWechatPayConfig(String prepayId);
+  
+  /**
    * 获取jsapi_ticket
    * @return
    */

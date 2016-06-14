@@ -26,6 +26,13 @@ public interface MemberDepositDao {
    * @param id 实体标识
    * @return 如果数据存在则返回实体数据，否则返回 null
    */
+  MemberDeposit selectByTradeNo(String tradeNo);
+  
+  /**
+   * 根据实体标识获取实体数据。
+   * @param id 实体标识
+   * @return 如果数据存在则返回实体数据，否则返回 null
+   */
   MemberDeposit selectById(Integer id);
 
   /**
