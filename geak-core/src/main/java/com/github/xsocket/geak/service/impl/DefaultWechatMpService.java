@@ -162,7 +162,7 @@ public class DefaultWechatMpService implements WechatMpService {
   @Override
   public JSONObject getWechatPayConfig(String prepayId) {
       TreeMap<String, String> map = new TreeMap<String, String>();
-      map.put("appId", appId);
+      map.put("appid", appId);
       map.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
       map.put("nonceStr", UUID.randomUUID().toString().replaceAll("-", ""));
       map.put("package", "prepay_id=" + prepayId);
