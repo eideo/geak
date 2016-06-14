@@ -12,7 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.http.client.fluent.Request;
-import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,15 +83,16 @@ public class DefaultWechatMpService implements WechatMpService {
   public String prepayOrder(int amount, String orderNo, String description, String openId, String ip) {
     TreeMap<String, String> map = new TreeMap<String, String>();
     map.put("appid", appId);
-    map.put("body", description);
     map.put("mch_id", mchId);
     map.put("nonce_str", UUID.randomUUID().toString().replaceAll("-", ""));
-    map.put("notify_url", notifyUrl);
-    map.put("openid", openId);
+    map.put("body", description);
     map.put("out_trade_no", orderNo);
+    map.put("total_fee", new Integer(amount).toString());
     map.put("spbill_create_ip", ip);
-    map.put("total_fee", String.valueOf(amount));
+    map.put("notify_url", notifyUrl);
     map.put("trade_type", "JSAPI");
+    map.put("openid", openId);
+
     map.put("sign", genWechatPaySign(map));
     /*
     <xml>
@@ -117,10 +118,12 @@ public class DefaultWechatMpService implements WechatMpService {
     }
     sb.append("</xml>");
     
-    LOGGER.debug("Start calling Wechat API - PrepayOrder: {}", orderNo);
+    LOGGER.debug("Start calling Wechat API - PrepayOrder: {}", sb.toString());
     try {
       String xml = Request.Post("https://api.mch.weixin.qq.com/pay/unifiedorder")
-          .bodyString(sb.toString(), ContentType.TEXT_XML).execute().returnContent().asString();
+          .body(new StringEntity(sb.toString(), "utf-8"))
+          .execute().returnContent().asString();
+      
       LOGGER.debug("Wechat PrepayOrder Return: " + xml);
       /*
       <xml>
@@ -173,16 +176,50 @@ public class DefaultWechatMpService implements WechatMpService {
       return payJson;
   }
   
+  public static final void main(String[] args) {
+    TreeMap<String, String> map = new TreeMap<String, String>();
+    map.put("appid", "123");
+    map.put("mch_id", "123");
+    map.put("nonce_str", "123");
+    map.put("body", "123");
+    map.put("out_trade_no", "123");
+    map.put("total_fee", "123");
+    map.put("spbill_create_ip", "123");
+    map.put("notify_url", "123");
+    map.put("trade_type", "JSAPI");
+    map.put("openid", "123");
+    StringBuilder sb = new StringBuilder();
+    for (Entry<String, String> entry: map.entrySet()) {
+      sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+    }
+    String signBefore = sb.append("key=").append("Jike8236mishi2016taotuo0101zhifu").toString();
+    System.out.println(signBefore);
+    String signAfter = EncoderHandler.encodeByMD5(signBefore).toUpperCase();
+    System.out.println(signAfter);
+    map.put("sign", signAfter);
+    
+    
+    sb = new StringBuilder();
+    sb.append("<xml>");
+    for(Entry<String, String> entry : map.entrySet()) {
+      sb.append("<").append(entry.getKey()).append(">");
+      sb.append(String.valueOf(entry.getValue()));
+      sb.append("</").append(entry.getKey()).append(">");
+    }
+    sb.append("</xml>");
+    System.out.println(sb.toString());
+  }
+  
   /**
    * 微信加密算法
    */
   private String genWechatPaySign(TreeMap<String, String> map) {
-      StringBuilder sb = new StringBuilder();
-      for (Entry<String, String> entry : map.entrySet()) {
-          sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
-      }
-      String signBefore = sb.append("key=").append(paySecret).toString();
-      return EncoderHandler.encodeByMD5(signBefore).toUpperCase();
+    StringBuilder sb = new StringBuilder();
+    for (Entry<String, String> entry: map.entrySet()) {
+      sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+    }
+    String signBefore = sb.append("key=").append(paySecret).toString();
+    return EncoderHandler.encodeByMD5(signBefore).toUpperCase();
   }
   
   @Override

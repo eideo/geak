@@ -1,5 +1,7 @@
 package com.github.xsocket.geak.service;
 
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
@@ -21,5 +23,8 @@ public interface MemberService {
   
   @Transactional
   MemberDeposit completeMemberDeposit(String tradeNo);
+  
+  @Transactional(readOnly = true)
+  List<MemberDeposit> listDeposit(Member member);
   
 }

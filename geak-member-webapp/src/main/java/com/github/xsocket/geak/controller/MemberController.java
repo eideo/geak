@@ -1,6 +1,7 @@
 package com.github.xsocket.geak.controller;
 
 import java.io.StringReader;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.xsocket.geak.entity.MemberDeposit;
 import com.github.xsocket.geak.service.MemberService;
 import com.github.xsocket.geak.util.GeakUtils;
 
@@ -33,6 +35,12 @@ public class MemberController {
   
   @Autowired
   private MemberService service; 
+  
+  @ResponseBody
+  @RequestMapping(value = "/member/deposit", method = RequestMethod.GET)
+  public List<MemberDeposit> listDeposit() {
+    return service.listDeposit(GeakUtils.getCurrentMember());
+  }
   
   @ResponseBody
   @RequestMapping(value = "/member/deposit", method = RequestMethod.POST)

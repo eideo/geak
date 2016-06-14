@@ -35,6 +35,7 @@
   <select id="selectedByMember" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
     <include refid="_select_member_deposit"/>
     WHERE member_id = #{id,jdbcType=INTEGER}
+    ORDER BY beginDate DESC
   </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">

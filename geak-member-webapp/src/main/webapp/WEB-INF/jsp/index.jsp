@@ -91,11 +91,11 @@
       </nav>
       <div class="content">
 	    <div class="content-block">
-		  <p><a href="#" class="button button-big button-fill button-success">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
-		  <p><a href="#" class="button button-big button-fill button-success">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
-		  <p><a href="#" class="button button-big button-fill button-warning">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
-		  <p><a href="#" class="button button-big button-fill button-danger">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
-		  <p><a href="#" class="button button-big button-fill">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-success" @click="prepay(100)">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-success" @click="prepay(200)">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-warning" @click="prepay(300)">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill button-danger" @click="prepay(400)">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
+		  <p><a href="#" class="button button-big button-fill" @click="prepay(500)">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
 		</div>
       </div>
 	</div><!-- /#page_money -->
@@ -117,7 +117,7 @@
       timestamp: '${config.timestamp}',
       nonceStr: '${config.nonceStr}',
       signature: '${config.signature}',
-      jsApiList: ['scanQRCode']
+      jsApiList: ['scanQRCode', 'chooseWXPay']
   	});
   </script>
 </body>

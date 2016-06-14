@@ -3,6 +3,7 @@ package com.github.xsocket.geak.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class DefaultMemberService implements MemberService {
   private static final String STATE_NEW = "NEW";
   private static final String STATE_UNPAYED = "UNPAYED";
   private static final String STATE_PAYED = "PAYED";
-  //private static final String STATE_EXPIRED = "EXPIRED";
+  private static final String STATE_EXPIRED = "EXPIRED";
   
   @Autowired
   private MemberDao memberDao;
@@ -107,6 +108,22 @@ public class DefaultMemberService implements MemberService {
       memberDao.insert(member);
     }
     return member;
+  }
+
+  @Override
+  public List<MemberDeposit> listDeposit(Member member) {
+    List<MemberDeposit> list = depositDao.selectedByMember(member);
+    Date now = new Date();
+    for(MemberDeposit deposit : list) {
+      if(STATE_PAYED.equals(deposit.getState())) {
+        continue;
+      }
+      if(deposit.getOverDate().before(now)) {
+        // 过期的支付订单
+        deposit.setState(STATE_EXPIRED);
+      }
+    }
+    return list;
   }
 
 }
