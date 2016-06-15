@@ -8,6 +8,7 @@
     <id property="id"               column="id"            javaType="Integer" jdbcType="INTEGER" />
     <result property="amount"       column="amount"        javaType="Integer" jdbcType="INTEGER" />
     <result property="state"        column="state"         javaType="String" jdbcType="VARCHAR" />
+    <result property="recordType"   column="record_type"   javaType="String" jdbcType="VARCHAR" />
     <result property="tradeNo"      column="trade_no"      javaType="String" jdbcType="VARCHAR" />
     <result property="tradeContent" column="trade_content" javaType="String" jdbcType="VARCHAR" />
     <result property="tradeType"    column="trade_type"    javaType="String" jdbcType="VARCHAR" />
@@ -26,7 +27,7 @@
   
   <sql id="_select_member_deposit">
     SELECT 
-      d.id, d.amount, d.state, d.trade_no, d.trade_content, d.trade_type, d.ip, d.begin_date, d.over_date,
+      d.id, d.amount, d.state, d.record_type, d.trade_no, d.trade_content, d.trade_type, d.ip, d.begin_date, d.over_date,
       m.id as member_id, m.name as member_name, m.phone as member_phone, m.openid as member_openid, m.balance as member_balance
     FROM geak_member_deposit d
       JOIN geak_member m ON d.member_id = m.id
@@ -45,10 +46,11 @@
   
   <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_member_deposit 
-      (amount, state, trade_no, trade_content, trade_type, ip, begin_date, over_date, member_id, openid) 
+      (amount, state, record_type, trade_no, trade_content, trade_type, ip, begin_date, over_date, member_id, openid) 
     VALUES (
       #{amount,jdbcType=INTEGER},
       #{state,jdbcType=VARCHAR}, 
+      #{recordType,jdbcType=VARCHAR}, 
       #{tradeNo,jdbcType=VARCHAR}, 
       #{tradeContent,jdbcType=VARCHAR}, 
       #{tradeType,jdbcType=VARCHAR}, 
@@ -60,20 +62,25 @@
     )
   </insert>
   
+  <!-- 只修改充值记录的状态信息 -->
   <update id="update">
     UPDATE geak_member_deposit
     <set>
-      <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
       <if test="tradeNo != null">trade_no = #{tradeNo,jdbcType=VARCHAR},</if>
-      <if test="tradeContent != null">trade_content = #{tradeContent,jdbcType=VARCHAR},</if>
-      <if test="tradeType != null">trade_type = #{tradeType,jdbcType=VARCHAR},</if>
-      <if test="ip != null">ip = #{ip,jdbcType=VARCHAR},</if>
       <if test="overDate != null">over_date = #{overDate,jdbcType=TIMESTAMP},</if>
-      <if test="member != null and member.id != null">member_id = #{member.id,jdbcType=INTEGER},</if>
-      <if test="member != null and member.openId != null">openid = #{member.openId,jdbcType=VARCHAR},</if>
     </set>
     WHERE id = #{id,jdbcType=INTEGER}
   </update>
+  <!-- 
+  
+      <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
+      <if test="recordType != null">record_type = #{recordType,jdbcType=VARCHAR},</if>
+      <if test="tradeContent != null">trade_content = #{tradeContent,jdbcType=VARCHAR},</if>
+      <if test="tradeType != null">trade_type = #{tradeType,jdbcType=VARCHAR},</if>
+      <if test="ip != null">ip = #{ip,jdbcType=VARCHAR},</if>
+      <if test="member != null and member.id != null">member_id = #{member.id,jdbcType=INTEGER},</if>
+      <if test="member != null and member.openId != null">openid = #{member.openId,jdbcType=VARCHAR},</if>
+   -->
 
 </mapper>

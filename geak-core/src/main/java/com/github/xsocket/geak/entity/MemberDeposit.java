@@ -11,6 +11,7 @@ public class MemberDeposit implements Serializable {
   protected Integer amount;
   protected String state;
   protected String recordNo;
+  protected String recordType;
   protected String tradeNo;
   protected String tradeContent;
   protected String tradeType;
@@ -49,6 +50,14 @@ public class MemberDeposit implements Serializable {
 
   public void setRecordNo(String recordNo) {
     this.recordNo = recordNo;
+  }
+  
+  public String getRecordType() {
+    return recordType;
+  }
+
+  public void setRecordType(String recordType) {
+    this.recordType = recordType;
   }
 
   public String getTradeNo() {

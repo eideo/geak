@@ -28,6 +28,8 @@ public class DefaultMemberService implements MemberService {
   private static final String STATE_EXPIRED = "EXPIRED";
   private static final String STATE_CANCELLED = "CANCELLED";
   
+  private static final String TYPE_DEPOSIT = "DEPOSIT";
+  
   @Autowired
   private MemberDao memberDao;
   
@@ -51,6 +53,7 @@ public class DefaultMemberService implements MemberService {
     deposit.setMember(member);
     deposit.setOverDate(new Date(now + 10 * 60 * 1000L));
     deposit.setRecordNo("");
+    deposit.setRecordType(TYPE_DEPOSIT);
     deposit.setState(STATE_NEW);
     deposit.setTradeContent(tradeContent);
     deposit.setTradeNo("");

@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>极客会员</title>
+  <title>极客密室 - 会员中心</title>
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-  <link rel="shortcut icon" href="/favicon.ico">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="shortcut icon" href="/favicon.ico">
 
   <link rel="stylesheet" href="//cdn.bootcss.com/weui/0.4.2/style/weui.css">
   <link rel="stylesheet" href="/css/vux.css">
@@ -82,8 +82,8 @@
     
 	<div class="page" id="page_charge">
 	  <header class="bar bar-nav">
-	  	<a class="icon icon-left pull-left back"></a>
-        <h1 class='title'>微信充值</h1>
+	  	<a class="icon icon-left pull-left" href="#page_index"></a>
+        <h1 class='title'>账户充值</h1>
       </header>
       <nav class="bar bar-footer bar-tab">
         <a class="tab-item tab-button-primary">充值记录</a>
@@ -100,7 +100,6 @@
       </div>
 	</div><!-- /#page_money -->
   </div> <!-- /#app -->
-  
   
   
   <script type="text/javascript" src="/js/vconsole.min.js"></script>
