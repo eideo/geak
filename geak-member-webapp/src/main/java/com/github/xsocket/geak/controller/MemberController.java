@@ -22,6 +22,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.entity.MemberDeposit;
 import com.github.xsocket.geak.service.MemberService;
 import com.github.xsocket.geak.util.GeakUtils;
@@ -37,7 +38,13 @@ public class MemberController {
   private MemberService service; 
   
   @ResponseBody
-  @RequestMapping(value = "/member/deposit", method = RequestMethod.GET)
+  @RequestMapping(value = "/member", method = RequestMethod.GET, produces="application/json")
+  public Member queryMember() {
+    return GeakUtils.getCurrentMember();
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/member/deposit", method = RequestMethod.GET, produces="application/json")
   public List<MemberDeposit> listDeposit() {
     return service.listDeposit(GeakUtils.getCurrentMember());
   }
