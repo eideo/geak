@@ -9,6 +9,7 @@
     <id property="id"           column="id"       javaType="String" jdbcType="VARCHAR" />
     <result property="account"  column="account"  javaType="String" jdbcType="VARCHAR" />
     <result property="name"     column="name"     javaType="String" jdbcType="VARCHAR" />
+    <result property="phone"    column="phone"    javaType="String" jdbcType="VARCHAR" />
     <result property="password" column="password" javaType="String" jdbcType="VARCHAR" />
     <result property="state"    column="state"    javaType="String" jdbcType="VARCHAR" />
     <!-- 关联公司(门店) -->
@@ -20,7 +21,7 @@
   </resultMap>
   
   <select id="selectAll" resultMap="com.github.xsocket.geak.dao.UserDao.result">
-    SELECT u.id, u.account, u.name, u.password, u.state,
+    SELECT u.id, u.account, u.name, u.phone, u.password, u.state,
       c.id as company_id, c.name as company_name, c.alias as company_alias
     FROM geak_user u
       JOIN geak_company c ON u.company_id = c.id 
@@ -28,7 +29,7 @@
   </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.UserDao.result">
-    SELECT u.id, u.account, u.name, u.password, u.state,
+    SELECT u.id, u.account, u.name, u.phone, u.password, u.state,
       c.id as company_id, c.name as company_name, c.alias as company_alias
     FROM geak_user u
       JOIN geak_company c ON u.company_id = c.id 
@@ -36,11 +37,12 @@
   </select>
 
   <insert id="insert">
-    INSERT INTO geak_user (id, account, name, password, state, company_id) 
+    INSERT INTO geak_user (id, account, name, phone, password, state, company_id) 
     VALUES (
       #{id,javaType=String,jdbcType=VARCHAR}, 
       #{account,jdbcType=VARCHAR}, 
       #{name,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, 
       #{password,jdbcType=VARCHAR}, 
       #{state,jdbcType=VARCHAR}, 
       #{company.id,jdbcType=INTEGER}
@@ -52,6 +54,7 @@
     <set>
       <if test="account != null">account = #{account,jdbcType=VARCHAR},</if>
       <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+      <if test="phone != null">phone = #{phone,jdbcType=VARCHAR},</if>
       <if test="password != null">password = #{password,jdbcType=VARCHAR},</if>
       <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
       <if test="company != null and company.id != null">company_id = #{company.id,jdbcType=INTEGER},</if>      

@@ -18,6 +18,8 @@ public class User implements Serializable {
   protected String name;
   /** 用户账户名 */
   protected String account;
+  /** 用户手机号 */
+  protected String phone;
   /** 登陆密码 */
   protected transient String password;
   /** 用户状态 */
@@ -49,6 +51,14 @@ public class User implements Serializable {
 
   public void setAccount(String account) {
     this.account = account;
+  }
+  
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
   public String getPassword() {
