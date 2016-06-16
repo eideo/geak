@@ -9,31 +9,31 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.util.WebUtils;
 
-import com.github.xsocket.geak.entity.Member;
-import com.github.xsocket.geak.service.MemberService;
+import com.github.xsocket.geak.entity.User;
+import com.github.xsocket.geak.service.UserService;
 import com.github.xsocket.geak.util.GeakUtils;
 
 public class CurrentUserInterceptor extends HandlerInterceptorAdapter {
   
   //private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateInterceptor.class);
 
-  public static final String COOKIE_MEMBER_OPENID = AuthenticateInterceptor.COOKIE_MEMBER_OPENID;
+  public static final String COOKIE_USER_ID = AuthenticateInterceptor.COOKIE_USER_ID;
   
   @Autowired
-  private MemberService service; 
+  private UserService service; 
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-    Member member = GeakUtils.getCurrentMember();
-    if(member == null) {
-      Cookie token = WebUtils.getCookie(request, COOKIE_MEMBER_OPENID);
+    User user = GeakUtils.getCurrentUser();
+    if(user == null) {
+      Cookie token = WebUtils.getCookie(request, COOKIE_USER_ID);
       
       if(token != null) {
-        String openId = token.getValue();
-        member = service.loadMemberByOpenId(openId);
-        GeakUtils.setCurrentMember(member);
+        String userId = token.getValue();
+        user = service.loadUserById(userId);
+        GeakUtils.setCurrentUser(user);
         // 设置cookie
-        token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);
+        token = new Cookie(COOKIE_USER_ID, userId);
         token.setPath("/");
         token.setMaxAge(3600 * 24 * 30);
         response.addCookie(token);

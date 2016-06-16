@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.xsocket.geak.entity.Member;
+import com.github.xsocket.geak.entity.User;
 
 public class GeakUtils {
   
@@ -18,6 +19,14 @@ public class GeakUtils {
   
   public static void setCurrentMember(Member m) {
     getCurrentRequest().setAttribute(Member.class.getName(), m);
+  }
+  
+  public static User getCurrentUser() {
+    return (User) getCurrentRequest().getAttribute(User.class.getName());
+  }
+  
+  public static void setCurrentUser(User m) {
+    getCurrentRequest().setAttribute(User.class.getName(), m);
   }
   
   public static HttpServletRequest getCurrentRequest() {

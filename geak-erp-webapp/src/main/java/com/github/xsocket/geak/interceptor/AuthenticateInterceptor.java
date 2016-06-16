@@ -21,7 +21,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateInterceptor.class);
 
   // geak_member_openid
-  public static final String COOKIE_MEMBER_OPENID = "_gmo_";
+  public static final String COOKIE_USER_ID = "_gui_";
   
   private static final String REDIRECT_URL = 
       "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://%s/&response_type=code&scope=snsapi_base#wechat_redirect";
@@ -38,7 +38,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
 
     // 测试环境
     //Cookie token = new Cookie(COOKIE_MEMBER_OPENID, "oAWv4jklauWMMBAsssCVBqJ2YzFg");
-    Cookie token = WebUtils.getCookie(request, COOKIE_MEMBER_OPENID);
+    Cookie token = WebUtils.getCookie(request, COOKIE_USER_ID);
     if(token == null) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("Could not found member openId, need oauth2 check first.");
@@ -49,7 +49,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
       Member member = service.loadMemberByOpenId(openId);
       GeakUtils.setCurrentMember(member);
       // 设置cookie
-      token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);
+      token = new Cookie(AuthenticateInterceptor.COOKIE_USER_ID, openId);
       token.setPath("/");
       token.setMaxAge(3600 * 24 * 30);
       response.addCookie(token);
