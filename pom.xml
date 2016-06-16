@@ -374,8 +374,8 @@
 
   <modules>
     <module>geak-core</module>
-    <!-- <module>geak-webapp</module>
-    <module>geak-erp-webapp</module> -->
+    <!-- <module>geak-webapp</module> -->
+    <module>geak-erp-webapp</module> 
     <module>geak-member-webapp</module>
   </modules>
 </project>
