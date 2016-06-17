@@ -1,8 +1,11 @@
 package com.github.xsocket.geak.service.impl;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.Consts;
 import org.apache.http.NameValuePair;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.github.xsocket.geak.SmsException;
 import com.github.xsocket.geak.service.SmsService;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 @Service
 public class LuosimaoSmsService implements SmsService {
@@ -64,6 +69,64 @@ public class LuosimaoSmsService implements SmsService {
     }
     LOGGER.debug(String.format("Luosimao API Exception - errcode:[%d], errmsg:%s", code, msg));
     throw new SmsException(code, msg);
+  }
+  
+  private static final Cache<String, Captcha> cache = CacheBuilder.newBuilder()
+      .maximumSize(1000)
+      .expireAfterWrite(30, TimeUnit.MINUTES)
+      .build();
+
+  @Override
+  public Integer sendCaptcha(String mobile) {
+    Captcha captcha = new Captcha();
+    sendSms(mobile, captcha.getMsg());
+    cache.put(mobile, captcha);
+    return captcha.getCode();
+  }
+
+  @Override
+  public Integer fetchCaptcha(String mobile) {
+    Captcha captcha = cache.getIfPresent(mobile);
+    return captcha == null ? null : captcha.getCode();
+  }
+
+  @Override
+  public boolean verifyCaptcha(String mobile, int captcha) {
+    Captcha cached = cache.getIfPresent(mobile);
+    if (cached == null) {
+        // 验证码已经过期
+        return false;
+    }
+    return cached.getCode() == captcha;
+  }
+  
+  
+  static class Captcha implements Serializable {
+
+    private static final long serialVersionUID = -5685980481774008270L;
+
+    private static final String msgFmt = "【极客密室】验证码：%d，请于30分钟内输入使用";
+    
+    private final int code; // 四位数验证码
+    private final long sentTime; // 发送时间
+    
+    public Captcha() {
+        this.code = ThreadLocalRandom.current().nextInt(1000, 9999);
+        this.sentTime = System.currentTimeMillis();
+    }
+
+    // 返回短信内容
+    public String getMsg() {
+        return String.format(msgFmt, code);
+    }
+    
+    public int getCode() {
+        return code;
+    }  
+
+    public long getSentTime() {
+        return sentTime;
+    }
   }
 
 }
