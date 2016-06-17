@@ -10,9 +10,10 @@ var PRODUCTS = [
 $(function(){
 
   window.vm = new Vue({
-    "el": "#page_order_new",
+    "el": "#app",
     "data": {
-      products: PRODUCTS,
+      products: [],
+      order: {},
       member:{
         name:"",
         phone:"",
@@ -29,6 +30,29 @@ $(function(){
         });
         return t;
       }
+    },
+    methods: {
+      // 新建订单
+      createOrder: function() {
+        //vm3.order = order;
+        $.router.load("#page_order_list");
+      }
     }
   });
+
+
+  // 初始化产品列表页面
+  $(document).on("pageInit", "#page_order_new", function(){
+    $.showIndicator();
+    $.get("/products", function(list){
+      for(var i = 0; i < list.length; i++) {
+        list[i].count = 0;
+      }
+      vm.products = list;
+      $.hideIndicator();
+    });   
+  });
+
+
+  $.init();
 });

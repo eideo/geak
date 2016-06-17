@@ -17,7 +17,7 @@
   <body>
     <div class="page-group" id="app">
   
-      <div class="page page-current" id="page_order_list">
+      <div class="page" id="page_order_list">
         <header class="bar bar-nav">
           <a class="pull-right" href="#page_order_new">新建<i class="icon icon-right"></i></a>
           <h1 class='title'>订单列表</h1>
@@ -250,7 +250,7 @@
         </div>
       </div> <!-- /#page_order_detail -->
 
-      <div class="page" id="page_order_new">
+      <div class="page page-current" id="page_order_new">
         <header class="bar bar-nav">
            <a class="icon icon-left pull-left back"></a>
           <h1 class='title'>新建订单</h1>
@@ -261,9 +261,7 @@
         </nav>
         <div class="content geak-products">
           <template v-for="product in products">
-            <div class="vux-divider" v-if="product.type=='门票'&amp;&amp;$index==0">
-              {{product.type}}</div>
-            <div class="vux-divider" v-if="product.type=='商品'&amp;&amp;($index==0||products[$index-1].type=='门票')">
+            <div class="vux-divider" v-if="$index==0 || product.type!=products[$index-1].type">
               {{product.type}}</div>
             <div class="card">
               <div class="card-header">{{product.name}}</div>

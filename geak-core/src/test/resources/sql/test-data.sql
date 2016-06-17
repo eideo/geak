@@ -18,7 +18,7 @@ COMMIT;
 --  Test Records of geak_user
 -- ----------------------------
 BEGIN;
-INSERT INTO geak_user VALUES ('1', '1', '麻文强', '', 'NORMAL', 1);
+INSERT INTO geak_user VALUES ('1', '1', '麻文强', '15001276389', '', 'NORMAL', 1);
 COMMIT;
 
 -- ----------------------------

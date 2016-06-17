@@ -52,6 +52,7 @@ CREATE TABLE geak_user (
   id         VARCHAR(36) NOT NULL COMMENT '用户标识-主键',
   account    VARCHAR(64) NOT NULL COMMENT '用户账户名-唯一',
   name     	 VARCHAR(64) NOT NULL COMMENT '用户姓名',
+  phone      VARCHAR(16) NOT NULL COMMENT '用户手机',
   password 	 VARCHAR(64) NOT NULL COMMENT '用户密码',
   state    	 VARCHAR(16) NOT NULL COMMENT '用户状态:NORMAL|LOCKED...',
   company_id INT         NOT NULL COMMENT '用户所属门店',
