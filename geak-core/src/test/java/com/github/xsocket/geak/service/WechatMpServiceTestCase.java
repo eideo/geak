@@ -14,9 +14,17 @@ public class WechatMpServiceTestCase extends ServiceTestCase {
   @Autowired
   protected WechatMpService service;
   
+  @Autowired
+  protected SmsService smsService;
+  
   @Test
   public void mock() {
     System.out.println("微信API暂时不测试.");
+  }
+  
+  //@Test
+  public void testSms() {
+    smsService.sendSms("15001276389", "登陆验证码：131454，请尽快使用。");
   }
   
   //@Test
