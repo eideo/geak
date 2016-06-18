@@ -55,10 +55,10 @@ COMMIT;
 -- ----------------------------
 BEGIN;
 INSERT INTO geak_order VALUES 
-(1, 100, 'OK', 1, 1, '麻文强', '15001276389', 5, '青年人,中年人', '猎人', 'source', 'note', '', '0', '', '2016-06-01 00:00:00', '2016-06-01 00:00:00', '2016-06-01 00:00:00', '2016-06-01 00:00:00', '2016-06-01 00:00:00')
+(1, 100, 'OK', 1, 1, '麻文强', 'M', '15001276389', 5, '青年人,中年人', '猎人', 'source', 'note', '', '0', '', '2016-06-01 00:00:00', '2016-06-01 00:00:00', '2016-06-01 00:00:00', '2016-06-01 00:00:00', '2016-06-01 00:00:00')
 ;
-INSERT INTO geak_order_payment VALUES (1, '现金', 68, 68);
-INSERT INTO geak_order_promotion VALUES (1, '打车券', 1);
-INSERT INTO geak_order_product VALUES (1, 1, 5);
+INSERT INTO geak_order_payment VALUES (1, '现金', 68);
+INSERT INTO geak_order_promotion VALUES (1, '打车券', 1, '');
+INSERT INTO geak_order_product VALUES (1, 1, 5, 68);
 COMMIT;
 

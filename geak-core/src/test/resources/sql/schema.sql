@@ -155,6 +155,7 @@ CREATE TABLE geak_order (
   company_id     int         NOT NULL                COMMENT '订单所属公司(门店)标识',
   member_id      int         NOT NULL DEFAULT 0      COMMENT '订单客户标识',
   member_name    varchar(16)     NULL                COMMENT '订单客户姓名',
+  member_sex     char(1)     NOT NULL DEFAULT 'S'    COMMENT '玩家性别(M|F|S:student)',
   member_phone   varchar(16)     NULL                COMMENT '订单客户电话',
   member_count   int         NOT NULL DEFAULT 0      COMMENT '参与的用户总数',
   member_type    varchar(64)     NULL                COMMENT '参与的主体用户群类型',
@@ -183,7 +184,6 @@ CREATE TABLE geak_order_payment (
   order_id int         NOT NULL COMMENT '订单标识',
   mode     varchar(32) NOT NULL COMMENT '支付模式',
   count    int         NOT NULL COMMENT '消费数量',
-  amount   int         NOT NULL COMMENT '消费金额',
   -- note    varchar(255) NULL COMMENT '备注信息',
   PRIMARY KEY (order_id, mode),
   CONSTRAINT fk_order_payment FOREIGN KEY (order_id) REFERENCES geak_order(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -196,8 +196,8 @@ CREATE TABLE geak_order_payment (
 CREATE TABLE geak_order_promotion (
   order_id  int         NOT NULL COMMENT '订单标识',
   mode      varchar(32) NOT NULL COMMENT '促销方案',
-  count     int         NOT NULL COMMENT '促销量',
-  -- note    varchar(255) NULL COMMENT '备注信息',
+  count     int             NULL COMMENT '促销量',
+  note      varchar(255)    NULL COMMENT '备注信息',
   PRIMARY KEY (order_id,mode),
   CONSTRAINT pk_order_promotion FOREIGN KEY (order_id) REFERENCES geak_order(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT = '订单优惠明细表'
@@ -210,12 +210,11 @@ CREATE TABLE geak_order_product (
   order_id   int         NOT NULL COMMENT '订单标识',
   product_id int         NOT NULL COMMENT '产品标识',
   count      int         NOT NULL COMMENT '产品数量',
+  price      int         NOT NULL COMMENT '产品价格',
   -- note    varchar(255) NULL COMMENT '备注信息',
   PRIMARY KEY (order_id,product_id),
   CONSTRAINT pk_order_product1 FOREIGN KEY (order_id) REFERENCES geak_order(id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT pk_order_product2 FOREIGN KEY (product_id) REFERENCES geak_product(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT = '订单产品明细表'
 ;
-
-
 

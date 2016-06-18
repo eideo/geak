@@ -3,6 +3,8 @@ package com.github.xsocket.geak.service.impl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -177,8 +179,10 @@ public class DefaultWechatMpService implements WechatMpService {
       return payJson;
   }
   
-  public static final void main(String[] args) {
-    System.out.println(Integer.parseInt("000012345"));
+  public static final void main(String[] args) throws ParseException {
+    System.out.println(NumberFormat.getIntegerInstance().parse("3人"));
+    
+    
   }
   
   /**

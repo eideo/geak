@@ -6,7 +6,6 @@
 .list-block .item-media+.item-inner{margin-left:.5rem;}
 .list-block.media-list .item-media img{width:2rem;}
 .list-block.media-list .item-title{font-size:.75rem;}
-.bar-tab .tab-button-primary {background-color: #0894ec; color: white;}
 .bar-tab .color-primary {color: #0894ec;}
 .geak-order-amount{}
 
@@ -19,3 +18,9 @@
 /* 确定保留 */
 .list-block textarea {height:3rem;padding:.3rem;}
 .list-block select, .list-block input {height:1.2rem;}
+.geak-products .vux-number-input{width:1.5rem;}
+.geak-products .item-after .vux-number-input{width:1.5rem;height:30px;border:1px solid #ececec;padding:0 .25rem;}
+.list-block.media-list .geak-products .item-media img {width:1.5rem;}
+
+.bar-tab .tab-button-primary {background-color:#0894ec;color: white;}
+.bar-tab .tab-button-success {background-color:#4cd964;color: white;}

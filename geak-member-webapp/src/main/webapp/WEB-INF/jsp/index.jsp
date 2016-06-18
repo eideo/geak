@@ -14,8 +14,6 @@
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <link rel="stylesheet" href="/css/app.css">
   <style>
-    .bar-tab .tab-button-primary {background-color:#0894ec;color: white;}
-    .bar-tab .tab-button-success {background-color:#4cd964;color: white;}
   </style>
 </head>
 <body>

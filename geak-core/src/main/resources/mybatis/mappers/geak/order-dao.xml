@@ -27,11 +27,11 @@
     <!-- 关联客户数据 -->
     <association property="member" javaType="com.github.xsocket.geak.entity.Member">
       <id     property="id"    column="member_id"   javaType="Integer" jdbcType="INTEGER" />
-      <result property="openId" column="openid"     javaType="String"  jdbcType="VARCHAR" />
+      <!-- <result property="openId" column="openid"     javaType="String"  jdbcType="VARCHAR" /> -->
       <result property="name"  column="member_name" javaType="String"  jdbcType="VARCHAR" />
       <result property="sex"   column="member_sex"  javaType="String"  jdbcType="CHAR" />
       <result property="phone" column="member_phone" javaType="String"  jdbcType="VARCHAR" />
-      <result property="headUrl" column="head"     javaType="String"  jdbcType="VARCHAR" />
+      <!-- <result property="headUrl" column="head"     javaType="String"  jdbcType="VARCHAR" /> -->
     </association>
     <!-- 关联公司(门店) -->
     <association property="company" javaType="com.github.xsocket.geak.entity.Company">
@@ -58,11 +58,7 @@
       o.promotion_note, o.payment_mode, o.payment_note, 
       o.payment_date, o.entrance_date, o.exit_date, o.cancelled_date, o.created_date, 
       
-      m.id as member_id,
-      m.openid as openid,
-      m.name as member_name, m.sex as member_sex, 
-      m.phone as member_phone,
-      m.head as head,
+      o.member_id, o.member_name, o.member_phone, o.member_sex,
       
       c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias
     FROM geak_order o

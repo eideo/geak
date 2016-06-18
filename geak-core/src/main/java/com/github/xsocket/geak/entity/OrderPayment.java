@@ -15,8 +15,6 @@ public class OrderPayment implements Serializable {
   protected String mode;
   /** 支付数量 */
   protected Integer count;
-  /** 支付金额 */
-  protected Integer amount; 
 
   public String getMode() {
     return mode;
@@ -24,14 +22,6 @@ public class OrderPayment implements Serializable {
 
   public void setMode(String mode) {
     this.mode = mode;
-  }
-
-  public Integer getAmount() {
-    return amount;
-  }
-
-  public void setAmount(Integer amount) {
-    this.amount = amount;
   }
 
   public Integer getCount() {

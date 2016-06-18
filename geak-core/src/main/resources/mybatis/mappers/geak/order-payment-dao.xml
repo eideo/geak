@@ -7,12 +7,11 @@
   <resultMap id="result" type="com.github.xsocket.geak.entity.OrderPayment">
     <result property="mode"   column="mode"   javaType="String"  jdbcType="VARCHAR" />
     <result property="count"  column="count"  javaType="Integer" jdbcType="INTEGER" />
-    <result property="amount" column="amount" javaType="Integer" jdbcType="INTEGER" />
   </resultMap>
 
   <!-- 查询订单关联支付信息 -->
   <select id="selectOrderPayments" resultMap="com.github.xsocket.geak.dao.OrderPaymentDao.result">
-    SELECT mode, count, amount
+    SELECT mode, count
     FROM geak_order_payment
     WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
   </select>

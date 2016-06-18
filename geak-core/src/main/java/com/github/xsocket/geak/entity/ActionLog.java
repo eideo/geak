@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.alibaba.fastjson.JSON;
+import com.github.xsocket.geak.util.GeakUtils;
 
 /**
  * 操作日志。
@@ -14,11 +15,11 @@ public class ActionLog implements Serializable {
 
   private static final long serialVersionUID = 379334927672353468L;
 
-  public static final String ACTION_INSERT = "新建";
+  public static final String ACTION_INSERT = "INSERT";
 
-  public static final String ACTION_UPDATE = "更新";
+  public static final String ACTION_UPDATE = "UPDATE";
 
-  public static final String ACTION_DELETE = "删除";
+  public static final String ACTION_DELETE = "DELETE";
   
   /** 实体标识 */
   protected Integer id;
@@ -35,7 +36,7 @@ public class ActionLog implements Serializable {
   
   public ActionLog() {
     this.createdDate = new Date();
-    //this.user = GeakUtils.getCurrentUser();
+    this.user = GeakUtils.getCurrentUser();
   }
   
   public ActionLog(String action, Object content) {

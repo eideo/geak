@@ -7,11 +7,12 @@
   <resultMap id="result" type="com.github.xsocket.geak.entity.OrderPromotion">
     <result property="mode"  column="mode"  javaType="String"  jdbcType="VARCHAR" />
     <result property="count" column="count" javaType="Integer" jdbcType="INTEGER" />
+    <result property="note"  column="note"  javaType="String"  jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- 查询订单关联促销信息 -->
   <select id="selectOrderPromotions" resultMap="com.github.xsocket.geak.dao.OrderPromotionDao.result">
-    SELECT mode, count
+    SELECT mode, count, note
     FROM geak_order_promotion
     WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
   </select>

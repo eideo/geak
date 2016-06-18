@@ -18,7 +18,7 @@ public class Member implements Serializable {
   
   private static final DateFormat FORMAT = new SimpleDateFormat("yyyyMMdd");
   
-  protected Integer id;
+  protected Integer id = 0;
   protected String account;
   protected String name;
   protected String nickname;
@@ -26,7 +26,7 @@ public class Member implements Serializable {
 
   protected String openId;
   protected String unionId;
-  protected String sex;
+  protected String sex = "S";
   protected String headUrl;
   protected String state;
 

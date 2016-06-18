@@ -15,6 +15,8 @@ public class OrderPromotion implements Serializable {
   protected String mode;
   /** 优惠数量 */
   protected Integer count;
+  /** 优惠说明 */
+  protected String note;
 
   public String getMode() {
     return mode;
@@ -30,5 +32,13 @@ public class OrderPromotion implements Serializable {
 
   public void setCount(Integer count) {
     this.count = count;
+  }
+  
+  public String getNote() {
+    return note;
+  }
+
+  public void setNote(String note) {
+    this.note = note;
   }
 }
