@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.OrderProductDao">
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.OrderProduct">
+    <id     property="id"     column="id"         javaType="Integer" jdbcType="INTEGER" />
+    <result property="name"   column="name"       javaType="String"  jdbcType="VARCHAR" />
+    <result property="alias"  column="alias"      javaType="String"  jdbcType="VARCHAR" />
+    <result property="type"   column="type"       javaType="String"  jdbcType="VARCHAR" />
+    <result property="state"  column="state"      javaType="String"  jdbcType="VARCHAR" />
+    <result property="price"  column="price"      javaType="Integer" jdbcType="INTEGER" />
+    <result property="count"  column="count"      javaType="Integer" jdbcType="INTEGER" />
+  </resultMap>
+
+  <!-- 查询订单关联产品信息 -->
+  <select id="selectOrderProducts" resultMap="com.github.xsocket.geak.dao.OrderPaymentDao.result">
+    SELECT p.id, p.name, p.alias, p.type, p.state, p.price, op.count
+    FROM geak_order_product op
+    JOIN geak_product p ON op.product_id = p.id
+    WHERE op.order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+</mapper>

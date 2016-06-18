@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.OrderDao">
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.Order">
+    <!-- 基本预约数据 -->
+    <id     property="id"             column="id"             javaType="Integer" jdbcType="INTEGER" />
+    <result property="amount"         column="amount"         javaType="Integer" jdbcType="INTEGER" />
+    <result property="state"          column="state"          javaType="String"  jdbcType="VARCHAR" />
+    <result property="memberCount"    column="member_count" javaType="Integer" jdbcType="INTEGER" />
+    <result property="memberType"     column="member_type"  javaType="String"  jdbcType="VARCHAR" />
+    <result property="content"        column="content"      javaType="String"  jdbcType="VARCHAR" />
+    <result property="note"           column="note"         javaType="String"  jdbcType="VARCHAR" />
+    <result property="source"         column="source"       javaType="String"  jdbcType="VARCHAR" />
+    
+    <result property="promotionNote"  column="promotion_note"       javaType="String"  jdbcType="VARCHAR" />
+    <result property="paymentMode"    column="payment_mode"         javaType="String"  jdbcType="VARCHAR" />
+    <result property="paymentNote"    column="payment_note"         javaType="String"  jdbcType="VARCHAR" />
+    
+    <result property="paymentDate" column="payment_date"        javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="entranceDate" column="entrance_date"  javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="exitDate"     column="exit_date"      javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="cancelledDate" column="cancelled_date" javaType="Date"    jdbcType="TIMESTAMP" />
+    <result property="createdDate"  column="created_date"   javaType="Date"    jdbcType="TIMESTAMP" />
+    <!-- 关联客户数据 -->
+    <association property="member" javaType="com.github.xsocket.geak.entity.Member">
+      <id     property="id"    column="member_id"   javaType="Integer" jdbcType="INTEGER" />
+      <result property="openId" column="openid"     javaType="String"  jdbcType="VARCHAR" />
+      <result property="name"  column="member_name" javaType="String"  jdbcType="VARCHAR" />
+      <result property="sex"   column="member_sex"  javaType="String"  jdbcType="CHAR" />
+      <result property="phone" column="member_phone" javaType="String"  jdbcType="VARCHAR" />
+      <result property="headUrl" column="head"     javaType="String"  jdbcType="VARCHAR" />
+    </association>
+    <!-- 关联公司(门店) -->
+    <association property="company" javaType="com.github.xsocket.geak.entity.Company">
+      <id     property="id"    column="company_id"    javaType="Integer" jdbcType="INTEGER" />
+      <result property="name"  column="company_name"  javaType="String"  jdbcType="VARCHAR" />
+      <result property="alias" column="company_alias" javaType="String"  jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+  <!-- 完整订单结果 -->
+  <resultMap id="resultAll" type="com.github.xsocket.geak.entity.Order" 
+    extends="com.github.xsocket.geak.dao.OrderDao.result">
+    <collection property="payments" column="id" ofType="com.github.xsocket.geak.entity.OrderPayment" 
+        select="com.github.xsocket.geak.dao.OrderPaymentDao.selectOrderPayments" />
+    <collection property="promotions" column="id" ofType="com.github.xsocket.geak.entity.OrderPromotion" 
+        select="com.github.xsocket.geak.dao.OrderPromotionDao.selectOrderPromotions" />
+    <collection property="products"  column="id" ofType="com.github.xsocket.geak.entity.OrderProduct" 
+        select="com.github.xsocket.geak.dao.OrderProductDao.selectOrderProducts" />
+  </resultMap>
+  
+  <sql id="_select_order">
+    SELECT
+      o.id, o.amount, o.state, o.member_count, o.member_type, o.content, o.note, o.source,
+      o.promotion_note, o.payment_mode, o.payment_note, 
+      o.payment_date, o.entrance_date, o.exit_date, o.cancelled_date, o.created_date, 
+      
+      m.id as member_id,
+      m.openid as openid,
+      m.name as member_name, m.sex as member_sex, 
+      m.phone as member_phone,
+      m.head as head,
+      
+      c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias
+    FROM geak_order o
+    LEFT JOIN geak_member    m ON o.member_id = m.id
+         JOIN geak_company   c ON o.company_id = c.id
+  </sql>
+
+  <select id="selectById" resultMap="com.github.xsocket.geak.dao.OrderDao.resultAll">
+    <include refid="_select_order" />
+    WHERE 
+      o.id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+
+  <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO geak_order 
+      (amount, state, company_id, member_id, member_name, member_phone, member_count, member_type,
+       source, content, note, promotion_note, payment_mode, payment_note, 
+       payment_date, entrance_date, exit_date, cancelled_date, created_date) 
+    VALUES 
+      ( #{amount,jdbcType=INTEGER}, 
+        #{state,jdbcType=VARCHAR},
+        #{company.id,jdbcType=INTEGER}, 
+        #{member.id,jdbcType=INTEGER},
+        #{member.name,jdbcType=VARCHAR},
+        #{member.phone,jdbcType=VARCHAR}, 
+        #{memberCount,jdbcType=INTEGER}, 
+        #{memberType,jdbcType=VARCHAR}, 
+        
+        #{source,jdbcType=VARCHAR}, 
+        #{content,jdbcType=VARCHAR}, 
+        #{note,jdbcType=VARCHAR}, 
+        #{promotionNote,jdbcType=VARCHAR}, 
+        #{paymentMode,jdbcType=VARCHAR}, 
+        #{paymentNote,jdbcType=VARCHAR},
+        
+        #{paymentDate,jdbcType=TIMESTAMP},          
+        #{entranceDate,jdbcType=TIMESTAMP}, 
+        #{exitDate,jdbcType=TIMESTAMP}, 
+        #{cancelledDate,jdbcType=TIMESTAMP},
+        #{createdDate,jdbcType=TIMESTAMP} )
+  </insert>
+  
+  <update id="update">
+    UPDATE geak_order 
+    <set>
+      <if test="amount != null">amount = #{amount,jdbcType=INTEGER},</if>
+      <if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+      
+      <if test="memberCount != null">member_count = #{memberCount,jdbcType=INTEGER},</if>
+      <if test="memberType != null">member_type = #{memberType,jdbcType=VARCHAR},</if>
+      <if test="member != null and member.id != null">member_id = #{member.id,jdbcType=INTEGER},</if>
+      <if test="member != null and member.name != null">member_name = #{member.name,jdbcType=VARCHAR},</if>
+      <if test="member != null and member.phone != null">member_phone = #{member.phone,jdbcType=VARCHAR},</if>
+            
+      
+      <if test="source != null">source = #{source,jdbcType=VARCHAR},</if>
+      <if test="content != null">content = #{content,jdbcType=VARCHAR},</if>
+      <if test="note != null">note = #{note,jdbcType=VARCHAR},</if>
+      <if test="promotionNote != null">promotion_note = #{promotionNote,jdbcType=VARCHAR},</if>
+      <if test="paymentNote != null">payment_note = #{paymentNote,jdbcType=VARCHAR},</if>
+      <if test="paymentMode != null">payment_mode = #{paymentMode,jdbcType=VARCHAR},</if>
+      
+      <if test="paymentDate != null">payment_date = #{paymentDate,jdbcType=TIMESTAMP},</if>
+      <if test="cancelledDate != null">cancelled_date = #{cancelledDate,jdbcType=TIMESTAMP},</if>
+      <if test="entranceDate != null">entrance_date = #{entranceDate,jdbcType=TIMESTAMP},</if>
+      <if test="exitDate != null">exit_date = #{exitDate,jdbcType=TIMESTAMP},</if>
+    </set>
+    WHERE 
+      id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 插入订单的支付信息 -->
+  <insert id="insertPayments">
+    INSERT INTO geak_order_payment
+      (order_id, mode, amount, count) 
+    VALUES 
+      <foreach collection="payments" item="para" separator="," >  
+        ( #{order.id,    jdbcType=INTEGER}, 
+          #{para.mode,   jdbcType=VARCHAR}, 
+          #{para.amount, jdbcType=INTEGER},
+          #{para.count,  jdbcType=INTEGER} )
+      </foreach> 
+  </insert>
+  
+  <!-- 插入订单的促销信息 -->
+  <insert id="insertPromotions">
+    INSERT INTO geak_order_promotion
+      (order_id, mode, count) 
+    VALUES 
+      <foreach collection="promotions" item="para" separator="," >  
+        ( #{order.id,    jdbcType=INTEGER}, 
+          #{para.mode,   jdbcType=VARCHAR}, 
+          #{para.count,  jdbcType=INTEGER} )
+      </foreach> 
+  </insert>
+  
+  <!-- 插入订单的产品信息 -->
+  <insert id="insertProducts">
+    INSERT INTO geak_order_product
+      (order_id, product_id, count) 
+    VALUES 
+      <foreach collection="products" item="para" separator="," >  
+        ( #{order.id,    jdbcType=INTEGER}, 
+          #{para.id,     jdbcType=INTEGER}, 
+          #{para.count,  jdbcType=INTEGER} )
+      </foreach> 
+  </insert>
+
+  <!-- 清空订单的支付信息 -->
+  <delete id="deletePayments">
+    DELETE FROM geak_order_payment
+    WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 清空订单的促销信息 -->
+  <delete id="deletePromotions">
+    DELETE FROM geak_order_promotion
+    WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 清空订单的产品信息 -->
+  <delete id="deleteProducts">
+    DELETE FROM geak_order_promotion
+    WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

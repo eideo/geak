@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.xsocket.geak.dao.OrderPromotionDao">
+
+  <resultMap id="result" type="com.github.xsocket.geak.entity.OrderPromotion">
+    <result property="mode"  column="mode"  javaType="String"  jdbcType="VARCHAR" />
+    <result property="count" column="count" javaType="Integer" jdbcType="INTEGER" />
+  </resultMap>
+
+  <!-- 查询订单关联促销信息 -->
+  <select id="selectOrderPromotions" resultMap="com.github.xsocket.geak.dao.OrderPromotionDao.result">
+    SELECT mode, count
+    FROM geak_order_promotion
+    WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
+  </select>
+</mapper>
