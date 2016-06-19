@@ -1,5 +1,8 @@
 package com.github.xsocket.geak.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.xsocket.geak.entity.Order;
@@ -14,7 +17,7 @@ public interface OrderService {
    * @param page 页码
    * @return
    */
-  //List<Order> query(Integer companyId, Date start, Date end, Integer page);
+  List<Order> query(Integer companyId, Date start, Date end);
   
   //List<Order> query(Integer companyId, Date start, Date end, Set<Pair<String, String>> timespan, String business);
   

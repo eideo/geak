@@ -24,3 +24,5 @@
 
 .bar-tab .tab-button-primary {background-color:#0894ec;color: white;}
 .bar-tab .tab-button-success {background-color:#4cd964;color: white;}
+.bar-tab .tab-button-warning {background-color:#ff6600;color: white;}
+.bar-tab .tab-button-danger {background-color:#f6383a;color: white;}

@@ -19,7 +19,7 @@ import com.github.xsocket.geak.entity.OrderPayment;
 import com.github.xsocket.geak.entity.OrderProduct;
 import com.github.xsocket.geak.entity.OrderPromotion;
 import com.github.xsocket.geak.service.OrderService;
-import com.google.common.base.Strings;
+import com.github.xsocket.geak.util.GeakUtils;
 
 /**
  * 默认订单服务实现类。
@@ -32,6 +32,7 @@ public class DefaultOrderService implements OrderService {
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultOrderService.class);
   
   private static final String STATE_NEW = "NEW";
+  private static final String STATE_UNPAYED = "UNPAYED";
   private static final String STATE_PAYED = "PAYED";
   private static final String STATE_ENTRANCED = "ENTRANCED";
   private static final String STATE_EXITED = "EXITED";
@@ -46,6 +47,11 @@ public class DefaultOrderService implements OrderService {
   protected ActionLogDao logDao;
 
   @Override
+  public List<Order> query(Integer companyId, Date start, Date end) {
+    return orderDao.selectByCompany(companyId, start, end);
+  }
+
+  @Override
   public Order loadOrder(Integer id) {
     return orderDao.selectById(id);
   }
@@ -53,31 +59,34 @@ public class DefaultOrderService implements OrderService {
   @Override
   public Order saveOrder(Order order) {
     validate(order);
-    LOGGER.debug("Starting save order...");
     
+    // 订单状态为取消、已进场、已离场时，不能修改
+    if(STATE_CANCELLED.equals(order.getState())
+        || STATE_ENTRANCED.equals(order.getState())
+        || STATE_EXITED.equals(order.getState())) {
+      String msg = String.format("Order [%d] could not be update, its state is (%s)", order.getId(), order.getState());
+      throw new IllegalArgumentException(msg);
+    }
+
+    // 确认订单状态
+    if(order.getPaymentDate() != null) {
+      order.setState(STATE_PAYED);
+    } else {
+      order.setState(STATE_NEW);
+    }
+
+    LOGGER.debug("Starting save order...");
     // 保存订单主体信息
     int updated = 0;
     Integer id = order.getId();
     if(id != null && id.intValue() > 0) {
-      // 未取消的订单都可以修改
-      if(STATE_CANCELLED.equals(order.getState())) {
-        LOGGER.warn("Order [{}] could not be update, its state is \"{}\"", id, order.getState());
-        return orderDao.selectById(order.getId());
-      }
-
-      if(order.getPayments() == null || order.getPayments().isEmpty()) {
-        order.setState(STATE_NEW);
-      } else if(Strings.isNullOrEmpty(order.getState())) {
-        order.setState(STATE_PAYED);
-      }
       updated = orderDao.update(order);
       if(updated == 1) {
         logDao.insert(new ActionLog(ActionLog.ACTION_UPDATE, order));
       }
     } else {
+      order.setCompany(GeakUtils.getCurrentUser().getCompany());
       order.setCreatedDate(new Date());
-      order.setState(STATE_NEW);
-      
       updated = orderDao.insert(order);
       if(updated == 1) {
         logDao.insert(new ActionLog(ActionLog.ACTION_INSERT, order));
@@ -111,13 +120,19 @@ public class DefaultOrderService implements OrderService {
     
     // 计算产品数量和主产品名称
     int memberCount = 0;
+    List<OrderProduct> prods = new ArrayList<OrderProduct>();
     StringBuilder sb = new StringBuilder(CONTENT_SPLIT);
     for(OrderProduct p : products) {
-      if(p.getType().contains("门票")) {
-        memberCount += p.getCount();
-        sb.append(p.getAlias());
+      if(p.getCount() != null && p.getCount() > 0) {
+        prods.add(p);
+        
+        if(p.getType().contains("门票")) {
+          memberCount += p.getCount();
+          sb.append(p.getAlias());
+        }
       }
     }
+    order.setProducts(prods);
     order.setMemberCount(memberCount);
     order.setContent(sb.substring(CONTENT_SPLIT.length()));
     
@@ -129,7 +144,7 @@ public class DefaultOrderService implements OrderService {
         try {
           op.setCount(format.parse(op.getNote()).intValue()) ;
         } catch (ParseException e) {
-          op.setCount(1);
+          op.setCount(0);
         }
       }
     }
@@ -171,7 +186,7 @@ public class DefaultOrderService implements OrderService {
     }
     
     order.setEntranceDate(new Date());
-    order.setState(STATE_NEW);
+    order.setState(STATE_UNPAYED);
     orderDao.update(order);
     logDao.insert(new ActionLog("UNPAY", order));
     return order;

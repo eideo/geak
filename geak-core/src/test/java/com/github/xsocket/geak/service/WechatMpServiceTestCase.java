@@ -2,25 +2,16 @@ package com.github.xsocket.geak.service;
 
 import java.util.Collections;
 
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.xsocket.geak.ServiceTestCase;
 
-public class WechatMpServiceTestCase extends ServiceTestCase {
+public class WechatMpServiceTestCase /*extends ServiceTestCase*/ {
 
-  @Autowired
+  //@Autowired
   protected WechatMpService service;
   
-  @Autowired
+  //@Autowired
   protected SmsService smsService;
-  
-  @Test
-  public void mock() {
-    System.out.println("微信API暂时不测试.");
-  }
   
   //@Test
   public void testSms() {

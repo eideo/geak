@@ -4,9 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.Joiner;
+
 public class Order implements Serializable {
 
   private static final long serialVersionUID = 4018993698589626629L;
+  
+  private static final String SPLIT = ",";
   
   protected Integer id;
   /** 总价 */
@@ -220,5 +224,20 @@ public class Order implements Serializable {
   public void setNote(String note) {
     this.note = note;
   }
+  
+  public String[] getSourceArray() {
+    return source == null ? null : source.split(SPLIT);
+  }
 
+  public void setSourceArray(String[] array) {
+    this.source = array == null ? null : Joiner.on(SPLIT).join(array);
+  }
+  
+  public String[] getMemberTypeArray() {
+    return memberType == null ? null : memberType.split(SPLIT);
+  }
+
+  public void setMemberTypeArray(String[] array) {
+    this.memberType = array == null ? null : Joiner.on(SPLIT).join(array);
+  }
 }

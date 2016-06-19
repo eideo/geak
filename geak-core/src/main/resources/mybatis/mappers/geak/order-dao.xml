@@ -62,9 +62,25 @@
       
       c.id AS company_id,  c.name AS company_name,  c.alias AS company_alias
     FROM geak_order o
-    LEFT JOIN geak_member    m ON o.member_id = m.id
          JOIN geak_company   c ON o.company_id = c.id
   </sql>
+  
+  <!-- 按日期、门店，每日凌晨5点结算， -->
+  <select id="selectByCompany" resultMap="com.github.xsocket.geak.dao.OrderDao.result">
+    <include refid="_select_order" />
+    <where>
+      <if test="companyId != null">
+        o.company_id = #{companyId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+      <if test="start != null">
+        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) >= TO_DAYS(#{start,jdbcType=TIMESTAMP})
+      </if>
+      <if test="end != null">
+        AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
+      </if>
+    </where>
+    ORDER BY o.id
+  </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.OrderDao.resultAll">
     <include refid="_select_order" />
@@ -74,7 +90,7 @@
 
   <insert id="insert" flushCache="true" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO geak_order 
-      (amount, state, company_id, member_id, member_name, member_phone, member_count, member_type,
+      (amount, state, company_id, member_id, member_name, member_sex, member_phone, member_count, member_type, 
        source, content, note, promotion_note, payment_mode, payment_note, 
        payment_date, entrance_date, exit_date, cancelled_date, created_date) 
     VALUES 
@@ -83,6 +99,7 @@
         #{company.id,jdbcType=INTEGER}, 
         #{member.id,jdbcType=INTEGER},
         #{member.name,jdbcType=VARCHAR},
+        #{member.sex,jdbcType=CHAR}, 
         #{member.phone,jdbcType=VARCHAR}, 
         #{memberCount,jdbcType=INTEGER}, 
         #{memberType,jdbcType=VARCHAR}, 
@@ -133,12 +150,11 @@
   <!-- 插入订单的支付信息 -->
   <insert id="insertPayments">
     INSERT INTO geak_order_payment
-      (order_id, mode, amount, count) 
+      (order_id, mode, count) 
     VALUES 
       <foreach collection="payments" item="para" separator="," >  
         ( #{order.id,    jdbcType=INTEGER}, 
-          #{para.mode,   jdbcType=VARCHAR}, 
-          #{para.amount, jdbcType=INTEGER},
+          #{para.mode,   jdbcType=VARCHAR},
           #{para.count,  jdbcType=INTEGER} )
       </foreach> 
   </insert>
@@ -146,24 +162,26 @@
   <!-- 插入订单的促销信息 -->
   <insert id="insertPromotions">
     INSERT INTO geak_order_promotion
-      (order_id, mode, count) 
+      (order_id, mode, count, note) 
     VALUES 
       <foreach collection="promotions" item="para" separator="," >  
         ( #{order.id,    jdbcType=INTEGER}, 
           #{para.mode,   jdbcType=VARCHAR}, 
-          #{para.count,  jdbcType=INTEGER} )
+          #{para.count,  jdbcType=INTEGER},
+          #{para.note,   jdbcType=VARCHAR} )
       </foreach> 
   </insert>
   
   <!-- 插入订单的产品信息 -->
   <insert id="insertProducts">
     INSERT INTO geak_order_product
-      (order_id, product_id, count) 
+      (order_id, product_id, count, price) 
     VALUES 
       <foreach collection="products" item="para" separator="," >  
         ( #{order.id,    jdbcType=INTEGER}, 
           #{para.id,     jdbcType=INTEGER}, 
-          #{para.count,  jdbcType=INTEGER} )
+          #{para.count,  jdbcType=INTEGER},
+          #{para.price,  jdbcType=INTEGER} )
       </foreach> 
   </insert>
 
@@ -181,7 +199,7 @@
   
   <!-- 清空订单的产品信息 -->
   <delete id="deleteProducts">
-    DELETE FROM geak_order_promotion
+    DELETE FROM geak_order_product
     WHERE order_id = #{id,javaType=Integer,jdbcType=INTEGER}
   </delete>
 

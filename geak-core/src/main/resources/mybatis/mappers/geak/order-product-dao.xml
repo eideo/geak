@@ -15,7 +15,7 @@
   </resultMap>
 
   <!-- 查询订单关联产品信息 -->
-  <select id="selectOrderProducts" resultMap="com.github.xsocket.geak.dao.OrderPaymentDao.result">
+  <select id="selectOrderProducts" resultMap="com.github.xsocket.geak.dao.OrderProductDao.result">
     SELECT p.id, p.name, p.alias, p.type, p.state, op.price, op.count
     FROM geak_order_product op
     JOIN geak_product p ON op.product_id = p.id

@@ -17,7 +17,7 @@
   <body>
     <div class="page-group" id="app">
   
-      <div class="page" id="page_order_list">
+      <div class="page page-current" id="page_order_list">
         <header class="bar bar-nav">
           <a class="pull-right" href="#page_order_new">新建<i class="icon icon-right"></i></a>
           <h1 class='title'>订单列表</h1>
@@ -76,15 +76,26 @@
       <div class="page" id="page_order_detail">
         <header class="bar bar-nav">
           <a class="icon icon-left pull-left back"></a>
+          <button class="button button-danger pull-right" @click="orderCancel"
+            v-if="order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'">取消订单</button>
           <h1 class='title'>订单详情</h1>
         </header>
         <nav class="bar bar-tab">
           <a class="tab-item color-primary">
-            <span class="badge">{{order.state}}</span>
+            <span class="badge">{{orderStateName}}</span>
             实际支付:{{order.amount | currency "￥"}}
           </a>
-          <a class="tab-item tab-button-success">玩家确认</a>
-          <a class="tab-item tab-button-primary">确认支付</a>
+          <template v-if="order.state=='NEW'||order.state=='UNPAYED'">
+            <a class="tab-item tab-button-success">玩家确认</a>
+            <a class="tab-item tab-button-primary" v-if="order.paymentMode=='0'" @click="orderConfirmPay">确认支付</a>
+          </template>
+          <template v-if="order.state=='PAYED'">
+            <a class="tab-item tab-button-warning" @click="orderUnpay">重新付款</a>
+            <a class="tab-item tab-button-success" @click="orderEntrance">确认进场</a>
+          </template>
+          <template v-if="order.state=='ENTRANCED'">
+            <a class="tab-item tab-button-primary" @click="orderExit">确认离场</a>
+          </template>
         </nav>
         <div class="content">
           <div class="vux-divider">产品信息</div>
@@ -107,7 +118,8 @@
               <li class="item-content">
                 <span class="item-media"><img/></span>
                 <span class="item-inner">总计：</span>
-                <span class="item-after color-primary" style="padding-right:.5rem"><b>{{amount | currency "￥"}}</b></span>
+                <span class="item-after" style="padding-right:.5rem">
+                  <b class="color-primary">{{amount | currency "￥"}}</b></span>
               </li>
               <li>
                 <span class="item-content">
@@ -202,12 +214,42 @@
                   </span>
                 </span>
               </li>
+              <li v-if="order.paymentDate">
+                <span class="item-content">
+                  <span class="item-inner">
+                    <span class="item-title label">付款时间</span>
+                    <span class="item-input">
+                      {{order.paymentDate | date "yyyy-MM-dd hh:mm"}}
+                    </span>
+                  </span>
+                </span>
+              </li>
+              <li v-if="order.entranceDate">
+                <span class="item-content">
+                  <span class="item-inner">
+                    <span class="item-title label">进场时间</span>
+                    <span class="item-input">
+                      {{order.entranceDate | date "yyyy-MM-dd hh:mm"}}
+                    </span>
+                  </span>
+                </span>
+              </li>
+              <li v-if="order.exitDate">
+                <span class="item-content">
+                  <span class="item-inner">
+                    <span class="item-title label">离场时间</span>
+                    <span class="item-input">
+                      {{order.exitDate | date "yyyy-MM-dd hh:mm"}}
+                    </span>
+                  </span>
+                </span>
+              </li>
               <li>
                 <span class="item-content">
                   <span class="item-inner">
                     <span class="item-title label">玩家身份</span>
                     <span class="item-input">
-                      <select v-model="order.memberType" multiple>
+                      <select v-model="order.memberTypeArray" multiple>
                         <option>小学生</option>
                         <option>中学生</option>
                         <option>大学生</option>
@@ -224,7 +266,7 @@
                   <span class="item-inner">
                     <span class="item-title label">来源渠道</span>
                     <span class="item-input">
-                      <select v-model="order.source" multiple>
+                      <select v-model="order.sourceArray" multiple>
                         <option>老玩家</option>
                         <option>连续场</option>
                         <option>合作商</option>
@@ -285,7 +327,7 @@
         </div>
       </div> <!-- /#page_order_detail -->
 
-      <div class="page page-current" id="page_order_new">
+      <div class="page" id="page_order_new">
         <header class="bar bar-nav">
           <a class="icon icon-left pull-left back"></a>
           <a class="pull-left back">取消</a>
@@ -327,8 +369,9 @@
       </div> <!-- /#page_new_order -->
 
     </div> <!-- /#app -->
-
+<!--
     <script type="text/javascript" src="/js/vconsole.min.js"></script>
+    -->
     <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
     <script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
     <script type="text/javascript" src="//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js"></script>

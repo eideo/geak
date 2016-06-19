@@ -66,7 +66,7 @@ public interface OrderDao {
    * @param promotions 产品列表
    * @return
    */
-  int insertProducts(@Param("order") Order order, @Param("promotions") List<OrderProduct> products);
+  int insertProducts(@Param("order") Order order, @Param("products") List<OrderProduct> products);
   
   /**
    * 删除订单相关的产品列表。
