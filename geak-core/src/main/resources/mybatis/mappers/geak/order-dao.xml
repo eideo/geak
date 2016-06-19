@@ -79,7 +79,7 @@
         AND TO_DAYS(DATE_SUB(o.created_date,INTERVAL 5 HOUR)) <![CDATA[<=]]> TO_DAYS(#{end,jdbcType=TIMESTAMP})
       </if>
     </where>
-    ORDER BY o.id
+    ORDER BY o.id DESC
   </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.OrderDao.resultAll">

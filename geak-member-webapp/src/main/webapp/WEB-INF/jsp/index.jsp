@@ -13,8 +13,6 @@
   <link rel="stylesheet" href="/css/vux.css">
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
   <link rel="stylesheet" href="/css/app.css">
-  <style>
-  </style>
 </head>
 <body>
   <div class="page-group" id="app">

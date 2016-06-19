@@ -1,9 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>极客工厂</title>
+    <title>${user.company.name} | ${user.name}</title>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link rel="shortcut icon" href="/favicon.ico">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,60 +14,82 @@
     <link rel="stylesheet" href="/css/vux.css">
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
     <link rel="stylesheet" href="/css/app.css">
+    <script type="text/javascript">
+      window.USER = ${user.toJsonString()};
+    </script>
   </head>
   <body>
     <div class="page-group" id="app">
   
       <div class="page page-current" id="page_order_list">
-        <header class="bar bar-nav">
-          <a class="pull-right" href="#page_order_new">新建<i class="icon icon-right"></i></a>
+        <header class="bar bar-nav">       
+          <select v-model="user.company.id" v-on:change="changeCompany"
+            class="button button-link button-nav pull-left" style="font-size:80%">
+            <c:forEach var="co" items="${user.companies}">
+              <option value="${co.id}">${co.name}</option>
+            </c:forEach>
+          </select>
+
+          <a class="button button-link button-nav pull-right" href="#page_order_new">
+            <small>新建订单 <span class="icon icon-right"></span></small>
+          </a>
           <h1 class='title'>订单列表</h1>
         </header>
         <div class="bar bar-header-secondary">
-          <select v-model="filterType" class="button pull-left">
-            <option value="">当日</option>
+          <select v-model="queryType" class="button pull-left" v-on:change="refreshOrderList">
+            <option>当日</option>
             <option>本周</option>
             <option>本月</option>
           </select>
           <select v-model="filterType" class="button pull-right">
-            <option value="">全部订单</option>
-            <option>已支付</option>
-            <option>未支付</option>
+            <option value="">全&nbsp;&nbsp;部</option>
+            <option value="UNPAYED">未支付</option>
+            <option value="PAYED">已支付</option>
+            <option value="ENTRANCED">已进场</option>
+            <option value="EXITED">已离场</option>
           </select>
           <div class="buttons-row">
-            <a href="#tab1" class="tab-link button"><</a>
-            <input id="my-input" type="text" data-toggle="date" class="tab-link button" value="2016-06-05" />
-            <a href="#tab1" class="tab-link button">></a>
+            <a class="tab-link button" style="width:2rem" @click="prevDate"> < </a>
+            <input id="txtDate" type="text" class="tab-link button" v-model="queryDateStr" />
+            <a class="tab-link button" style="width:2rem" @click="nextDate"> > </a>
           </div>
         </div>
         <div class="content">
+        <!--
           <div class="searchbar content-padded" v-bind:class="{'searchbar-active':filterType.length>0}">
             <a class="searchbar-cancel" @click="filterType=''">取消</a>
             <div class="search-input">
               <label class="icon icon-search" for="search"></label>
               <input type="search" id="search" placeholder="过滤订单..." v-model="filterType" />
             </div>
-          </div><!-- /.serchbar -->
+          </div>
+        -->
+          
           <template v-for="order in orders | filterBy filterType in 'state'">
             <div class="card" @click="viewOrder(order)">
               <div class="card-header">
-                <span>{{order.createdDate | date}}</span>
-                <span>{{order.amount | currency "￥"}}</span>
+                <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
+                <span>{{order.content}}</span>
               </div>
               <div class="card-content">
                 <div class="list-block media-list">
-                  <ul v-for="product in order.products">
+                  <ul>
                     <li class="item-content">
-                      <div class="item-media"><img :src="product.image"></div>
-                      <div class="item-inner">{{product.name}}</div>
-                      <div class="item-inner">{{product.count}}</div>
+                      <div class="item-inner">{{order.member.name}}<small>({{order.member.phone}})</small></div>
+                      <div class="item-inner" style="text-align:right;">{{order.memberCount}} 人</div>
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="card-footer">
-                <span class="color-primary"><b>{{order.state}}</b></span>
-                <span>状态操作</span>
+                <span>{{order.amount | currency "￥"}} <small class="badge">{{orderStateName(order)}}</small></span>
+                <button class="button button-danger button-fill" 
+                    v-if="order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'"
+                    @click.stop="orderCancel(order)">取消订单</button>
+                <button class="button button-fill button-success" v-if="order.state=='PAYED'" 
+                    @click.stop="orderEntrance(order)">确认进场</button>
+                <button class="button button-fill button-primary" v-if="order.state=='ENTRANCED'" 
+                    @click.stop="orderExit(order)">确认离场</button>
               </div>
             </div>
           </template>
@@ -75,26 +98,27 @@
 
       <div class="page" id="page_order_detail">
         <header class="bar bar-nav">
-          <a class="icon icon-left pull-left back"></a>
-          <button class="button button-danger pull-right" @click="orderCancel"
-            v-if="order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'">取消订单</button>
+          <a class="icon icon-left pull-left" href="#page_order_list"></a>
+          <button class="button button-danger pull-right" @click="orderCancel(false)"
+            v-if="order.id>0&amp;&amp;order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'">
+                取消订单</button>
           <h1 class='title'>订单详情</h1>
         </header>
         <nav class="bar bar-tab">
           <a class="tab-item color-primary">
-            <span class="badge">{{orderStateName}}</span>
+            <span class="badge">{{orderStateName(order)}}</span>
             实际支付:{{order.amount | currency "￥"}}
           </a>
           <template v-if="order.state=='NEW'||order.state=='UNPAYED'">
-            <a class="tab-item tab-button-success">玩家确认</a>
-            <a class="tab-item tab-button-primary" v-if="order.paymentMode=='0'" @click="orderConfirmPay">确认支付</a>
+            <a class="tab-item tab-button-success" @click="orderConfirmMember(false)">玩家确认</a>
+            <a class="tab-item tab-button-primary" v-if="order.paymentMode=='0'" @click="orderConfirmPay(false)">确认支付</a>
           </template>
           <template v-if="order.state=='PAYED'">
-            <a class="tab-item tab-button-warning" @click="orderUnpay">重新付款</a>
-            <a class="tab-item tab-button-success" @click="orderEntrance">确认进场</a>
+            <a class="tab-item tab-button-warning" @click="orderUnpay(false)">重新付款</a>
+            <a class="tab-item tab-button-success" @click="orderEntrance(false)">确认进场</a>
           </template>
           <template v-if="order.state=='ENTRANCED'">
-            <a class="tab-item tab-button-primary" @click="orderExit">确认离场</a>
+            <a class="tab-item tab-button-primary" @click="orderExit(false)">确认离场</a>
           </template>
         </nav>
         <div class="content">
@@ -119,7 +143,7 @@
                 <span class="item-media"><img/></span>
                 <span class="item-inner">总计：</span>
                 <span class="item-after" style="padding-right:.5rem">
-                  <b class="color-primary">{{amount | currency "￥"}}</b></span>
+                  <b class="color-primary">{{orderAmount(order.products) | currency "￥"}}</b></span>
               </li>
               <li>
                 <span class="item-content">
@@ -329,8 +353,9 @@
 
       <div class="page" id="page_order_new">
         <header class="bar bar-nav">
-          <a class="icon icon-left pull-left back"></a>
-          <a class="pull-left back">取消</a>
+          <a class="button button-link button-nav pull-left back">
+            <small><span class="icon icon-left"></span> 取消</small>
+          </a>
           <h1 class='title'>新建订单</h1>
         </header>
         <nav class="bar bar-tab" v-if="amount > 0">
@@ -367,6 +392,32 @@
           </template>
         </div>
       </div> <!-- /#page_new_order -->
+
+      <div class="page" id="page_order_qrcode">
+        <header class="bar bar-nav">
+          <a class="button button-link button-nav pull-left back">
+            <small><span class="icon icon-left"></span></small>
+          </a>
+          <h1 class='title'>玩家扫码确认</h1>
+        </header>
+        <nav class="bar bar-tab">
+          <a class="tab-item color-primary">
+            <span class="badge">{{orderStateName(order)}}</span> 实际支付:{{order.amount | currency "￥"}}
+          </a>
+          <a class="tab-item tab-button-primary back">返回</a>
+        </nav>
+        <div class="content">
+          <div class="content-block-title">订单二维码</div>
+            <div class="card">
+              <div valign="bottom" class="card-header color-white no-border no-padding">
+                <img class='card-cover' :src="orderQrcodeLink">
+              </div>
+              <div class="card-footer">
+                请玩家通过微信扫一扫功能，扫描订单二维码以进行订单确认。
+              </div>
+            </div>
+        </div>
+      </div> <!-- /#page_order_qrcode -->
 
     </div> <!-- /#app -->
 <!--

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.xsocket.geak.entity.Order;
+import com.github.xsocket.geak.entity.User;
 import com.github.xsocket.geak.service.OrderService;
+import com.github.xsocket.geak.util.GeakUtils;
 
 /**
  * 订单相关业务的控制器。
@@ -29,11 +31,16 @@ public class OrderController {
   @ResponseBody
   @RequestMapping(value = "/orders", method = RequestMethod.GET, produces="application/json")
   public List<Order> list(
-      @RequestParam(value="company", required=true) Integer companyId,
-      @RequestParam(value="start", required=true) Long start,
-      @RequestParam(value="end", required=true) Long end) {
-    
-    return service.query(companyId, new Date(start), new Date(end));
+      @RequestParam(value="start", required=false) Long start,
+      @RequestParam(value="end", required=false) Long end) {
+    User user = GeakUtils.getCurrentUser();
+    if(start == null) {
+      start = System.currentTimeMillis();
+    }
+    if(end == null) {
+      end = start;
+    }
+    return service.query(user.getCompany().getId(), new Date(start), new Date(end));
   }
   
   @ResponseBody

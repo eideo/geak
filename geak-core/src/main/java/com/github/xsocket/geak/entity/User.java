@@ -3,6 +3,8 @@ package com.github.xsocket.geak.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 极客用户实体。
  * 
@@ -91,6 +93,10 @@ public class User implements Serializable {
 
   public void setCompanies(List<Company> companies) {
     this.companies = companies;
+  }
+  
+  public String toJsonString() {
+    return JSON.toJSONString(this);
   }
 
 }

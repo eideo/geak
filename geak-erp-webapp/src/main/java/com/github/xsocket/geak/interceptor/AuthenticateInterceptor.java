@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.util.WebUtils;
 
 import com.github.xsocket.geak.entity.User;
 import com.github.xsocket.geak.service.UserService;
@@ -30,8 +31,8 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
     // 测试环境
-    Cookie token = new Cookie(COOKIE_USER_ID, "2016012301");
-    //Cookie token = WebUtils.getCookie(request, COOKIE_USER_ID);
+    //Cookie token = new Cookie(COOKIE_USER_ID, "2016012301");
+    Cookie token = WebUtils.getCookie(request, COOKIE_USER_ID);
     if(token == null) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("Could not found user id, need oauth2 check first.");
@@ -55,7 +56,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
       Object handler, ModelAndView mv) throws Exception {
     //为模型加入用户信息
     if(mv != null) {
-      mv.addObject("member", GeakUtils.getCurrentMember());
+      mv.addObject("user", GeakUtils.getCurrentUser());
     }
   }
 

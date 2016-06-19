@@ -22,7 +22,10 @@ public class DefaultUserService implements UserService {
   
   @Override
   public User loadUserById(String userId) {
-    return userDao.selectById(userId);
+    User user = userDao.selectById(userId);
+    List<Company> list = companyDao.selectByUserId(user.getId());
+    user.setCompanies(list);
+    return user;
   }
   
   @Override
