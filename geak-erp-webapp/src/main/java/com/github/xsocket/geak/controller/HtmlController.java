@@ -32,8 +32,13 @@ public class HtmlController {
   
   @RequestMapping(value = "/", method = RequestMethod.GET)
   public ModelAndView index(
-      @RequestParam(value="code", required=true) String code, 
+      @RequestParam(value="code", required=false) String code, 
       HttpServletResponse response) throws IOException {
+    
+    if(code == null) {
+      response.sendRedirect(AuthenticateInterceptor.REDIRECT_URL);
+      return null;
+    }
 
     // 通过code参数获取员工ID
     String userId = WeixinUtils.getUserId(code);

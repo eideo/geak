@@ -68,7 +68,8 @@ public class DefaultMemberService implements MemberService {
     // 生成内部订单号
     String recordNo = FORMAT.format(deposit.getBeginDate()) + String.format("%08d", deposit.getId());
     // 微信交易以'分'为单位
-    String tradeNo = service.prepayOrder(amount * 100, recordNo, tradeContent, member.getOpenId(), ip);
+    // FIXME 以'分'为单位测试
+    String tradeNo = service.prepayOrder(amount/* * 100*/, recordNo, tradeContent, member.getOpenId(), ip);
     
     // 更新订单装
     deposit.setRecordNo(recordNo);

@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%><!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -25,9 +24,9 @@
         <header class="bar bar-nav">       
           <select v-model="user.company.id" v-on:change="changeCompany"
             class="button button-link button-nav pull-left" style="font-size:80%">
-            <c:forEach var="co" items="${user.companies}">
-              <option value="${co.id}">${co.name}</option>
-            </c:forEach>
+            <template v-for="co in user.companies">
+            <option value="{{co.id}}">{{co.name}}</option>
+            </template>
           </select>
 
           <a class="button button-link button-nav pull-right" href="#page_order_new">

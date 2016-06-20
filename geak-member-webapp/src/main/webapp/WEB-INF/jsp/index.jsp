@@ -87,11 +87,11 @@
       </nav>
       <div class="content">
         <div class="content-block">
-          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(100)">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(200)">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill button-warning" @click="prepay(300)">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill button-danger" @click="prepay(400)">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill" @click="prepay(500)">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(1)">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(2)">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-warning" @click="prepay(3)">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-danger" @click="prepay(4)">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill" @click="prepay(5)">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
         </div>
       </div>
     </div><!-- /#page_charge -->
@@ -148,7 +148,7 @@
   </div> <!-- /#app -->
   
   
-  <script type="text/javascript" src="/js/vconsole.min.js"></script>
+  <!-- <script type="text/javascript" src="/js/vconsole.min.js"></script> -->
   <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
   <script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
   <script type="text/javascript" src="//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js"></script>

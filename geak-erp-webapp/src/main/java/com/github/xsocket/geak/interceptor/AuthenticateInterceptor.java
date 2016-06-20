@@ -22,7 +22,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   // geak_member_openid
   public static final String COOKIE_USER_ID = "_gui_";
   
-  private static final String REDIRECT_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6ea60848a4abe21&redirect_uri=http://geak.weikuai01.com/&response_type=code&scope=snsapi_base#wechat_redirect";
+  public static final String REDIRECT_URL = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxb6ea60848a4abe21&redirect_uri=http://geak-admin.weikuai01.com/&response_type=code&scope=snsapi_base#wechat_redirect";
      
   @Autowired
   private UserService service;

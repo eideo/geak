@@ -9,7 +9,7 @@ INSERT INTO geak_company VALUES
 (4, '柳巷店', '柳巷', '柳巷'), 
 (5, '长风店', '长风', '长风街'), 
 (6, '千峰店', '千峰', '千峰路'),
-(7, '世贸店', '世贸', '世贸')
+(7, '世贸店', '世贸', '世贸'),
 (8, '极客工厂', '工厂', '极客工厂')
 ;
 COMMIT;
@@ -72,6 +72,45 @@ COMMIT;
 --  Init Records of geak_user
 -- ----------------------------
 BEGIN;
-INSERT INTO geak_user VALUES ('2016012301', '2016012301', '麻文强', '15001276389', '', 'NORMAL', 1);
+INSERT INTO geak_user VALUES ('2016012301', '2016012301', '麻文强', '15001276389', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016043002', '2016043002', '杨牧之', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2013110101', '2013110101', '韩钰', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2014070101', '2014070101', '张小喵', '', '', 'NORMAL', 8);
+
+INSERT INTO `geak_user_company` VALUES ('2016012301', 1);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 2);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 3);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 4);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 5);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 6);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 7);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2016012301', 8);  -- 麻文强
+
+INSERT INTO `geak_user_company` VALUES ('2013110101', 1);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 2);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 3);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 4);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 5);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 6);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 7);  -- 韩钰
+INSERT INTO `geak_user_company` VALUES ('2013110101', 8);  -- 韩钰
+
+INSERT INTO `geak_user_company` VALUES ('2014070101', 1);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 2);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 3);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 4);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 5);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 6);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 7);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2014070101', 8);  -- 张小喵
+
+INSERT INTO `geak_user_company` VALUES ('2016043002', 1);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 2);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 3);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 4);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 5);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 6);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 7);  -- 杨牧之
+INSERT INTO `geak_user_company` VALUES ('2016043002', 8);  -- 杨牧之
 COMMIT;
 
