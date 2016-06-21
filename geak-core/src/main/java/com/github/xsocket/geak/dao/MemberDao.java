@@ -23,7 +23,7 @@ public interface MemberDao {
    * @param id 实体标识
    * @return 如果数据存在则返回实体数据，否则返回 null
    */
-  Member selectById(Integer id);
+  Member selectById(Integer id);   
 
   /**
    * 新增实体数据。

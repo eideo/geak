@@ -101,7 +101,7 @@ public class MemberController {
     if("SUCCESS".equals(returnCode)) {
       String resuleCode = root.getElementsByTagName("result_code").item(0).getTextContent();
       if("SUCCESS".equals(resuleCode)) {
-        String tradeNo = root.getElementsByTagName("transaction_id").item(0).getTextContent();
+        String tradeNo = root.getElementsByTagName("out_trade_no").item(0).getTextContent();
         service.completeMemberDeposit(tradeNo);
       }
     }

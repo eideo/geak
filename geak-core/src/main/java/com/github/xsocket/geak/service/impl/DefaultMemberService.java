@@ -69,7 +69,7 @@ public class DefaultMemberService implements MemberService {
     String recordNo = FORMAT.format(deposit.getBeginDate()) + String.format("%08d", deposit.getId());
     // 微信交易以'分'为单位
     // FIXME 以'分'为单位测试
-    String tradeNo = service.prepayOrder(amount/* * 100*/, recordNo, tradeContent, member.getOpenId(), ip);
+    String tradeNo = service.prepayOrder(amount * 100, recordNo, tradeContent, member.getOpenId(), ip);
     
     // 更新订单装
     deposit.setRecordNo(recordNo);
@@ -87,11 +87,15 @@ public class DefaultMemberService implements MemberService {
   @Override
   public MemberDeposit completeMemberDeposit(String recordNo) {
     Integer id = Integer.parseInt(recordNo.substring(FORMAT_PATTERN.length()));
-    MemberDeposit deposit = depositDao.selectById(id);
+    MemberDeposit deposit = depositDao.selectById(id);        
     
     deposit.setState(STATE_PAYED);
     deposit.setOverDate(new Date());
     depositDao.update(deposit);
+    
+    Member member = deposit.getMember();
+    member.setBalance(member.getBalance() + deposit.getAmount());
+    memberDao.update(member);
     
     return deposit;
   }
