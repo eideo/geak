@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.interceptor.AuthenticateInterceptor;
 import com.github.xsocket.geak.service.MemberService;
@@ -23,24 +24,39 @@ import com.github.xsocket.geak.util.GeakUtils;
 @Controller
 public class HtmlController {
   
+  private static final String REDIRECT_URL = 
+      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://%s/&response_type=code&scope=snsapi_userinfo#wechat_redirect";
+      
+  
   @Autowired
   private WechatMpService wechatService;
   
   @Autowired
   private MemberService memberService;
-  
+
+  @Value("${wechat.appid}")
+  private String appId;
   @Value("${webapp.host}")
   private String host;
   
   // 微信回调
   @RequestMapping(value = "/", method = RequestMethod.GET)
-  public ModelAndView index(@RequestParam("code") String code,
-      HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public ModelAndView index(
+      @RequestParam(value="code", required=false) String code, 
+      HttpServletResponse response) throws IOException {
+    
+    if(code == null) {
+      response.sendRedirect(String.format(REDIRECT_URL, appId, host));
+      return null;
+    }
 
     // 当前授权用户的openId
-    String openId = wechatService.getUserOpenIdFromOAuth(code);
+    JSONObject json = wechatService.getUserOpenIdFromOAuth(code);
     
-    Member member = memberService.loadMemberByOpenId(openId);
+    String openId = json.getString("openid");
+    String accessToken = json.getString("access_token");
+    
+    Member member = memberService.loadMemberByOpenId(openId, accessToken);
     GeakUtils.setCurrentMember(member);
     // 设置cookie
     Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);

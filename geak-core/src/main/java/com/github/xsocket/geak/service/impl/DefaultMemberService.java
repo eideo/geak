@@ -113,10 +113,11 @@ public class DefaultMemberService implements MemberService {
   }
 
   @Override
-  public Member loadMemberByOpenId(String openId) {
+  public Member loadMemberByOpenId(String openId, String accessToken) {
     Member member = memberDao.selectByOpenId(openId);
     if(member == null) {
-      JSONObject json = service.getUserInfo(openId);
+      JSONObject json = accessToken == null ? service.getUserInfo(openId)
+          : service.getUserInfoFromOAuth(openId, accessToken);
       member = new Member();
       member.setAccount("");
       member.setBalance(0);

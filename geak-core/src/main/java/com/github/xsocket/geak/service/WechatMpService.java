@@ -40,7 +40,7 @@ public interface WechatMpService {
    * @param code
    * @return
    */
-  String getUserOpenIdFromOAuth(String code);
+  JSONObject getUserOpenIdFromOAuth(String code);
   
   /**
    * 获取用户基本信息
@@ -48,6 +48,8 @@ public interface WechatMpService {
    * @return
    */
   JSONObject getUserInfo(String openId);
+  
+  JSONObject getUserInfoFromOAuth(String openId, String accessToken);
   
   /**
    * 获取用户列表

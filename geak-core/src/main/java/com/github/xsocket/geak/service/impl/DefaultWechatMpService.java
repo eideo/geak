@@ -245,7 +245,7 @@ public class DefaultWechatMpService implements WechatMpService {
   }
   
   @Override
-  public String getUserOpenIdFromOAuth(String code) {
+  public JSONObject getUserOpenIdFromOAuth(String code) {
     final String url = String.format(
         "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", 
         appId, appSecret, code);
@@ -257,7 +257,7 @@ public class DefaultWechatMpService implements WechatMpService {
       JSONObject json = JSON.parseObject(content);
       checkApiResult(json);
       
-      return json.getString("openid");
+      return json;
     } catch (IOException e) {
       throw new RuntimeException("Fail to fetch Wechat UserOpenIdFromOAuth", e);
     }
@@ -270,6 +270,25 @@ public class DefaultWechatMpService implements WechatMpService {
         "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s", accessToken, openId);
     
     LOGGER.debug("Start calling Wechat API - GetUserInfo: {}", url);
+    
+    try {
+      String content = Request.Get(url).execute().returnContent().asString(CHARSET_WECHAT);
+      JSONObject json = JSON.parseObject(content);
+      checkApiResult(json);
+      
+      return json;
+    } catch (IOException e) {
+      throw new RuntimeException("Fail to fetch Wechat UserInfo", e);
+    }
+  }
+  
+  @Override
+  public JSONObject getUserInfoFromOAuth(String openId, String accessToken) {
+    final String url = String.format(
+        "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN",
+        accessToken, openId);
+    
+    LOGGER.debug("Start calling Wechat API - GetUserInfoFromOAuth: {}", url);
     
     try {
       String content = Request.Get(url).execute().returnContent().asString(CHARSET_WECHAT);

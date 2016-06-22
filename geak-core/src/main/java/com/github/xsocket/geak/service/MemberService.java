@@ -16,7 +16,7 @@ import com.github.xsocket.geak.entity.MemberDeposit;
 public interface MemberService {
 
   @Transactional
-  Member loadMemberByOpenId(String openId);
+  Member loadMemberByOpenId(String openId, String accessToken);
   
   @Transactional
   JSONObject createMemberDeposit(Member member, int amount, String ip);

@@ -30,7 +30,7 @@ public class CurrentMemberInterceptor extends HandlerInterceptorAdapter {
       
       if(token != null) {
         String openId = token.getValue();
-        member = service.loadMemberByOpenId(openId);
+        member = service.loadMemberByOpenId(openId, null);
         GeakUtils.setCurrentMember(member);
         // 设置cookie
         token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);

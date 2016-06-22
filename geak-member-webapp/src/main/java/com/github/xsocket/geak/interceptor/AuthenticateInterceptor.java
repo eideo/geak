@@ -24,7 +24,7 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   public static final String COOKIE_MEMBER_OPENID = "_gmo_";
   
   private static final String REDIRECT_URL = 
-      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://%s/&response_type=code&scope=snsapi_base#wechat_redirect";
+      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://%s/&response_type=code&scope=snsapi_userinfo#wechat_redirect";
       
   @Autowired
   private MemberService service;
@@ -32,6 +32,15 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   private String host;
   @Value("${wechat.appid}")
   private String appId;
+  
+  private String redirectUrl = null;
+  
+  public String getOAuth2RedirectUrl() {
+    if(redirectUrl == null) {
+      redirectUrl = String.format(REDIRECT_URL, appId, host);
+    }
+    return redirectUrl;
+  }
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -46,12 +55,13 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
       return false;
     } else {
       String openId = token.getValue();
-      Member member = service.loadMemberByOpenId(openId);
+      Member member = service.loadMemberByOpenId(openId, null);
       GeakUtils.setCurrentMember(member);
       // 设置cookie
       token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);
       token.setPath("/");
-      token.setMaxAge(3600 * 24 * 30);
+      //token.setMaxAge(3600 * 24 * 30);
+      token.setMaxAge(360);
       response.addCookie(token);
       return true;
     }
