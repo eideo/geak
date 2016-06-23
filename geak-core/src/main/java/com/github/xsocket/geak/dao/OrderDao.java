@@ -24,6 +24,8 @@ public interface OrderDao {
       @Param("start") Date start,
       @Param("end") Date end);
   
+  List<Order> selectByMember(@Param("memberId") Integer memberId);
+  
   Order selectById(Integer id);
   
   int insert(Order order);

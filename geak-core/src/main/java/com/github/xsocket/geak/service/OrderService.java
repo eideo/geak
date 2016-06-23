@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.entity.Order;
 
 public interface OrderService {
@@ -17,12 +18,22 @@ public interface OrderService {
    * @param page 页码
    * @return
    */
+  @Transactional(readOnly = true)
   List<Order> query(Integer companyId, Date start, Date end);
   
   //List<Order> query(Integer companyId, Date start, Date end, Set<Pair<String, String>> timespan, String business);
   
   @Transactional(readOnly = true)
+  List<Order> listMemberOrders(Integer memberId);
+  
+  @Transactional(readOnly = true)
   Order loadOrder(Integer id);
+  
+  @Transactional
+  Order linkOrder(Integer id, Member member);
+  
+  @Transactional
+  Order unlinkOrder(Integer id, Member member);
   
   @Transactional
   Order unpay(Integer id);

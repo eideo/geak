@@ -66,6 +66,17 @@
   </sql>
   
   <!-- 按日期、门店，每日凌晨5点结算， -->
+  <select id="selectByMember" resultMap="com.github.xsocket.geak.dao.OrderDao.result">
+    <include refid="_select_order" />
+    <where>
+      <if test="memberId != null">
+        o.member_id = #{memberId,javaType=Integer,jdbcType=INTEGER}
+      </if>
+    </where>
+    ORDER BY o.id DESC
+  </select>
+  
+  <!-- 按日期、门店，每日凌晨5点结算， -->
   <select id="selectByCompany" resultMap="com.github.xsocket.geak.dao.OrderDao.result">
     <include refid="_select_order" />
     <where>

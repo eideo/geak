@@ -52,7 +52,7 @@ $(function(){
       },
       orderQrcodeLink: function() {
         if(this.order.id > 0) {
-          return "/qrcode?content=http://geak-member.weikuai01.com/order/"+this.order.id+ "/link";
+          return "/qrcode?content=http://geak-member.weikuai01.com/member/orders/link/"+this.order.id;
         }
         return null;
       }

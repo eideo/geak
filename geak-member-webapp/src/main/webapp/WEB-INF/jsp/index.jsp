@@ -16,25 +16,25 @@
 </head>
 <body>
   <div class="page-group" id="app">
+
     <div class="page page-current" id="page_index">
       <header class="bar bar-nav">
         <h1 class='title'>极客会员</h1>
       </header>
       <nav class="bar bar-tab">
-        <a class="tab-item external active" href="#">
-          <span class="icon icon-home"></span>
+        <a class="tab-item active">
+          <span class="icon icon-me"></span>
           <span class="tab-label">极客会员</span>
         </a>
-        <a class="tab-item external" href="#">
-          <span class="icon icon-me"></span>
+        <a class="tab-item" href="#page_geak_info">
+          <span class="icon icon-browser"></span>
           <span class="tab-label">极客星球</span>
-          <span class="badge">2</span>
         </a>
       </nav>
       <div class="content">
         <div class="list-block media-list">
           <ul>
-            <li class="item-content item-link">
+            <li class="item-content"><!-- item-link -->
               <span class="item-media">
                 <img :src="member.headSmall" style="width:2.5rem;">
               </span>
@@ -122,29 +122,250 @@
     </div><!-- /#page_charge_list -->
 
     <div class="page" id="page_order_list">
+        <header class="bar bar-nav">  
+          <a class="icon icon-left pull-left" href="#page_index"></a>
+          <h1 class='title'>消费记录</h1>
+        </header>
+        <div class="content">
+          <template v-for="order in orderList">
+            <div class="card" @click="viewOrder(order)">
+              <div class="card-header">
+                <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
+                <span>{{order.content}}</span>
+              </div>
+              <div class="card-footer">
+                <span>{{order.amount | currency "￥"}} </span>
+                <small class="badge">{{orderStateName(order)}}</small>
+                <button class="button button-danger button-fill" 
+                    v-if="order.state!='UNPAYED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'"
+                    @click.stop="orderCancel(order)">取消订单</button>
+                <button class="button button-fill button-success" v-if="order.state=='PAYED'" 
+                    @click.stop="orderEntrance(order)">确认进场</button>
+                <button class="button button-fill button-primary" v-if="order.state=='ENTRANCED'" 
+                    @click.stop="orderExit(order)">确认离场</button>
+              </div>
+            </div>
+          </template>
+        </div> <!-- /.content -->
+    </div> <!-- /#page_order_list -->
+  
+    <div class="page" id="page_order_detail">
       <header class="bar bar-nav">
-        <a class="icon icon-left pull-left" href="#page_index"></a>
-        <h1 class='title'>消费记录</h1>
+        <a class="icon icon-left pull-left" href="#page_order_list"></a>
+        <button class="button button-danger pull-right" @click="orderCancel(false)"
+          v-if="order.id>0&amp;&amp;order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'">
+              取消订单</button>
+        <h1 class='title'>订单详情</h1>
       </header>
-      <nav class="bar bar-footer bar-tab">
-        <a class="tab-item tab-button-primary">充值记录</a>
-        <a href="#" class="tab-item tab-button-success back">返回</a>
+      <nav class="bar bar-tab">
+        <a class="tab-item color-primary">
+          <span class="badge">{{orderStateName(order)}}</span>
+          实际支付:{{order.amount | currency "￥"}}
+        </a>
+        <template v-if="order.state=='NEW'||order.state=='UNPAYED'">
+          <a class="tab-item tab-button-success" @click="orderConfirmMember(false)">玩家确认</a>
+          <a class="tab-item tab-button-primary" v-if="order.paymentMode=='0'" @click="orderConfirmPay(false)">确认支付</a>
+        </template>
+        <template v-if="order.state=='PAYED'">
+          <a class="tab-item tab-button-warning" @click="orderUnpay(false)">重新付款</a>
+          <a class="tab-item tab-button-success" @click="orderEntrance(false)">确认进场</a>
+        </template>
+        <template v-if="order.state=='ENTRANCED'">
+          <a class="tab-item tab-button-primary" @click="orderExit(false)">确认离场</a>
+        </template>
       </nav>
       <div class="content">
-        <template v-for="item in orderList">
-          <div class="card">
-            <div class="card-header">
-              <span>微信充值</span>
-              <span>{{item.beginDate | date}}</span>
-            </div>
-            <div class="card-footer">
-              <span :class="stateClass(item)"><b>{{stateName(item);}}</b></span>
-              <span :class="stateClass(item)">{{item.amount | currency "￥"}}</span>
-            </div>
-          </div>
-        </template>
+        <div class="vux-divider">产品信息</div>
+        <div class="list-block media-list">
+          <ul class="geak-products">
+            <li class="item-content" v-if="product.count>0" v-for="product in order.products">
+              <span class="item-media"><img :src="productImage(product)"></span>
+              <span class="item-inner">{{product.alias}}</span>
+              <span class="item-after">
+                  <b>{{product.price * product.count | currency "￥"}}</b>
+                    ={{product.price}}*
+              </span>
+              <span class="item-after">
+                <a class="vux-number-selector vux-number-selector-sub color-danger" 
+                  v-bind:class="{'hide':product.count <= 1}" @click="product.count--;">-</a> 
+                <input type="text" class="vux-number-input" v-model="product.count" number /> 
+                <a class="vux-number-selector vux-number-selector-plus color-primary" @click="product.count++;">+</a>
+              </span>
+            </li>
+            <li class="item-content">
+              <span class="item-media"><img/></span>
+              <span class="item-inner">总计：</span>
+              <span class="item-after" style="padding-right:.5rem">
+                <b class="color-primary">{{orderAmount(order.products) | currency "￥"}}</b></span>
+            </li>
+            <li>
+              <span class="item-content">
+                <textarea placeholder="备注说明..." v-model="order.note"></textarea>
+              </span>
+            </li>
+          </ul>
+        </div> <!-- /产品模块 -->
+        <div class="vux-divider">
+          <select v-model="order.paymentMode">
+            <option value="0">现金支付</option>
+            <option value="1">会员支付</option>
+          </select>
+        </div>
+        <div class="list-block">
+          <ul>
+            <li>
+              <span class="item-content">
+                <span class="item-inner">
+                  <span class="item-title label">实际支付</span>
+                  <span class="item-input">
+                    <input type="number" placeholder="支付总额" v-model="order.amount" />
+                  </span>
+                </span>
+              </span>
+            </li>
+            <template v-if="order.paymentMode=='0'" v-for="detail in order.payments">
+              <li>
+                <span class="item-content">
+                  <span class="item-inner">
+                    <span class="item-title label">
+                      <select v-model="detail.mode">
+                        <option>现金</option>
+                        <option>支付宝</option>
+                        <option>微信</option>
+                        <option>新美大</option>
+                        <option>糯米</option>
+                        <option>其他</option>
+                      </select>
+                    </span>
+                    <span class="item-input">
+                      <input type="number" placeholder="金额" v-model="detail.count" number/>
+                    </span>
+                  </span>
+                </span>
+              </li>
+            </template>
+          </ul>
+        </div><!-- /支付模块 -->
+        <div class="vux-divider">玩家信息</div>
+        <div class="list-block">
+          <ul>            
+            <li v-if="order.paymentDate">
+              <span class="item-content">
+                <span class="item-inner">
+                  <span class="item-title label">付款时间</span>
+                  <span class="item-input">
+                    {{order.paymentDate | date "yyyy-MM-dd hh:mm"}}
+                  </span>
+                </span>
+              </span>
+            </li>
+            <li v-if="order.entranceDate">
+              <span class="item-content">
+                <span class="item-inner">
+                  <span class="item-title label">进场时间</span>
+                  <span class="item-input">
+                    {{order.entranceDate | date "yyyy-MM-dd hh:mm"}}
+                  </span>
+                </span>
+              </span>
+            </li>
+            <li v-if="order.exitDate">
+              <span class="item-content">
+                <span class="item-inner">
+                  <span class="item-title label">离场时间</span>
+                  <span class="item-input">
+                    {{order.exitDate | date "yyyy-MM-dd hh:mm"}}
+                  </span>
+                </span>
+              </span>
+            </li>
+          </ul>
+        </div><!-- /玩家模块 -->
+        <div class="vux-divider">优惠信息</div>
+        <div class="list-block">
+          <ul>
+            <template v-for="detail in order.promotions">
+              <li>
+                <span class="item-content">
+                  <span class="item-inner">
+                    <span class="item-title label">
+                      <select v-model="detail.mode">
+                        <option>A券</option>
+                        <option>B券</option>
+                        <option>C券</option>
+                        <option>通关券</option>
+                        <option>礼品券</option>
+                        <option>打车券</option>
+                      </select>
+                    </span>
+                    <span class="item-input">
+                      <input type="text" placeholder="说明..." v-model="detail.note" />
+                    </span>
+                  </span>
+                </span>
+              </li>
+            </template>
+          </ul>
+        </div><!-- /优惠模块 -->
       </div>
-    </div><!-- /#page_order_list -->
+    </div> <!-- /#page_order_detail -->
+
+    <div class="page" id="page_geak_info">
+      <header class="bar bar-nav">
+        <h1 class='title'>极客星球</h1>
+      </header>
+      <nav class="bar bar-tab">
+        <a class="tab-item" href="#page_index">
+          <span class="icon icon-me"></span>
+          <span class="tab-label">极客会员</span>
+        </a>
+        <a class="tab-item active">
+          <span class="icon icon-browser"></span>
+          <span class="tab-label">极客星球</span>
+        </a>
+      </nav>
+      <div class="content">
+        <div class="buttons-tab">
+          <a href="#tab_gf1" class="tab-link active button">极客工厂</a>
+          <a href="#tab_gf2" class="tab-link button">极客密室</a>
+        </div>
+        <div class="tabs">
+          <div id="tab_gf1" class="tab active">
+            <template v-for="news in newsList | filterBy '0' in 'type'">
+              <div class="card" class="external">
+                <div class="card-content">
+                  <div style="font-size:120%;padding:.25rem;">{{news.content}}</div>
+                </div>
+                <div class="card-header color-white no-border no-padding">
+                  <img class='card-cover' :src="news.logo" :alt="news.content">
+                </div>
+                <div class="card-footer">
+                  <a href="#" class="link">{{news.time}}</a>
+                  <a :href="news.link" class="link external">查看全文</a>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div id="tab_gf2" class="tab">
+            <template v-for="news in newsList | filterBy '1' in 'type'">
+              <div class="card" :href="news.link" class="external">
+                <div class="card-content">
+                  <div class="card-content-inner">{{news.content}}</div>
+                </div>
+                <div class="card-header color-white no-border no-padding">
+                  <img class='card-cover' :src="news.logo" :alt="news.content">
+                </div>
+                <div class="card-footer">
+                  <a href="#" class="link">{{news.time}}</a>
+                  <a :href="news.link" class="link external">查看全文</a>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div><!-- /.content -->
+    </div><!-- /#page_geak_info -->
+  
   </div> <!-- /#app -->
   
   

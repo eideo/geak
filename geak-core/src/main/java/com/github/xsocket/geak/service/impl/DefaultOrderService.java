@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.github.xsocket.geak.dao.ActionLogDao;
 import com.github.xsocket.geak.dao.OrderDao;
 import com.github.xsocket.geak.entity.ActionLog;
+import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.entity.Order;
 import com.github.xsocket.geak.entity.OrderPayment;
 import com.github.xsocket.geak.entity.OrderProduct;
@@ -50,10 +51,79 @@ public class DefaultOrderService implements OrderService {
   public List<Order> query(Integer companyId, Date start, Date end) {
     return orderDao.selectByCompany(companyId, start, end);
   }
+  
+  @Override
+  public List<Order> listMemberOrders(Integer memberId) {
+    return orderDao.selectByMember(memberId);
+  }
 
   @Override
   public Order loadOrder(Integer id) {
     return orderDao.selectById(id);
+  }
+  
+  @Override
+  public Order linkOrder(Integer id, Member member) {
+    Order order = orderDao.selectById(id);
+    Integer memberId = order.getMember().getId();
+    String state = order.getState();
+    if(STATE_NEW.equals(state) || STATE_UNPAYED.equals(state)) {
+      if(member.getId().equals(memberId)) {        
+        return order;        
+      } else if(memberId == 0) {
+        LOGGER.debug("Starting link order...");
+        // 同一个用户才能解除关联
+        order.setMember(member);
+        order.setState(STATE_UNPAYED);
+        int updated = orderDao.update(order);
+        if(updated == 1) {
+          logDao.insert(new ActionLog("LINK", order));
+        }
+        LOGGER.debug("Finished link order.");
+        return order;
+      } else {
+        String msg = String.format("Order [%d] count not be link, its memberId is (%d) not (%d)", 
+            order.getId(), memberId, member.getId());
+        throw new IllegalArgumentException(msg);
+      }
+    } else {
+      String msg = String.format("Order [%d] could not be link, its state is (%s)", order.getId(), state);
+      throw new IllegalArgumentException(msg);
+    } 
+  }
+  
+  @Override
+  public Order unlinkOrder(Integer id, Member member) {
+    Order order = orderDao.selectById(id);
+    Integer memberId = order.getMember().getId();
+    String state = order.getState();
+    if(STATE_NEW.equals(state) || STATE_UNPAYED.equals(state)) {
+      if(member.getId().equals(memberId)) {
+        LOGGER.debug("Starting unlink order...");
+        // 同一个用户才能解除关联
+        Member temp = order.getMember();
+        temp.setId(0);
+        temp.setName("");
+        temp.setPhone("");
+        temp.setSex("S");
+        order.setMember(temp);
+        order.setState(STATE_UNPAYED);
+        int updated = orderDao.update(order);
+        if(updated == 1) {
+          logDao.insert(new ActionLog("UNLINK", order));
+        }
+        LOGGER.debug("Finished unlink order.");
+        
+        return order;        
+      } else {
+        String msg = String.format("Order [%d] not be unlink, its memberId is (%d) not (%d)", 
+            order.getId(), memberId, member.getId());
+        throw new IllegalArgumentException(msg);
+      }
+    } else {
+      String msg = String.format("Order [%d] could not be unlink, its state is (%s)", order.getId(), state);
+      throw new IllegalArgumentException(msg);
+    }
   }
 
   @Override
