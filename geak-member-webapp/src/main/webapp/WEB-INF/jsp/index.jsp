@@ -133,16 +133,15 @@
                 <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
                 <span>{{order.content}}</span>
               </div>
+              <div v-if="orderHasDiscount(order)" class="card-content" style="text-align:right;">
+                <p class="color-primary">会员余额支付立减10元</p>
+              </div>
               <div class="card-footer">
                 <span>{{order.amount | currency "￥"}} </span>
-                <small class="badge">{{orderStateName(order)}}</small>
-                <button class="button button-danger button-fill" 
-                    v-if="order.state!='UNPAYED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'"
-                    @click.stop="orderCancel(order)">取消订单</button>
-                <button class="button button-fill button-success" v-if="order.state=='PAYED'" 
-                    @click.stop="orderEntrance(order)">确认进场</button>
-                <button class="button button-fill button-primary" v-if="order.state=='ENTRANCED'" 
-                    @click.stop="orderExit(order)">确认离场</button>
+                <span :class="orderStateClass(order)">{{orderStateName(order)}}</span>
+                <button class="button button-primary button-fill" 
+                    v-if="order.state=='UNPAYED'||order.state=='NEW'"
+                    @click.stop="orderDepositPay(order)">余额支付</button>
               </div>
             </div>
           </template>
@@ -157,96 +156,57 @@
               取消订单</button>
         <h1 class='title'>订单详情</h1>
       </header>
-      <nav class="bar bar-tab">
+      <nav class="bar bar-tab" v-if="order.state=='NEW'||order.state=='UNPAYED'">
         <a class="tab-item color-primary">
           <span class="badge">{{orderStateName(order)}}</span>
-          实际支付:{{order.amount | currency "￥"}}
+          订单总额:{{order.amount | currency "￥"}}
         </a>
-        <template v-if="order.state=='NEW'||order.state=='UNPAYED'">
-          <a class="tab-item tab-button-success" @click="orderConfirmMember(false)">玩家确认</a>
-          <a class="tab-item tab-button-primary" v-if="order.paymentMode=='0'" @click="orderConfirmPay(false)">确认支付</a>
-        </template>
-        <template v-if="order.state=='PAYED'">
-          <a class="tab-item tab-button-warning" @click="orderUnpay(false)">重新付款</a>
-          <a class="tab-item tab-button-success" @click="orderEntrance(false)">确认进场</a>
-        </template>
-        <template v-if="order.state=='ENTRANCED'">
-          <a class="tab-item tab-button-primary" @click="orderExit(false)">确认离场</a>
-        </template>
+        <a class="tab-item tab-button-primary" @click="orderDepositPay(order)">
+            余额支付<small v-if="orderHasDiscount(order)" class="color-danger">(立减10元)</small></a>
       </nav>
       <div class="content">
-        <div class="vux-divider">产品信息</div>
-        <div class="list-block media-list">
+        <small :class="orderStateClass(order)">{{order.createdDate | date "yyyy-MM-dd hh:mm"}}</small>
+        <div class="list-block">
           <ul class="geak-products">
             <li class="item-content" v-if="product.count>0" v-for="product in order.products">
-              <span class="item-media"><img :src="productImage(product)"></span>
               <span class="item-inner">{{product.alias}}</span>
-              <span class="item-after">
-                  <b>{{product.price * product.count | currency "￥"}}</b>
-                    ={{product.price}}*
-              </span>
-              <span class="item-after">
-                <a class="vux-number-selector vux-number-selector-sub color-danger" 
-                  v-bind:class="{'hide':product.count <= 1}" @click="product.count--;">-</a> 
-                <input type="text" class="vux-number-input" v-model="product.count" number /> 
-                <a class="vux-number-selector vux-number-selector-plus color-primary" @click="product.count++;">+</a>
+              <span class="item-after" style="padding-right:.5rem">
+                <b>{{product.price * product.count | currency "￥"}}</b> 
+                  = {{product.price}} * {{product.count}}
               </span>
             </li>
             <li class="item-content">
-              <span class="item-media"><img/></span>
               <span class="item-inner">总计：</span>
               <span class="item-after" style="padding-right:.5rem">
                 <b class="color-primary">{{orderAmount(order.products) | currency "￥"}}</b></span>
             </li>
-            <li>
-              <span class="item-content">
-                <textarea placeholder="备注说明..." v-model="order.note"></textarea>
-              </span>
+            <li v-if="order.note">
+              <span class="item-content">{{order.note}}</span>
             </li>
           </ul>
         </div> <!-- /产品模块 -->
-        <div class="vux-divider">
-          <select v-model="order.paymentMode">
-            <option value="0">现金支付</option>
-            <option value="1">会员支付</option>
-          </select>
-        </div>
+        <p></p>
         <div class="list-block">
           <ul>
             <li>
               <span class="item-content">
                 <span class="item-inner">
                   <span class="item-title label">实际支付</span>
-                  <span class="item-input">
-                    <input type="number" placeholder="支付总额" v-model="order.amount" />
-                  </span>
+                  <span class="item-after">{{order.amount | currency "￥"}}</span>
                 </span>
               </span>
             </li>
-            <template v-if="order.paymentMode=='0'" v-for="detail in order.payments">
+            <template v-if="order.paymentMode=='1'&amp;&amp;orderStateName(order)=='已支付'">
               <li>
-                <span class="item-content">
-                  <span class="item-inner">
-                    <span class="item-title label">
-                      <select v-model="detail.mode">
-                        <option>现金</option>
-                        <option>支付宝</option>
-                        <option>微信</option>
-                        <option>新美大</option>
-                        <option>糯米</option>
-                        <option>其他</option>
-                      </select>
-                    </span>
-                    <span class="item-input">
-                      <input type="number" placeholder="金额" v-model="detail.count" number/>
-                    </span>
-                  </span>
-                </span>
+                <span class="item-content color-primary">会员余额支付优惠10元</span>
               </li>
             </template>
+            <li v-if="order.paymentNote">
+              <span class="item-content">{{order.paymentNote}}</span>
+            </li>
           </ul>
         </div><!-- /支付模块 -->
-        <div class="vux-divider">玩家信息</div>
+        <p></p>
         <div class="list-block">
           <ul>            
             <li v-if="order.paymentDate">
@@ -281,30 +241,22 @@
             </li>
           </ul>
         </div><!-- /玩家模块 -->
-        <div class="vux-divider">优惠信息</div>
+        <p></p>
         <div class="list-block">
           <ul>
             <template v-for="detail in order.promotions">
               <li>
                 <span class="item-content">
                   <span class="item-inner">
-                    <span class="item-title label">
-                      <select v-model="detail.mode">
-                        <option>A券</option>
-                        <option>B券</option>
-                        <option>C券</option>
-                        <option>通关券</option>
-                        <option>礼品券</option>
-                        <option>打车券</option>
-                      </select>
-                    </span>
-                    <span class="item-input">
-                      <input type="text" placeholder="说明..." v-model="detail.note" />
-                    </span>
+                    <span class="item-title label">{{detail.mode}}</span>
+                    <span class="item-after">{{detail.note}}</span>
                   </span>
                 </span>
               </li>
             </template>
+            <li v-if="order.promotionNote">
+              <span class="item-content">{{order.promotionNote}}</span>
+            </li>
           </ul>
         </div><!-- /优惠模块 -->
       </div>

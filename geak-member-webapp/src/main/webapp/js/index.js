@@ -89,6 +89,20 @@ $(function(){
         });
         return t;
       },
+      orderDepositPay: function(o) {
+        console.log("OK");
+      },
+      orderStateClass: function(item) {
+        if(item.state == 'NEW' || item.state == 'UNPAYED') {
+          return 'color-warning';
+        } else {
+          return 'color-success';
+        } 
+      },
+      orderHasDiscount: function(item) {
+        var _s = (item.state == 'NEW' || item.state == 'UNPAYED');
+        return _s && (item.content.indexOf("工厂门票") >= 0);
+      },
       orderStateName: function(o) {
         switch (o.state) {
           case "NEW" : return "新订单";
