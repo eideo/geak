@@ -105,15 +105,10 @@ public class DefaultOrderService implements OrderService {
         order.setPaymentMode("1");
         order.setState(STATE_PAYED);
         orderDao.update(order);
-        int updated = orderDao.update(order);
         
         // 更新余额
         member.setBalance(member.getBalance() - realAmount);
         memberDao.update(member);
-        
-        if(updated == 1) {
-          logDao.insert(new ActionLog("DEPOSIT_PAY", order));
-        }
         LOGGER.debug("Finished deposit pay order.");
         return order;
       } else {
@@ -140,10 +135,7 @@ public class DefaultOrderService implements OrderService {
         // 同一个用户才能解除关联
         order.setMember(member);
         order.setState(STATE_UNPAYED);
-        int updated = orderDao.update(order);
-        if(updated == 1) {
-          logDao.insert(new ActionLog("LINK", order));
-        }
+        orderDao.update(order);
         LOGGER.debug("Finished link order.");
         return order;
       } else {
@@ -173,10 +165,7 @@ public class DefaultOrderService implements OrderService {
         temp.setSex("S");
         order.setMember(temp);
         order.setState(STATE_UNPAYED);
-        int updated = orderDao.update(order);
-        if(updated == 1) {
-          logDao.insert(new ActionLog("UNLINK", order));
-        }
+        orderDao.update(order);
         LOGGER.debug("Finished unlink order.");
         
         return order;        
@@ -321,7 +310,7 @@ public class DefaultOrderService implements OrderService {
       String msg = String.format("Order [%d] could not be set (UNPAYED), its state is (%s), not (PAYED).", id, order.getState());
       throw new IllegalArgumentException(msg);
     }
-    
+    // FIXME 处理余额支付的情况
     order.setEntranceDate(new Date());
     order.setState(STATE_UNPAYED);
     orderDao.update(order);

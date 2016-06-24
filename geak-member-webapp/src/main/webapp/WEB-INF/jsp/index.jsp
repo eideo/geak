@@ -26,7 +26,7 @@
           <span class="icon icon-me"></span>
           <span class="tab-label">极客会员</span>
         </a>
-        <a class="tab-item" href="#page_geak_info">
+        <a class="tab-item external" href="/news.html">
           <span class="icon icon-browser"></span>
           <span class="tab-label">极客星球</span>
         </a>
@@ -78,34 +78,58 @@
     
     <div class="page" id="page_charge">
       <header class="bar bar-nav">
-        <a class="icon icon-left pull-left" href="#page_index"></a>
+        <a class="icon icon-left pull-left back"></a>
         <h1 class='title'>账户充值</h1>
       </header>
       <nav class="bar bar-footer bar-tab">
-        <a href="#page_charge_list" class="tab-item tab-button-primary">充值记录</a>
-        <a href="#" class="tab-item tab-button-success back">返回</a>
+        <a class="tab-item" href="#page_index">
+          <span class="icon icon-me"></span>
+          <span class="tab-label">极客会员</span>
+        </a>
+        <a class="tab-item tab-button-primary" href="#page_charge_list">充值记录</a>
       </nav>
       <div class="content">
         <div class="content-block">
-          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(1)">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(2)">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill button-warning" @click="prepay(3)">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill button-danger" @click="prepay(4)">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
-          <p><a href="#" class="button button-big button-fill" @click="prepay(5)">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(100)">充值【<b style="font-size:100%">￥100.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-success" @click="prepay(200)">充值【<b style="font-size:100%">￥200.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-warning" @click="prepay(300)">充值【<b style="font-size:120%">￥300.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill button-danger" @click="prepay(400)">充值【<b style="font-size:150%">￥400.00</b>】元</a></p>
+          <p><a href="#" class="button button-big button-fill" @click="prepay(500)">充值【<b style="font-size:180%">￥500.00</b>】元</a></p>
         </div>
       </div>
     </div><!-- /#page_charge -->
 
     <div class="page" id="page_charge_list">
       <header class="bar bar-nav">
-        <a class="icon icon-left pull-left" href="#page_index"></a>
+        <a class="icon icon-left pull-left back"></a>
         <h1 class='title'>充值记录</h1>
       </header>
       <nav class="bar bar-footer bar-tab">
-        <a class="tab-item tab-button-primary">充值记录</a>
-        <a href="#" class="tab-item tab-button-success back">返回</a>
+        <a class="tab-item back">
+          <span class="icon icon-me"></span>
+          <span class="tab-label">极客会员</span>
+        </a>
+        <a class="tab-item tab-button-success" href="#page_charge">账户充值</a>
       </nav>
       <div class="content">
+        <div class="list-block media-list" v-if="depositList.length==0">
+          <ul>              
+            <li>
+              <div class="item-content">
+              <!--
+                <div class="item-media"><img src="/img/logo.jpg" style='width: 4rem;'></div>
+              -->
+                <div class="item-inner">
+                  <div class="item-title">您还没有任何充值记录哦~</div>
+                  <div class="item-text" style="height:2.5rem">
+                    <a href="#page_charge" class="button button-big button-success">
+                      <i class="icon icon-gift"></i> 马上去充值</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
         <template v-for="item in depositList">
           <div class="card">
             <div class="card-header">
@@ -113,7 +137,7 @@
               <span>{{item.beginDate | date "yyyy-MM-dd hh:ss"}}</span>
             </div>
             <div class="card-footer">
-              <small :class="stateClass(item)">{{stateName(item);}}</small>
+              <span :class="stateClass(item)">{{stateName(item);}}</span>
               <b :class="stateClass(item)">{{item.amount | currency "￥"}}</b>
             </div>
           </div>
@@ -122,37 +146,44 @@
     </div><!-- /#page_charge_list -->
 
     <div class="page" id="page_order_list">
-        <header class="bar bar-nav">  
-          <a class="icon icon-left pull-left" href="#page_index"></a>
-          <h1 class='title'>消费记录</h1>
-        </header>
-        <div class="content">
-          <template v-for="order in orderList">
-            <div class="card" @click="viewOrder(order)">
-              <div class="card-header">
-                <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
-                <span>{{order.content}}</span>
-              </div>
-              <div v-if="orderHasDiscount(order)" class="card-content" style="text-align:right;">
-                <p class="color-primary">会员余额支付立减10元</p>
-              </div>
-              <div class="card-footer">
-                <span>{{order.amount | currency "￥"}} </span>
-                <span :class="orderStateClass(order)">{{orderStateName(order)}}</span>
-                <button class="button button-primary button-fill" 
-                    v-if="order.state=='UNPAYED'||order.state=='NEW'"
-                    @click.stop="orderDepositPay(order)">余额支付</button>
-              </div>
+      <header class="bar bar-nav">  
+        <a class="icon icon-left pull-left" href="#page_index"></a>
+        <h1 class='title'>消费记录</h1>
+      </header>
+      <nav class="bar bar-footer bar-tab">
+        <a class="tab-item back">
+          <span class="icon icon-me"></span>
+          <span class="tab-label">极客会员</span>
+        </a>
+        <a class="tab-item tab-button-success" href="#page_charge">账户充值</a>
+      </nav>
+      <div class="content">
+        <template v-for="order in orderList">
+          <div class="card" @click="viewOrder(order)">
+            <div class="card-header">
+              <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
+              <span>{{order.content}}</span>
             </div>
-          </template>
-        </div> <!-- /.content -->
+            <div v-if="orderHasDiscount(order)" class="card-content" style="text-align:right;">
+              <p class="color-primary">会员余额支付立减10元</p>
+            </div>
+            <div class="card-footer">
+              <span :class="orderStateClass(order)">{{order.amount | currency "￥"}} </span>
+              <span :class="orderStateClass(order)">{{orderStateName(order)}}</span>
+              <button class="button button-primary button-fill" 
+                  v-if="order.state=='UNPAYED'||order.state=='NEW'"
+                  @click.stop="orderDepositPay(order)">余额支付</button>
+            </div>
+          </div>
+        </template>
+      </div> <!-- /.content -->
     </div> <!-- /#page_order_list -->
   
     <div class="page" id="page_order_detail">
       <header class="bar bar-nav">
         <a class="icon icon-left pull-left" href="#page_order_list"></a>
-        <button class="button button-danger pull-right" @click="orderCancel(false)"
-          v-if="order.id>0&amp;&amp;order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'">
+        <button class="button button-danger pull-right" @click="orderCancel(order)"
+          v-if="order.state=='NEW'||order.state=='UNPAYED'">
               取消订单</button>
         <h1 class='title'>订单详情</h1>
       </header>
@@ -163,6 +194,13 @@
         </a>
         <a class="tab-item tab-button-primary" @click="orderDepositPay(order)">
             余额支付<small v-if="orderHasDiscount(order)" class="color-danger">(立减10元)</small></a>
+      </nav>
+      <nav class="bar bar-tab" v-if="order.state!='NEW'&amp;&amp;order.state!='UNPAYED'">
+        <a class="tab-item" href="#page_index">
+          <span class="icon icon-me"></span>
+          <span class="tab-label">极客会员</span>
+        </a>
+        <a class="tab-item tab-button-primary" href="#page_order_list">消费记录</a>
       </nav>
       <div class="content">
         <small :class="orderStateClass(order)">{{order.createdDate | date "yyyy-MM-dd hh:mm"}}</small>
@@ -196,7 +234,7 @@
                 </span>
               </span>
             </li>
-            <template v-if="order.paymentMode=='1'&amp;&amp;orderStateName(order)=='已支付'">
+            <template v-if="order.paymentMode=='1'&amp;&amp;orderStateName(order)=='余额支付'">
               <li>
                 <span class="item-content color-primary">会员余额支付优惠10元</span>
               </li>
@@ -261,65 +299,8 @@
         </div><!-- /优惠模块 -->
       </div>
     </div> <!-- /#page_order_detail -->
-
-    <div class="page" id="page_geak_info">
-      <header class="bar bar-nav">
-        <h1 class='title'>极客星球</h1>
-      </header>
-      <nav class="bar bar-tab">
-        <a class="tab-item" href="#page_index">
-          <span class="icon icon-me"></span>
-          <span class="tab-label">极客会员</span>
-        </a>
-        <a class="tab-item active">
-          <span class="icon icon-browser"></span>
-          <span class="tab-label">极客星球</span>
-        </a>
-      </nav>
-      <div class="content">
-        <div class="buttons-tab">
-          <a href="#tab_gf1" class="tab-link active button">极客工厂</a>
-          <a href="#tab_gf2" class="tab-link button">极客密室</a>
-        </div>
-        <div class="tabs">
-          <div id="tab_gf1" class="tab active">
-            <template v-for="news in newsList | filterBy '0' in 'type'">
-              <div class="card" class="external">
-                <div class="card-content">
-                  <div style="font-size:120%;padding:.25rem;">{{news.content}}</div>
-                </div>
-                <div class="card-header color-white no-border no-padding">
-                  <img class='card-cover' :src="news.logo" :alt="news.content">
-                </div>
-                <div class="card-footer">
-                  <a href="#" class="link">{{news.time}}</a>
-                  <a :href="news.link" class="link external">查看全文</a>
-                </div>
-              </div>
-            </template>
-          </div>
-          <div id="tab_gf2" class="tab">
-            <template v-for="news in newsList | filterBy '1' in 'type'">
-              <div class="card" :href="news.link" class="external">
-                <div class="card-content">
-                  <div class="card-content-inner">{{news.content}}</div>
-                </div>
-                <div class="card-header color-white no-border no-padding">
-                  <img class='card-cover' :src="news.logo" :alt="news.content">
-                </div>
-                <div class="card-footer">
-                  <a href="#" class="link">{{news.time}}</a>
-                  <a :href="news.link" class="link external">查看全文</a>
-                </div>
-              </div>
-            </template>
-          </div>
-        </div>
-      </div><!-- /.content -->
-    </div><!-- /#page_geak_info -->
   
   </div> <!-- /#app -->
-  
   
   <!-- <script type="text/javascript" src="/js/vconsole.min.js"></script> -->
   <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
@@ -330,7 +311,7 @@
   <script type="text/javascript">
     window.MEMBER = ${member.toJsonString()};
     wx.config({
-      debug: true,
+      debug: false,
       appId: '${config.appId}',
       timestamp: '${config.timestamp}',
       nonceStr: '${config.nonceStr}',

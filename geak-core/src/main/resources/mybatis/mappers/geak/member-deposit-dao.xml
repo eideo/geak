@@ -35,7 +35,7 @@
   
   <select id="selectedByMember" resultMap="com.github.xsocket.geak.dao.MemberDepositDao.result">
     <include refid="_select_member_deposit"/>
-    WHERE d.member_id = #{id,jdbcType=INTEGER} AND d.state != 'CANCELLED'
+    WHERE d.member_id = #{id,jdbcType=INTEGER} AND d.state = 'PAYED'
     ORDER BY d.begin_date DESC
   </select>
 

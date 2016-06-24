@@ -50,19 +50,19 @@ public class MemberOrderController {
   public void link(@PathVariable("id") Integer id, HttpServletResponse response) {
     Member member = GeakUtils.getCurrentMember();
     service.linkOrder(id, member);
-    
+    // TODO
     //return service.loadOrder(id);
   }
   
   @ResponseBody
-  @RequestMapping(value = "/member/orders/unlink/{id}", method = RequestMethod.GET, produces="application/json")
+  @RequestMapping(value = "/member/orders/unlink/{id}", method = RequestMethod.POST, produces="application/json")
   public Order unlink(@PathVariable("id") Integer id) {
     Member member = GeakUtils.getCurrentMember();
     return service.unlinkOrder(id, member);
   }
   
   @ResponseBody
-  @RequestMapping(value = "/member/orders/pay/{id}", method = RequestMethod.GET, produces="application/json")
+  @RequestMapping(value = "/member/orders/dpay/{id}", method = RequestMethod.POST, produces="application/json")
   public Order pay(@PathVariable("id") Integer id) {
     Member member = GeakUtils.getCurrentMember();
     return service.depositPay(id, member);

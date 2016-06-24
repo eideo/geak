@@ -76,4 +76,10 @@ public class HtmlController {
     mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/index.html", host)));
     return mv;
   }
+  
+  @RequestMapping(value = "/news.html", method = RequestMethod.GET)
+  public ModelAndView news(HttpServletRequest request, HttpServletResponse response) {
+    ModelAndView mv = new ModelAndView("news");
+    return mv;
+  }
 }
