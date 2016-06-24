@@ -60,6 +60,13 @@ public class MemberOrderController {
     Member member = GeakUtils.getCurrentMember();
     return service.unlinkOrder(id, member);
   }
+  
+  @ResponseBody
+  @RequestMapping(value = "/member/orders/pay/{id}", method = RequestMethod.GET, produces="application/json")
+  public Order pay(@PathVariable("id") Integer id) {
+    Member member = GeakUtils.getCurrentMember();
+    return service.depositPay(id, member);
+  }
 }
 
 

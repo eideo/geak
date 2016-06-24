@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.xsocket.geak.dao.ActionLogDao;
+import com.github.xsocket.geak.dao.MemberDao;
 import com.github.xsocket.geak.dao.OrderDao;
 import com.github.xsocket.geak.entity.ActionLog;
 import com.github.xsocket.geak.entity.Member;
@@ -45,6 +46,9 @@ public class DefaultOrderService implements OrderService {
   protected OrderDao orderDao;
   
   @Autowired
+  protected MemberDao memberDao;
+  
+  @Autowired
   protected ActionLogDao logDao;
 
   @Override
@@ -60,6 +64,67 @@ public class DefaultOrderService implements OrderService {
   @Override
   public Order loadOrder(Integer id) {
     return orderDao.selectById(id);
+  }
+  
+  @Override
+  public Order depositPay(Integer id, Member member) {
+    Order order = orderDao.selectById(id);
+    Integer memberId = order.getMember().getId();
+    String state = order.getState();
+    if(STATE_NEW.equals(state) || STATE_UNPAYED.equals(state)) {
+      if(member.getId().equals(memberId)) {
+        
+        // 判断订单是否有工厂门票，并确认优惠金额
+        boolean hasDiscount = false;
+        for(OrderProduct op : order.getProducts()) {
+          if(op.getType().equals("工厂门票")) {
+            hasDiscount = true;
+            break;
+          }
+        }
+        
+        int realAmount = order.getAmount() - (hasDiscount ? 10 : 0);
+        if(realAmount < 0) {
+          String msg = String.format("Order [%d] count not be deposit pay, its discount amount is (%d) less than 0", 
+              order.getId(), realAmount);
+          throw new IllegalArgumentException(msg);
+        }
+        
+        int balance = member.getBalance();
+        if(realAmount > balance) {
+          String msg = String.format("Order [%d] count not be deposit pay, its discount amount is (%d) large than member balance (%d)", 
+              order.getId(), realAmount, balance);
+          throw new IllegalArgumentException(msg);
+        }
+        
+        LOGGER.debug("Starting deposit pay order...");
+        
+        
+        order.setAmount(realAmount);
+        order.setPaymentDate(new Date());
+        order.setPaymentMode("1");
+        order.setState(STATE_PAYED);
+        orderDao.update(order);
+        int updated = orderDao.update(order);
+        
+        // 更新余额
+        member.setBalance(member.getBalance() - realAmount);
+        memberDao.update(member);
+        
+        if(updated == 1) {
+          logDao.insert(new ActionLog("DEPOSIT_PAY", order));
+        }
+        LOGGER.debug("Finished deposit pay order.");
+        return order;
+      } else {
+        String msg = String.format("Order [%d] count not be deposit pay, its memberId is (%d) not (%d)", 
+            order.getId(), memberId, member.getId());
+        throw new IllegalArgumentException(msg);
+      }
+    } else {
+      String msg = String.format("Order [%d] could not be deposit pay, its state is (%s)", order.getId(), state);
+      throw new IllegalArgumentException(msg);
+    }
   }
   
   @Override
@@ -125,6 +190,8 @@ public class DefaultOrderService implements OrderService {
       throw new IllegalArgumentException(msg);
     }
   }
+  
+  
 
   @Override
   public Order saveOrder(Order order) {

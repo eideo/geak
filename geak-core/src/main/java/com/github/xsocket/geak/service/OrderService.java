@@ -36,10 +36,13 @@ public interface OrderService {
   Order unlinkOrder(Integer id, Member member);
   
   @Transactional
+  Order depositPay(Integer id, Member member);
+  
+  @Transactional
   Order unpay(Integer id);
   
   @Transactional
-  Order pay(Integer id);
+  Order pay(Integer id);  
   
   @Transactional
   Order entrance(Integer id);
