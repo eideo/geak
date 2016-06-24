@@ -74,6 +74,7 @@ public class HtmlController {
   public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
     ModelAndView mv = new ModelAndView("index");
     mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/index.html", host)));
+    mv.addObject("orderId", 0);
     return mv;
   }
   

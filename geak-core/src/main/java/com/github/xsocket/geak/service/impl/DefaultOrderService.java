@@ -42,6 +42,8 @@ public class DefaultOrderService implements OrderService {
   
   private static final String CONTENT_SPLIT = " | ";
   
+  private static final int DISCOUNT = 10;
+  
   @Autowired
   protected OrderDao orderDao;
   
@@ -75,15 +77,9 @@ public class DefaultOrderService implements OrderService {
       if(member.getId().equals(memberId)) {
         
         // 判断订单是否有工厂门票，并确认优惠金额
-        boolean hasDiscount = false;
-        for(OrderProduct op : order.getProducts()) {
-          if(op.getType().equals("工厂门票")) {
-            hasDiscount = true;
-            break;
-          }
-        }
+        boolean isDiscount = hasDiscount(order);
         
-        int realAmount = order.getAmount() - (hasDiscount ? 10 : 0);
+        int realAmount = order.getAmount() - (isDiscount ? DISCOUNT : 0);
         if(realAmount < 0) {
           String msg = String.format("Order [%d] count not be deposit pay, its discount amount is (%d) less than 0", 
               order.getId(), realAmount);
@@ -120,6 +116,15 @@ public class DefaultOrderService implements OrderService {
       String msg = String.format("Order [%d] could not be deposit pay, its state is (%s)", order.getId(), state);
       throw new IllegalArgumentException(msg);
     }
+  }
+  
+  private boolean hasDiscount(Order order) {
+    for(OrderProduct op : order.getProducts()) {
+      if(op.getType().equals("工厂门票")) {
+        return true;
+      }
+    }
+    return false;
   }
   
   @Override
@@ -179,8 +184,6 @@ public class DefaultOrderService implements OrderService {
       throw new IllegalArgumentException(msg);
     }
   }
-  
-  
 
   @Override
   public Order saveOrder(Order order) {
@@ -296,6 +299,7 @@ public class DefaultOrderService implements OrderService {
       throw new IllegalArgumentException(msg);
     }
     
+    order.setPaymentMode("0");
     order.setPaymentDate(new Date());
     order.setState(STATE_PAYED);
     orderDao.update(order);
@@ -310,10 +314,25 @@ public class DefaultOrderService implements OrderService {
       String msg = String.format("Order [%d] could not be set (UNPAYED), its state is (%s), not (PAYED).", id, order.getState());
       throw new IllegalArgumentException(msg);
     }
+    
+    // 恢复会员的账户余额
+    if(order.getPaymentMode() == "1") {
+      Member member = memberDao.selectById(order.getMember().getId());
+      Integer balance = member.getBalance();
+      // 恢复账户余额
+      member.setBalance(balance + order.getAmount());
+      memberDao.update(member);
+      
+      // 恢复真实金额
+      if(hasDiscount(order)) {
+        order.setAmount(order.getAmount() + DISCOUNT);
+      }
+    }
+
     // FIXME 处理余额支付的情况
-    order.setEntranceDate(new Date());
     order.setState(STATE_UNPAYED);
     orderDao.update(order);
+    
     logDao.insert(new ActionLog("UNPAY", order));
     return order;
   }

@@ -310,6 +310,7 @@
   <script type="text/javascript" src="/js/index.js"></script>
   <script type="text/javascript">
     window.MEMBER = ${member.toJsonString()};
+    window.ORDER = {"id":${orderId}};
     wx.config({
       debug: false,
       appId: '${config.appId}',

@@ -46,8 +46,8 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
     // 测试环境
-    Cookie token = new Cookie(COOKIE_MEMBER_OPENID, "oAWv4jklauWMMBAsssCVBqJ2YzFg");
-    //Cookie token = WebUtils.getCookie(request, COOKIE_MEMBER_OPENID);
+    //Cookie token = new Cookie(COOKIE_MEMBER_OPENID, "oAWv4jklauWMMBAsssCVBqJ2YzFg");
+    Cookie token = WebUtils.getCookie(request, COOKIE_MEMBER_OPENID);
     if(token == null) {
       // TODO 登陆后自动跳转到上次请求的页面
       LOGGER.debug("Could not found member openId, need oauth2 check first.");
@@ -60,8 +60,8 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
       // 设置cookie
       token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);
       token.setPath("/");
-      //token.setMaxAge(3600 * 24 * 30);
-      token.setMaxAge(360);
+      token.setMaxAge(3600 * 24 * 30);
+      //token.setMaxAge(360);
       response.addCookie(token);
       return true;
     }

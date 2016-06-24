@@ -52,7 +52,7 @@ $(function(){
       },
       orderQrcodeLink: function() {
         if(this.order.id > 0) {
-          return "/qrcode?content=http://geak-member.weikuai01.com/member/orders/link/"+this.order.id;
+          return "/qrcode?content=http://geak-member.weikuai01.com/member/orders/link/"+this.order.id+"#page_order_detail";
         }
         return null;
       }
@@ -172,10 +172,18 @@ $(function(){
       // 验证订单
       isValidOrder: function(order) {
         var _order = order ? order : vm.order;
-        if(isNullOrEmpty(_order.member.name)) {
+
+        var hasMainProduct = false;
+        order.products.forEach(function(item){
+          if(item.type.indexOf("门票") >= 0 && item.count >0) {
+            hasMainProduct = true;
+          }
+        });
+
+        if(hasMainProduct && isNullOrEmpty(_order.member.name)) {
           $.toast("请输入玩家姓名");
           return false;
-        } else if(isNullOrEmpty(_order.member.phone)) {
+        } else if(hasMainProduct && isNullOrEmpty(_order.member.phone)) {
           $.toast("请输入玩家联系方式");
           return false;
         } else if(isNaN(_order.amount) || _order.amount < 0){

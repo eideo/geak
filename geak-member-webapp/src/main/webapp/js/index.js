@@ -26,7 +26,7 @@ $(function(){
       member: MEMBER,
       depositList: [],
       orderList: [],
-      order:{}
+      order:ORDER
     },
     methods: {
       prepay: function (amount) {
