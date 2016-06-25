@@ -125,7 +125,7 @@
           <div class="list-block media-list">
             <ul class="geak-products">
               <li class="item-content" v-if="product.count>0" v-for="product in order.products">
-                <span class="item-media"><img :src="productImage(product)"></span>
+                <!--<span class="item-media"><img :src="productImage(product)"></span>-->
                 <span class="item-inner">{{product.alias}}</span>
                 <span class="item-after">
                     <b>{{product.price * product.count | currency "￥"}}</b>
@@ -139,7 +139,7 @@
                 </span>
               </li>
               <li class="item-content">
-                <span class="item-media"><img/></span>
+                <!-- <span class="item-media"><img/></span> -->
                 <span class="item-inner">总计：</span>
                 <span class="item-after" style="padding-right:.5rem">
                   <b class="color-primary">{{orderAmount(order.products) | currency "￥"}}</b></span>
@@ -369,7 +369,7 @@
               <div class="card-header">{{product.name}}</div>
               <div class="list-block media-list">
                 <div class="item-content">
-                  <div class="item-media"><img :src="productImage(product)"></div>
+                  <!-- <div class="item-media"><img :src="productImage(product)"></div> -->
                   <div class="item-inner">
                     <div class="item-title">现价: <span>{{product.price | currency "￥"}}</span></div>
                     <div class="item-subtitle">原价: <span>{{product.price0 | currency "￥"}}</span></div>
