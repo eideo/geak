@@ -29,7 +29,6 @@ public class AuthenticateInterceptor extends HandlerInterceptorAdapter {
 
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
     // 测试环境
     //Cookie token = new Cookie(COOKIE_USER_ID, "2016012301");
     Cookie token = WebUtils.getCookie(request, COOKIE_USER_ID);

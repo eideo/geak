@@ -76,8 +76,16 @@ public class LuosimaoSmsService implements SmsService {
       .expireAfterWrite(30, TimeUnit.MINUTES)
       .build();
 
+  // 两次获取验证码之间的最小间隔, 1分钟
+  private static final long MIN_INTERVAL = 1 * 60 * 1000L;
+
   @Override
   public Integer sendCaptcha(String mobile) {
+    Captcha old = cache.getIfPresent(mobile);
+    if(old != null && System.currentTimeMillis() - old.getSentTime() <= MIN_INTERVAL) {
+      throw new IllegalAccessError("请勿频繁发送验证码,1分钟后重试。");
+    }
+    
     Captcha captcha = new Captcha();
     sendSms(mobile, captcha.getMsg());
     cache.put(mobile, captcha);
