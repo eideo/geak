@@ -60,7 +60,7 @@ public class MemberOrderController {
     Member member = GeakUtils.getCurrentMember();
     service.linkOrder(id, member);
     
-    ModelAndView mv = new ModelAndView("index");
+    ModelAndView mv = new ModelAndView("order");
     mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/member/orders/link/%d", host, id)));
     mv.addObject("orderId", id);
     return mv;
