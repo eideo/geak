@@ -77,6 +77,23 @@ INSERT INTO geak_user VALUES ('2016043002', '2016043002', '杨牧之', '', '', '
 INSERT INTO geak_user VALUES ('2013110101', '2013110101', '韩钰', '', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('2014070101', '2014070101', '张小喵', '', '', 'NORMAL', 8);
 
+INSERT INTO geak_user VALUES ('2014110101', '2014110101', '薄佳婧', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2015062503', '2015062503', '宋成', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016060601', '2016060601', '冯帅', '15035176411', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2014060101', '2014060101', '桂家强', '15235135501', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2014022201', '2014022201', '何金', '13593185842', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2015050701', '2015050701', '李佳', '', '', 'NORMAL', 8);
+
+
+INSERT INTO `geak_user_company` VALUES ('2014022201', 1);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 2);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 3);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 4);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 5);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 6);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 7);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014022201', 8);  -- 何金
+
 INSERT INTO `geak_user_company` VALUES ('2016012301', 1);  -- 麻文强
 INSERT INTO `geak_user_company` VALUES ('2016012301', 2);  -- 麻文强
 INSERT INTO `geak_user_company` VALUES ('2016012301', 3);  -- 麻文强
