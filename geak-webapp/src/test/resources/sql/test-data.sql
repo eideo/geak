@@ -208,5 +208,33 @@ INSERT INTO `aa_user` VALUES ('2016060901', '2016060901', '李洪宇', '', 'NORM
 INSERT INTO `geak_user` VALUES ('2015062401', 6);
 INSERT INTO `aa_user` VALUES ('2015062401', '2015062401', '李磊成', '', 'NORMAL');
 
+-- 20160701
+INSERT INTO `geak_user` VALUES ('05', 5);
+INSERT INTO `aa_user` VALUES ('05', '05', '长风街手机', '', 'NORMAL');
+INSERT INTO `geak_user` VALUES ('2016062701', 7);
+INSERT INTO `aa_user` VALUES ('2016062701', '2016062701', '尹喆', '', 'NORMAL');
+INSERT INTO `geak_user` VALUES ('2016062702', 7);
+INSERT INTO `aa_user` VALUES ('2016062702', '2016062702', '郑花婕', '', 'NORMAL');
+
+INSERT INTO `geak_user` VALUES ('20150101', 6);
+INSERT INTO `aa_user` VALUES ('20150101', '20150101', '贾枭', '', 'NORMAL');
+INSERT INTO `geak_user_company` VALUES ('20150101', 1);  -- 贾枭
+INSERT INTO `geak_user_company` VALUES ('20150101', 2);  -- 贾枭
+INSERT INTO `geak_user_company` VALUES ('20150101', 3);  -- 贾枭
+INSERT INTO `geak_user_company` VALUES ('20150101', 4);  -- 贾枭
+INSERT INTO `geak_user_company` VALUES ('20150101', 5);  -- 贾枭
+INSERT INTO `geak_user_company` VALUES ('20150101', 6);  -- 贾枭
+INSERT INTO `geak_user_company` VALUES ('20150101', 7);  -- 贾枭
+
+  -- 增加世贸店
+INSERT INTO `geak_user_company` VALUES ('2016012301', 7);  -- 麻文强
+INSERT INTO `geak_user_company` VALUES ('2014010101', 7);  -- 郝挺
+INSERT INTO `geak_user_company` VALUES ('2013070101', 7);  -- 吴琪
+INSERT INTO `geak_user_company` VALUES ('2014022201', 7);  -- 何金
+INSERT INTO `geak_user_company` VALUES ('2014070101', 7);  -- 张小喵
+INSERT INTO `geak_user_company` VALUES ('2016043001', 7);  -- 季何
+INSERT INTO `geak_user_company` VALUES ('2016043002', 7);  -- 杨牧之
+
+
 COMMIT;
 

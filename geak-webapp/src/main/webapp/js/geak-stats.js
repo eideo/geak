@@ -1,6 +1,6 @@
 (function($){
   var COMPANIES_SOURCE = [{"id":1, "name":"大南门店" },{"id":2, "name":"体育路店" },{"id":3, "name":"食品街店" },
-                   {"id":4, "name":"柳巷店" },{"id":5, "name":"长风店" },{"id":6, "name":"千峰店" }];
+                   {"id":4, "name":"柳巷店" },{"id":5, "name":"长风店" },{"id":6, "name":"千峰店" },{"id":7, "name":"世贸店" }];
   
   
   function loadStatus() {

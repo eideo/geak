@@ -64,7 +64,7 @@
           <span class="icon icon-emoji"></span>
           <span class="tab-label">接待</span>
         </a>
-        <#if user.companies?? && user.companies?size == 6>
+        <#if user.companies?? && user.companies?size == 7>
         <a class="external tab-item" href="stats.html?page=stats">
           <span class="icon icon-app"></span>
           <span class="tab-label">统计</span>

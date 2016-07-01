@@ -148,6 +148,7 @@
                 <option value="4" {% if(o[i].company.id==4) print('selected="selected"'); %}>柳巷店</option>
                 <option value="5" {% if(o[i].company.id==5) print('selected="selected"'); %}>长风店</option>
                 <option value="6" {% if(o[i].company.id==6) print('selected="selected"'); %}>千峰店</option>
+                <option value="7" {% if(o[i].company.id==7) print('selected="selected"'); %}>世贸店</option>
               </select>
             </div>
           </div>
@@ -161,7 +162,7 @@
     <script type='text/javascript' src='js/moment.min.js'></script>
     <script type='text/javascript' src='js/tmpl.min.js'></script>
     <script type='text/javascript' src='js/json2.min.js'></script>
-    <script type='text/javascript' src='js/geak-stats.js'></script>
+    <script type='text/javascript' src='js/geak-stats.js?v=20160701'></script>
   </body>
 </html>
 
