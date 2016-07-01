@@ -15,6 +15,7 @@ import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.entity.MemberDeposit;
 import com.github.xsocket.geak.service.MemberService;
 import com.github.xsocket.geak.service.WechatMpService;
+import com.github.xsocket.geak.util.EmojiFilter;
 
 @Service
 public class DefaultMemberService implements MemberService {
@@ -123,7 +124,7 @@ public class DefaultMemberService implements MemberService {
       member.setBalance(0);
       member.setCreatedDate(new Date());
       member.setHeadUrl(json.getString("headimgurl"));
-      member.setName(json.getString("nickname"));
+      member.setName(EmojiFilter.filterEmoji(json.getString("nickname")));
       member.setNickname(member.getName());
       member.setOpenId(openId);
       member.setPhone("");
