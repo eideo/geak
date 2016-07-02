@@ -1,7 +1,9 @@
 package com.github.xsocket.geak.controller;
 
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.xsocket.geak.entity.Member;
 import com.github.xsocket.geak.entity.MemberDeposit;
 import com.github.xsocket.geak.service.MemberService;
+import com.github.xsocket.geak.service.SmsService;
 import com.github.xsocket.geak.util.GeakUtils;
 
 @Controller
@@ -36,6 +40,9 @@ public class MemberController {
   
   @Autowired
   private MemberService service; 
+
+  @Autowired
+  SmsService smsService;
   
   @ResponseBody
   @RequestMapping(value = "/member", method = RequestMethod.GET, produces="application/json")
@@ -108,6 +115,47 @@ public class MemberController {
     // 返回结果
     response.setContentType("application/xml");
     response.getWriter().println("<xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>");
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/member/captcha", method = RequestMethod.GET, produces="application/json")
+  public Map<String, String> sendCaptcha(@RequestParam(value="phone", required=true) String phone) {
+    Map<String, String> ret = new HashMap<String, String>();
+    try {
+      smsService.sendCaptcha(phone);
+    } catch(Exception e) {
+      ret.put("error", e.getMessage());
+    }
+    return ret;
+  }
+  
+  @ResponseBody
+  @RequestMapping(value = "/member/info/{captcha}", method = RequestMethod.POST, produces="application/json")
+  public Map<String, String> updateMemberInfo(
+      @PathVariable("captcha") Integer captcha,
+      @RequestBody Member member) {
+    
+    Map<String, String> ret = new HashMap<String, String>();
+
+    Integer _captcha = smsService.fetchCaptcha(member.getPhone());
+    if(_captcha == null || !_captcha.equals(captcha)) {
+      ret.put("error", "验证码错误");
+      return ret;
+    }
+    
+    Member current = GeakUtils.getCurrentMember();
+    String nickname = member.getNickname();
+    if(nickname != null && nickname.length() > 32) {
+      nickname = nickname.substring(0, 32);
+    }
+    current.setNickname(nickname);
+    current.setPhone(member.getPhone());
+    current.setSex(member.getSex());
+    
+    service.updateMembeInfo(current);
+    ret.put("state", "OK");
+    
+    return ret;
   }
 
 }

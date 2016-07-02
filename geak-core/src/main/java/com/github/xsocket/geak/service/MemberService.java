@@ -19,6 +19,9 @@ public interface MemberService {
   Member loadMemberByOpenId(String openId, String accessToken);
   
   @Transactional
+  Member updateMembeInfo(Member member);
+  
+  @Transactional
   JSONObject createMemberDeposit(Member member, int amount, String ip);
   
   @Transactional

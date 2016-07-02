@@ -23,6 +23,7 @@ $(function(){
   window.vm = new Vue({
     "el": "#app",
     "data": {
+      message: "",
       member: MEMBER,
       depositList: [],
       orderList: [],
@@ -144,7 +145,37 @@ $(function(){
           case "EXITED" : return mode + "支付";
           case "CANCELLED" : return "已取消";
         }
-      }
+      },
+      saveMember: function() {
+          var _phone = $("#txt_phone").val();
+          var _captcha = $("#txt_captcha").val();
+          if(_phone.length != 11) {
+            $.toast("请输入11位手机号码");
+            return false;
+          } else if(_captcha.length != 4) {
+            $.toast("请输入4位验证码");
+            return false;
+          }
+          
+    	  $.showIndicator();
+    	    $.ajax({
+    	      type: "POST", 
+    	      contentType: "application/json",
+    	      data: JSON.stringify(vm.member),
+    	      url: "/member/info/" + _captcha,
+    	      success:function(rt){
+    	        $.hideIndicator();
+    	        if(rt.error) {
+    	        	vm.message = rt.error;
+		            $.toast(rt.error); 
+		          } else {
+		        	  vm.message = " ";
+		            $.toast("操作成功");            
+		            $.router.load("#page_index");
+		          }   
+    	      }
+    	    });
+      } 
     }
   });
 
@@ -186,5 +217,45 @@ $(function(){
   });
 
   $.init();
+  
+  if(!vm.member.phone && window.INDEX) {
+	  vm.message = "请完善您的联系方式，以便我们提供更好的服务。";
+	  $.router.load("#page_member_info");
+  }
 });
 
+
+function fetchCaptcha() {
+    var _phome = $("#txt_phone").val();
+    if(_phome.length != 11) {
+      $.toast("请输入11位手机号码");
+    } else {
+      $.showIndicator();
+      $.get("/member/captcha?phone="+_phome, function(rt){          
+        $.hideIndicator();
+        if(rt.error) {
+          $.toast(rt.error); 
+        } else {
+          $.toast("验证码已发送");            
+          doCountDown();
+        }
+      });
+    }
+    return false;
+  }    
+
+  var COUNT_DOWN = 60; 
+  function doCountDown() { 
+    var $captcha = $("#btn_captcha");
+    if(COUNT_DOWN == 0) { 
+      $captcha.removeAttr("disabled").removeClass("disabled").html("获取验证码"); 
+      COUNT_DOWN = 60; 
+    } else { 
+      $captcha.addClass("disabled").attr("disabled", "disabled");
+      $captcha.html("重新获取(" + COUNT_DOWN + ")"); 
+      COUNT_DOWN--;
+      setTimeout(function() { 
+        doCountDown() 
+      }, 1000);
+    } 
+  }

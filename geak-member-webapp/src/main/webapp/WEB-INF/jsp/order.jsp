@@ -299,16 +299,76 @@
         </template>
       </div> <!-- /.content -->
     </div> <!-- /#page_order_list -->
+    
+    <div class="page" id="page_member_info">
+      <header class="bar bar-nav">
+      	<a class="icon icon-left pull-left back"></a>
+        <h1 class="title">个人信息</h1>
+      </header>
+      <div class="content">
+        <div class="content-block-title color-danger">{{message}}&nbsp;</div>
+        <div class="list-block">
+          <ul>  
+            <li>
+              <div class="item-content">
+                <div class="item-media"><i class="icon icon-me"></i></div>
+                <div class="item-inner">
+                  <div class="item-input">
+                    <input type="text" placeholder="会员昵称" v-model="member.nickname" />
+                  </div>
+                  <span class="item-input">
+                      <select v-model="member.sex">
+                        <option value="M">先生</option>
+                        <option value="F">女士</option>
+                        <option value="S">同学</option>
+                      </select>
+                    </span>
+                </div>
+              </div>
+            </li>            
+            <li>
+              <div class="item-content">
+                <div class="item-media"><i class="icon icon-phone"></i></div>
+                <div class="item-inner">
+                  <div class="item-input">
+                    <input type="text" id="txt_phone" placeholder="会员手机" v-model="member.phone"/>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="item-content">
+                <div class="item-media"><i class="icon icon-code"></i></div>
+                <div class="item-inner">
+                  <div class="item-input">
+                    <input type="text" name="captcha" placeholder="验证码" id="txt_captcha">
+                  </div>
+                  <div class="item-title label">
+                    <button class="button" id="btn_captcha" data-tag="60" onclick="fetchCaptcha()">获取验证码</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="content-block">
+          <p><a class="button button-round button-fill button-big"
+            @click="saveMember()">提 交 信 息</a></p>
+        </div>
+      </div><!-- /.content -->
+    </div><!-- /#page_login -->
   
   </div> <!-- /#app -->
   
   <!-- <script type="text/javascript" src="/js/vconsole.min.js"></script> -->
-  <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.js"></script>
+  <!--  <script type="text/javascript" src="//cdn.bootcss.com/vue/1.0.24/vue.min.js"></script> 
   <script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
   <script type="text/javascript" src="//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js"></script>
-  <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+  <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>-->
+  <script type="text/javascript" src="/js/all-lib.min.js"></script>
   <script type="text/javascript" src="/js/index.js"></script>
   <script type="text/javascript">
+  	window.INDEX = false;
     window.MEMBER = ${member.toJsonString()};
     window.ORDER = {"id":${orderId}};
     wx.config({

@@ -109,6 +109,12 @@ public class DefaultMemberService implements MemberService {
     return deposit;
   }
   
+  @Override
+  public Member updateMembeInfo(Member member) {
+    memberDao.update(member);
+    return member;
+  }
+  
   //取消订单
   @Override
   public MemberDeposit cancelMemberDeposit(Integer id) {
