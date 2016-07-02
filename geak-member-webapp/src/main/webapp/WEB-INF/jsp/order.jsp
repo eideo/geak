@@ -72,7 +72,7 @@
                 </span>
               </span>
             </li>
-            <template v-if="order.paymentMode=='1'&amp;&amp;orderStateName(order)=='余额支付'">
+            <template v-if="orderShowDiscount(order)">
               <li>
                 <span class="item-content color-primary">会员余额支付优惠10元</span>
               </li>
