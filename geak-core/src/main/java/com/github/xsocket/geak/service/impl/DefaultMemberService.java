@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import com.github.xsocket.geak.util.EmojiFilter;
 
 @Service
 public class DefaultMemberService implements MemberService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMemberService.class);  
   
   private static final String FORMAT_PATTERN = "yyyyMMdd";
   private static final DateFormat FORMAT = new SimpleDateFormat(FORMAT_PATTERN);
@@ -88,7 +91,12 @@ public class DefaultMemberService implements MemberService {
   @Override
   public MemberDeposit completeMemberDeposit(String recordNo) {
     Integer id = Integer.parseInt(recordNo.substring(FORMAT_PATTERN.length()));
-    MemberDeposit deposit = depositDao.selectById(id);        
+    MemberDeposit deposit = depositDao.selectById(id);     
+
+    // 已经确认过的订单，直接返回
+    if(STATE_PAYED.equals(deposit.getState())) {
+      return deposit;
+    }
     
     deposit.setState(STATE_PAYED);
     deposit.setOverDate(new Date());
@@ -134,8 +142,15 @@ public class DefaultMemberService implements MemberService {
       member.setState("NORMAL");
       member.setSubscribeDate(new Date(json.getLongValue("subscribe_time") * 1000L));
       member.setUnionId("");
-      
-      memberDao.insert(member);
+      try {
+        memberDao.insert(member);
+      } catch(Exception e) {
+        // 因为emoji新建失败
+        LOGGER.warn("Member insert fail, maybe caused by emoji, try auto fix it.", e);
+        member.setNickname("极客会员");
+        member.setName("极客会员");
+        memberDao.insert(member);
+      }
     }
     return member;
   }

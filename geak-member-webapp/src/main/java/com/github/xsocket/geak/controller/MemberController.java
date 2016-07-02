@@ -61,13 +61,12 @@ public class MemberController {
   
   @ResponseBody
   @RequestMapping(value = "/member/deposit/cancel", method = RequestMethod.POST, produces="application/json")
-  public MemberDeposit createDeposit(@RequestParam("id") Integer id) {
+  public MemberDeposit cancelDeposit(@RequestParam("id") Integer id) {
     return service.cancelMemberDeposit(id);
   }
   
-  @ResponseBody
   @RequestMapping(value = "/wechat/pay/callback", method = RequestMethod.POST)
-  public String wechatPayCallback(@RequestBody String xml) throws Exception {
+  public void wechatPayCallback(@RequestBody String xml, HttpServletResponse response) throws Exception {
     LOGGER.debug("Wechat Pay Callback: " + xml);
     /*
     <xml>
@@ -105,7 +104,10 @@ public class MemberController {
         service.completeMemberDeposit(tradeNo);
       }
     }
-    return "<xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>";
+    
+    // 返回结果
+    response.setContentType("application/xml");
+    response.getWriter().println("<xml><return_code>SUCCESS</return_code><return_msg>OK</return_msg></xml>");
   }
 
 }

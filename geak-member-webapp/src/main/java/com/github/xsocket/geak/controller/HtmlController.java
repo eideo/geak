@@ -6,8 +6,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,7 @@ import com.github.xsocket.geak.util.GeakUtils;
 @Controller
 public class HtmlController {
   
-  private static final Logger LOGGER = LoggerFactory.getLogger(HtmlController.class);  
+  // private static final Logger LOGGER = LoggerFactory.getLogger(HtmlController.class);  
   
   private static final String REDIRECT_URL = 
       "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=http://%s/&response_type=code&scope=snsapi_userinfo#wechat_redirect";
@@ -55,29 +53,23 @@ public class HtmlController {
     }
 
     // 当前授权用户的openId
-    try {
-      JSONObject json = wechatService.getUserOpenIdFromOAuth(code);
-      
-      String openId = json.getString("openid");
-      String accessToken = json.getString("access_token");
-      
-      Member member = memberService.loadMemberByOpenId(openId, accessToken);
-      GeakUtils.setCurrentMember(member);
-      // 设置cookie
-      Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);
-      token.setPath("/");
-      token.setMaxAge(3600 * 24 * 30);
-      response.addCookie(token);
-      
-      ModelAndView mv = new ModelAndView("index");
-      mv.addObject("member", member);
-      mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/?code=%s&state=", host, code)));
-      return mv;
-    } catch(Exception e) {
-      LOGGER.warn("Redirect from wechat failed.", e);
-      response.sendRedirect(String.format(REDIRECT_URL, appId, host));
-      return null;
-    }
+    JSONObject json = wechatService.getUserOpenIdFromOAuth(code);
+    
+    String openId = json.getString("openid");
+    String accessToken = json.getString("access_token");
+    
+    Member member = memberService.loadMemberByOpenId(openId, accessToken);
+    GeakUtils.setCurrentMember(member);
+    // 设置cookie
+    Cookie token = new Cookie(AuthenticateInterceptor.COOKIE_MEMBER_OPENID, openId);
+    token.setPath("/");
+    token.setMaxAge(3600 * 24 * 30);
+    response.addCookie(token);
+    
+    ModelAndView mv = new ModelAndView("index");
+    mv.addObject("member", member);
+    mv.addObject("config", wechatService.getJsConfig(String.format("http://%s/?code=%s&state=", host, code)));
+    return mv;
   }
   
   @RequestMapping(value = "/index.html", method = RequestMethod.GET)
