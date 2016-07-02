@@ -131,6 +131,10 @@ $(function(){
           }
         } 
       },
+      orderShowDiscount: function(item) {
+    	return vm.orderStateName(item)=='余额支付' 
+    		  && item.content.indexOf("工厂门票") >= 0;
+      },
       orderHasDiscount: function(item) {
         var _s = (item.state == 'NEW' || item.state == 'UNPAYED');
         return _s && (item.content.indexOf("工厂门票") >= 0);
