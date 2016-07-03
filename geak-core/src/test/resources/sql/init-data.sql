@@ -89,6 +89,7 @@ INSERT INTO geak_user VALUES ('2014022201', '2014022201', '何金', '13593185842
 INSERT INTO geak_user VALUES ('2015050701', '2015050701', '李佳', '', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('2016062701', '2016062701', '尹喆', '', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('2016062702', '2016062702', '郑花婕', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2015062502', '2015062502', '李运波', '', '', 'NORMAL', 8);
 
 
 INSERT INTO `geak_user_company` VALUES ('2014022201', 1);  -- 何金
