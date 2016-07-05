@@ -1,7 +1,7 @@
 (function($){
   var SOURCES = ["老玩家","团购","连续场","地推","朋友介绍","搜索","各店互推","其他","合作商"];
   var CUSTOMER_TYPES = ["小学生", "中学生", "大学生", "青年人", "中年人", "老年人"];
-  var COMPANIES_SOURCE = [{"id":1, "name":"大南门店" },{"id":2, "name":"体育路店" },{"id":3, "name":"食品街店" },
+  var COMPANIES_SOURCE = [{"id":1, "name":"保定店" },{"id":2, "name":"体育路店" },{"id":3, "name":"食品街店" },
                    {"id":4, "name":"柳巷店" },{"id":5, "name":"长风店" },{"id":6, "name":"千峰店" },{"id":7, "name":"世贸店" }];
   var LOADING = false;
 
