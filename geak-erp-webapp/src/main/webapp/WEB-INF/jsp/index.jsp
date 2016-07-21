@@ -68,9 +68,11 @@
             <div class="card" @click="viewOrder(order)">
               <div class="card-header">
                 <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
-                <span>{{order.content}}</span>
+                <!--<span>{{order.content}}</span>-->
+                <span v-if="order.memberCount>0">工厂门票</span>
+                <span v-else>食品饮料</span>
               </div>
-              <div class="card-content">
+              <div class="card-content" v-if="order.memberCount>0">
                 <div class="list-block media-list">
                   <ul>
                     <li class="item-content">
@@ -85,9 +87,9 @@
                 <button class="button button-danger button-fill" 
                     v-if="order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'"
                     @click.stop="orderCancel(order)">取消订单</button>
-                <button class="button button-fill button-success" v-if="order.state=='PAYED'" 
+                <button class="hide button button-fill button-success" v-if="order.state=='PAYED'&amp;&amp;order.memberCount>0" 
                     @click.stop="orderEntrance(order)">确认进场</button>
-                <button class="button button-fill button-primary" v-if="order.state=='ENTRANCED'" 
+                <button class="hide button button-fill button-primary" v-if="order.state=='ENTRANCED'&amp;&amp;order.memberCount>0" 
                     @click.stop="orderExit(order)">确认离场</button>
               </div>
             </div>
@@ -114,10 +116,10 @@
           </template>
           <template v-if="order.state=='PAYED'">
             <a class="tab-item tab-button-warning" @click="orderUnpay(false)">重新付款</a>
-            <a class="tab-item tab-button-success" @click="orderEntrance(false)">确认进场</a>
+            <a class="hide tab-item tab-button-success" @click="orderEntrance(false)">确认进场</a>
           </template>
           <template v-if="order.state=='ENTRANCED'">
-            <a class="tab-item tab-button-primary" @click="orderExit(false)">确认离场</a>
+            <a class="hide tab-item tab-button-primary" @click="orderExit(false)">确认离场</a>
           </template>
         </nav>
         <div class="content">
