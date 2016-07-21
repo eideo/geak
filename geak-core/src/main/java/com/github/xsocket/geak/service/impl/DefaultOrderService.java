@@ -83,6 +83,7 @@ public class DefaultOrderService implements OrderService {
         if(realAmount < 0) {
           String msg = String.format("Order [%d] count not be deposit pay, its discount amount is (%d) less than 0", 
               order.getId(), realAmount);
+          LOGGER.warn(msg);
           throw new IllegalArgumentException(msg);
         }
         
@@ -131,11 +132,13 @@ public class DefaultOrderService implements OrderService {
   public Order linkOrder(Integer id, Member member) {
     Order order = orderDao.selectById(id);
     Integer memberId = order.getMember().getId();
+    if(member.getId().equals(memberId)) {        
+      return order;        
+    }
+    
     String state = order.getState();
     if(STATE_NEW.equals(state) || STATE_UNPAYED.equals(state)) {
-      if(member.getId().equals(memberId)) {        
-        return order;        
-      } else if(memberId == 0) {
+      if(memberId == 0) {
         LOGGER.debug("Starting link order...");
         // 同一个用户才能解除关联
         order.setMember(member);
@@ -146,11 +149,13 @@ public class DefaultOrderService implements OrderService {
       } else {
         String msg = String.format("Order [%d] count not be link, its memberId is (%d) not (%d)", 
             order.getId(), memberId, member.getId());
-        throw new IllegalArgumentException(msg);
+        LOGGER.warn(msg);
+        throw new IllegalArgumentException("对不起，该订单已被别的玩家预定了...");
       }
     } else {
       String msg = String.format("Order [%d] could not be link, its state is (%s)", order.getId(), state);
-      throw new IllegalArgumentException(msg);
+      LOGGER.warn(msg);
+      throw new IllegalArgumentException("对不起，该订单已被别的玩家支付过了...");
     } 
   }
   
