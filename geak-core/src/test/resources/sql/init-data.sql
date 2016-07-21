@@ -136,5 +136,12 @@ INSERT INTO `geak_user_company` VALUES ('2016043002', 5);  -- 杨牧之
 INSERT INTO `geak_user_company` VALUES ('2016043002', 6);  -- 杨牧之
 INSERT INTO `geak_user_company` VALUES ('2016043002', 7);  -- 杨牧之
 INSERT INTO `geak_user_company` VALUES ('2016043002', 8);  -- 杨牧之
+
+
+-- 20160721
+INSERT INTO geak_user VALUES ('2016070801', '2016070801', '杨慧娴', '18636665965', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016070802', '2016070802', '杨俊霖', '18982170201', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016071501', '2016071501', '梁雅豪', '13546451611', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('07', '07', '世贸店手机', '', '', 'NORMAL', 8);
 COMMIT;
 

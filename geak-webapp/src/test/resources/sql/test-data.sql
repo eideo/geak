@@ -235,6 +235,19 @@ INSERT INTO `geak_user_company` VALUES ('2014070101', 7);  -- 张小喵
 INSERT INTO `geak_user_company` VALUES ('2016043001', 7);  -- 季何
 INSERT INTO `geak_user_company` VALUES ('2016043002', 7);  -- 杨牧之
 
+-- 20160718
+INSERT INTO `geak_user` VALUES ('baoding', 1);
+INSERT INTO `aa_user` VALUES ('baoding', 'baoding', '保定店手机', '', 'NORMAL');
+
+-- 20160721
+INSERT INTO `geak_user` VALUES ('07', 7);
+INSERT INTO `aa_user` VALUES ('07', '07', '世贸店手机', '', 'NORMAL');
+INSERT INTO `geak_user` VALUES ('2016070801', 7);
+INSERT INTO `aa_user` VALUES ('2016070801', '2016070801', '杨慧娴', '', 'NORMAL');
+INSERT INTO `geak_user` VALUES ('2016070802', 7);
+INSERT INTO `aa_user` VALUES ('2016070802', '2016070802', '杨俊霖', '', 'NORMAL');
+INSERT INTO `geak_user` VALUES ('2016071501', 7);
+INSERT INTO `aa_user` VALUES ('2016071501', '2016071501', '梁雅豪', '', 'NORMAL');
 
 COMMIT;
 
