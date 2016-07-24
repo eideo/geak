@@ -26,7 +26,8 @@
       c.id as company_id, c.name as company_name, c.alias as company_alias
     FROM geak_product p
       JOIN geak_company c ON p.company_id = c.id
-    WHERE p.company_id = #{id,jdbcType=INTEGER} AND p.state = 'NORMAL'    
+    WHERE p.company_id = #{id,jdbcType=INTEGER} AND p.state = 'NORMAL' 
+    ORDER BY p.type DESC   
   </select>
 
   <select id="selectById" resultMap="com.github.xsocket.geak.dao.ProductDao.result">

@@ -67,7 +67,8 @@ INSERT INTO geak_product VALUES
 ('46', '铁观音', '铁观音', '工厂水吧', 'NORMAL', 28, 28, '8'),
 ('47', '爆米花', '爆米花', '工厂水吧', 'NORMAL', 10, 10, '8'),
 ('48', '烤肠', '烤肠', '工厂水吧', 'NORMAL', 3, 3, '8'),
-('49', '冰淇淋', '冰淇淋', '工厂水吧', 'NORMAL', 12, 12, '8')
+('49', '冰淇淋', '冰淇淋', '工厂水吧', 'NORMAL', 12, 12, '8'),
+('50', '桌游项目', '桌游项目', '工厂门票', 'NORMAL', 25, 25, '8')
 ;
 COMMIT;
 
@@ -143,5 +144,26 @@ INSERT INTO geak_user VALUES ('2016070801', '2016070801', '杨慧娴', '18636665
 INSERT INTO geak_user VALUES ('2016070802', '2016070802', '杨俊霖', '18982170201', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('2016071501', '2016071501', '梁雅豪', '13546451611', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('07', '07', '世贸店手机', '', '', 'NORMAL', 8);
+
+INSERT INTO `geak_user_company` VALUES ('07', 7);  -- 世贸店手机
+INSERT INTO `geak_user_company` VALUES ('07', 8);  -- 世贸店手机
+INSERT INTO `geak_user_company` VALUES ('2014110101', 7);  -- 薄佳婧
+INSERT INTO `geak_user_company` VALUES ('2014110101', 8);  -- 薄佳婧
+INSERT INTO `geak_user_company` VALUES ('2014060101', 7);  -- 桂家强
+INSERT INTO `geak_user_company` VALUES ('2014060101', 8);  -- 桂家强
+INSERT INTO `geak_user_company` VALUES ('2015062502', 7);  -- 李运波
+INSERT INTO `geak_user_company` VALUES ('2015062502', 8);  -- 李运波
+INSERT INTO `geak_user_company` VALUES ('2015050701', 7);  -- 李佳
+INSERT INTO `geak_user_company` VALUES ('2015050701', 8);  -- 李佳
+
+INSERT INTO geak_user VALUES ('2014110101', '2014110101', '薄佳婧', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2015062503', '2015062503', '宋成', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016060601', '2016060601', '冯帅', '15035176411', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2014060101', '2014060101', '桂家强', '15235135501', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2014022201', '2014022201', '何金', '13593185842', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2015050701', '2015050701', '李佳', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016062701', '2016062701', '尹喆', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2016062702', '2016062702', '郑花婕', '', '', 'NORMAL', 8);
+INSERT INTO geak_user VALUES ('2015062502', '2015062502', '李运波', '', '', 'NORMAL', 8);
 COMMIT;
 
