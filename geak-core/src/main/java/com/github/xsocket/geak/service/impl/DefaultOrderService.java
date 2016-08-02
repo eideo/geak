@@ -121,7 +121,7 @@ public class DefaultOrderService implements OrderService {
   
   private boolean hasDiscount(Order order) {
     for(OrderProduct op : order.getProducts()) {
-      if(op.getType().equals("工厂门票")) {
+      if(op.getType().equals("工厂门票") && op.getName().equals("工厂门票")) {
         return true;
       }
     }
@@ -379,6 +379,23 @@ public class DefaultOrderService implements OrderService {
     if(STATE_ENTRANCED.equals(order.getState()) || STATE_EXITED.equals(order.getState())) {
       String msg = String.format("Order [%d] could not be set (CANCELLED), its state is (%s).", id, order.getState());
       throw new IllegalArgumentException(msg);
+    }
+    
+    // 恢复会员的账户余额
+    if(order.getPaymentMode() == "1" && 
+        (STATE_PAYED.equals(order.getState()) 
+            || STATE_ENTRANCED.equals(order.getState()) 
+            || STATE_EXITED.equals(order.getState()))) {
+      Member member = memberDao.selectById(order.getMember().getId());
+      Integer balance = member.getBalance();
+      // 恢复账户余额
+      member.setBalance(balance + order.getAmount());
+      memberDao.update(member);
+      
+      // 恢复真实金额
+      if(hasDiscount(order)) {
+        order.setAmount(order.getAmount() + DISCOUNT);
+      }
     }
     
     order.setCancelledDate(new Date());

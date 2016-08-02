@@ -18,6 +18,8 @@ public class Member implements Serializable {
   
   private static final DateFormat FORMAT = new SimpleDateFormat("yyyyMMdd");
   
+  private static final int NAME_LENGTH = 32;
+  
   protected Integer id = 0;
   protected String account;
   protected String name;
@@ -57,6 +59,11 @@ public class Member implements Serializable {
   }
 
   public String getName() {
+    if(name == null) {
+      return "";
+    } else if(name.length() > NAME_LENGTH) {
+      return name.substring(0, NAME_LENGTH);
+    }
     return name;
   }
 
@@ -65,6 +72,11 @@ public class Member implements Serializable {
   }
 
   public String getNickname() {
+    if(nickname == null) {
+      return "";
+    } else if(nickname.length() > NAME_LENGTH) {
+      return nickname.substring(0, NAME_LENGTH);
+    }
     return nickname;
   }
 
