@@ -165,5 +165,11 @@ INSERT INTO geak_user VALUES ('2015050701', '2015050701', '李佳', '', '', 'NOR
 INSERT INTO geak_user VALUES ('2016062701', '2016062701', '尹喆', '', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('2016062702', '2016062702', '郑花婕', '', '', 'NORMAL', 8);
 INSERT INTO geak_user VALUES ('2015062502', '2015062502', '李运波', '', '', 'NORMAL', 8);
+
+-- 20160801
+INSERT INTO geak_user VALUES ('2016060601', '2016060601', '冯帅', '15035176411', '', 'NORMAL', 8);
+INSERT INTO `geak_user_company` VALUES ('2016060601', 7);  -- 李佳
+INSERT INTO `geak_user_company` VALUES ('2016060601', 8);  -- 李佳
+
 COMMIT;
 

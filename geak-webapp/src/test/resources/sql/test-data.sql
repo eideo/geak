@@ -249,5 +249,8 @@ INSERT INTO `aa_user` VALUES ('2016070802', '2016070802', '杨俊霖', '', 'NORM
 INSERT INTO `geak_user` VALUES ('2016071501', 7);
 INSERT INTO `aa_user` VALUES ('2016071501', '2016071501', '梁雅豪', '', 'NORMAL');
 
+-- 20160801
+INSERT INTO `geak_user_company` VALUES ('2016060601', 7);  -- 冯帅
+
 COMMIT;
 
