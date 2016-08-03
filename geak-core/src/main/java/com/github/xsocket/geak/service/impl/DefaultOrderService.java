@@ -321,7 +321,7 @@ public class DefaultOrderService implements OrderService {
     }
     
     // 恢复会员的账户余额
-    if(order.getPaymentMode() == "1") {
+    if(order.getPaymentMode().equals("1")) {
       Member member = memberDao.selectById(order.getMember().getId());
       Integer balance = member.getBalance();
       // 恢复账户余额
@@ -382,7 +382,7 @@ public class DefaultOrderService implements OrderService {
     }
     
     // 恢复会员的账户余额
-    if(order.getPaymentMode() == "1" && 
+    if(order.getPaymentMode().equals("1") && 
         (STATE_PAYED.equals(order.getState()) 
             || STATE_ENTRANCED.equals(order.getState()) 
             || STATE_EXITED.equals(order.getState()))) {

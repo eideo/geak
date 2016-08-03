@@ -84,7 +84,7 @@
               </div>
               <div class="card-footer">
                 <span>{{order.amount | currency "￥"}} <small class="badge">{{orderStateName(order)}}</small></span>
-                <button class="button button-danger button-fill" 
+                <button class="hide button button-danger button-fill" 
                     v-if="order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'"
                     @click.stop="orderCancel(order)">取消订单</button>
                 <button class="hide button button-fill button-success" v-if="order.state=='PAYED'&amp;&amp;order.memberCount>0" 
