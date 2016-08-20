@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-	  <link rel="stylesheet" href="//cdn.bootcss.com/weui/0.4.2/style/weui.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/weui/0.4.2/style/weui.css">
     <link rel="stylesheet" href="/css/vux.css">
     <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
     <link rel="stylesheet" href="/css/app.css">
@@ -269,43 +269,6 @@
                   </span>
                 </span>
               </li>
-              <li>
-                <span class="item-content">
-                  <span class="item-inner">
-                    <span class="item-title label">玩家身份</span>
-                    <span class="item-input">
-                      <select v-model="order.memberTypeArray" multiple>
-                        <option>小学生</option>
-                        <option>中学生</option>
-                        <option>大学生</option>
-                        <option>青年人</option>                                                      
-                        <option>中年人</option>
-                        <option>老年人</option>
-                      </select>
-                    </span>
-                  </span>
-                </span>
-              </li>
-              <li>
-                <span class="item-content">
-                  <span class="item-inner">
-                    <span class="item-title label">来源渠道</span>
-                    <span class="item-input">
-                      <select v-model="order.sourceArray" multiple>
-                        <option>老玩家</option>
-                        <option>连续场</option>
-                        <option>合作商</option>
-                        <option>朋友介绍</option>
-                        <option>各店互推</option>
-                        <option>团购</option>                                                      
-                        <option>地推</option>
-                        <option>搜索</option>
-                        <option>其他</option>
-                      </select>
-                    </span>
-                  </span>
-                </span>
-              </li>
             </ul>
           </div><!-- /玩家模块 -->
           <div class="vux-divider">优惠信息</div>
@@ -349,6 +312,197 @@
               </li>
             </ul>
           </div><!-- /优惠模块 -->
+          <div class="vux-divider">玩家身份</div>
+          <div class="list-block">
+            <ul id="_custom_type">
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">小学生</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_c_0" type="checkbox" value="小学生" v-model="order.memberTypeArray"/>
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">中学生</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_c_1" type="checkbox" value="中学生" v-model="order.memberTypeArray"/>
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">大学生</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_c_2" type="checkbox" value="大学生" v-model="order.memberTypeArray"/>
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">青年人</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_c_3" type="checkbox" value="青年人" v-model="order.memberTypeArray"/>
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">中年人</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_c_4" type="checkbox" value="中年人" v-model="order.memberTypeArray"/>
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">老年人</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_c_5" type="checkbox" value="老年人" v-model="order.memberTypeArray"/>
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="vux-divider">来源渠道</div>
+          <div class="list-block">
+            <ul id="_source">
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">老玩家</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_0" type="checkbox" value="老玩家" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">团购</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_1" type="checkbox" value="团购" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">连续场</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_2" type="checkbox" value="连续场" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">地推</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_3" type="checkbox" value="地推" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">朋友介绍</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_4" type="checkbox" value="朋友介绍" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">搜索</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_5" type="checkbox" value="搜索" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">各店互推</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_6" type="checkbox" value="各店互推" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">其他</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_7" type="checkbox" value="其他" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="row">
+                <div class="col-50"> 
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <label class="item-title">合作商</label>
+                      <label class="item-after label-switch">                    
+                        <input id="_s_8" type="checkbox" value="合作商" v-model="order.sourceArray" />
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div> <!-- /#page_order_detail -->
 
