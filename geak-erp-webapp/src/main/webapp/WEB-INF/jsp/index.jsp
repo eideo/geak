@@ -87,9 +87,11 @@
                 <button class="hide button button-danger button-fill" 
                     v-if="order.state!='ENTRANCED'&amp;&amp;order.state!='EXITED'&amp;&amp;order.state!='CANCELLED'"
                     @click.stop="orderCancel(order)">取消订单</button>
-                <button class="hide button button-fill button-success" v-if="order.state=='PAYED'&amp;&amp;order.memberCount>0" 
+                <button class="button button-fill button-success" 
+                    v-if="order.state=='PAYED'&amp;&amp;order.memberCount>0&amp;&amp;user.company.id!=8" 
                     @click.stop="orderEntrance(order)">确认进场</button>
-                <button class="hide button button-fill button-primary" v-if="order.state=='ENTRANCED'&amp;&amp;order.memberCount>0" 
+                <button class="button button-fill button-primary" 
+                    v-if="order.state=='ENTRANCED'&amp;&amp;order.memberCount>0&amp;&amp;user.company.id!=8" 
                     @click.stop="orderExit(order)">确认离场</button>
               </div>
             </div>
@@ -116,10 +118,10 @@
           </template>
           <template v-if="order.state=='PAYED'">
             <a class="tab-item tab-button-warning" @click="orderUnpay(false)">重新付款</a>
-            <a class="hide tab-item tab-button-success" @click="orderEntrance(false)">确认进场</a>
+            <a class="tab-item tab-button-success" @click="orderEntrance(false)" v-if="user.company.id!=8">确认进场</a>
           </template>
           <template v-if="order.state=='ENTRANCED'">
-            <a class="hide tab-item tab-button-primary" @click="orderExit(false)">确认离场</a>
+            <a class="tab-item tab-button-primary" @click="orderExit(false)" v-if="user.company.id!=8">确认离场</a>
           </template>
         </nav>
         <div class="content">
