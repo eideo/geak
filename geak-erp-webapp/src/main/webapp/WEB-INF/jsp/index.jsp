@@ -69,7 +69,7 @@
               <div class="card-header">
                 <span>{{order.createdDate | date "MM月dd日 hh:mm"}}</span>
                 <!--<span>{{order.content}}</span>-->
-                <span v-if="order.memberCount>0">工厂门票</span>
+                <span v-if="order.memberCount>0">{{order.content}}</span>
                 <span v-else>食品饮料</span>
               </div>
               <div class="card-content" v-if="order.memberCount>0">
