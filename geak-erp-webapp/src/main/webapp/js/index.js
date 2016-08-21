@@ -117,6 +117,8 @@ $(function(){
             phone:"",
             sex:"M"
           },
+          memberTypeArray:[],
+          sourceArray:[],
           state: "NEW",
           note: "",
           amount: this.orderAmount(this.products),
