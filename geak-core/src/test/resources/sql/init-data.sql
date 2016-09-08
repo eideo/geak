@@ -171,5 +171,21 @@ INSERT INTO geak_user VALUES ('2016060601', '2016060601', '冯帅', '15035176411
 INSERT INTO `geak_user_company` VALUES ('2016060601', 7);  -- 李佳
 INSERT INTO `geak_user_company` VALUES ('2016060601', 8);  -- 李佳
 
+-- 20160830
+INSERT INTO geak_user VALUES ('2016083001', '2016083001', '杨献明', '', '', 'NORMAL', 8);
+INSERT INTO `geak_user_company` VALUES ('2016083001', 1);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 2);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 3);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 4);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 5);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 6);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 7);  -- 杨献明
+INSERT INTO `geak_user_company` VALUES ('2016083001', 8);  -- 杨献明
+
+--20160909
+INSERT INTO geak_user VALUES ('2016082401', '2016082401', '梁海洋', '15110310898', '', 'NORMAL', 2);
+INSERT INTO geak_user VALUES ('2016082601', '2016082601', '王佳玉', '13623647778', '', 'NORMAL', 2);
+
+
 COMMIT;
 
