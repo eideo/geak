@@ -41,7 +41,6 @@ $(function(){
             signType: config.signType,
             paySign: config.paySign,
             success: function (res) {
-              console.log(res);
               $.toast("充值成功！");
             },
             cancel: function(res) {

@@ -49,7 +49,7 @@ public class DefaultMemberService implements MemberService {
       throw new IllegalArgumentException("Deposit amount should be large than 0.");
     }    
     long now = System.currentTimeMillis();
-    String tradeContent = String.format("极客会员充值￥%d元。", amount);
+    String tradeContent = String.format("vgeek member deposit $%d.", amount);
     MemberDeposit deposit = new MemberDeposit();
     deposit.setAmount(amount);
     deposit.setBeginDate(new Date(now));

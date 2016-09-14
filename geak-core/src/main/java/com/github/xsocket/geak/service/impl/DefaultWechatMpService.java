@@ -181,6 +181,10 @@ public class DefaultWechatMpService implements WechatMpService {
   
   public static final void main(String[] args) throws ParseException {
     System.out.println(NumberFormat.getIntegerInstance().parse("3人"));
+    byte[] bytes = new byte[] {(byte) 0xe7,(byte) 0xad,(byte) 0xbe,(byte) 0xe5,(byte) 0x90,
+        (byte)0x8d, (byte)0xe9, (byte)0x94, (byte)0x99, (byte)0xe8, (byte)0xaf, (byte)0xaf};
+    
+    System.out.println(new String(bytes));
     
     
   }
