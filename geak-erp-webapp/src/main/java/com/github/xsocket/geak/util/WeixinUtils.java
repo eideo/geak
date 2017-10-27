@@ -39,7 +39,7 @@ public abstract class WeixinUtils {
         String content = Request.Get(API_URL_GET_ACCESS_TOKEN).execute().returnContent().asString();
         JSONObject json = JSON.parseObject(content);
         
-        if(json.containsKey("errcode")) {
+        if(!json.containsKey("access_token")) {
           String msg = String.format("获取AccessToken失败:%s", content);
           LOGGER.debug(msg);
           throw new RuntimeException(msg);
